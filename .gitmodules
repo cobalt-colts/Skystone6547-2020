@@ -1,0 +1,6 @@
+[submodule "HOMAR-FTC-Libary"]
+	path = HOMAR-FTC-Libary
+	url = https://github.com/StPaulAcademy/HOMAR-FTC-Library
+[submodule "HOMAR-FTC-Library"]
+	path = HOMAR-FTC-Library
+	url = https://github.com/StPaulAcademy/HOMAR-FTC-Library
