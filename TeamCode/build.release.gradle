@@ -16,4 +16,5 @@ dependencies {
 
     implementation 'org.openftc:rev-extensions-2:1.2'
     implementation project(':HOMAR-FTC-Library')
+    implementation 'com.github.dogecv:dogecv:2020.4-alpha'
 }

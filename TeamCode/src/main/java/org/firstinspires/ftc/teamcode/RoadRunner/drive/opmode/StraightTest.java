@@ -15,20 +15,20 @@ import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.SampleMecanumDriv
 @Config
 @Autonomous(group = "drive")
 public class StraightTest extends LinearOpMode {
-    public static double DISTANCE = 60;
+    public static double DISTANCE = 6;
 
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDriveBase drive = new SampleMecanumDriveREV(hardwareMap);
         DriveTrain6547 bot = new DriveTrain6547(this);
 
-        Trajectory trajectory = drive.trajectoryBuilder()
+        Trajectory trajectory = bot.trajectoryBuilder()
                 .forward(DISTANCE)
                 .build();
         waitForStart();
 
         if (isStopRequested()) return;
 
-        drive.followTrajectorySync(trajectory);
+        bot.followTrajectorySync(trajectory);
     }
 }

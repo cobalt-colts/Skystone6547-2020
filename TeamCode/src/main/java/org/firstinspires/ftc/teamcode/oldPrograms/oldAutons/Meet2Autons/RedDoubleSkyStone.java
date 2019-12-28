@@ -1,6 +1,7 @@
-package org.firstinspires.ftc.teamcode.autons;
+package org.firstinspires.ftc.teamcode.oldPrograms.oldAutons.Meet2Autons;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.oldPrograms.usedInMeet2.SkyStone6547Meet2;
 import org.firstinspires.ftc.teamcode.SkyStoneLoc;
@@ -9,6 +10,7 @@ import org.firstinspires.ftc.teamcode.SkyStoneLoc;
  * Created by Drew from 6547 on 9/27/2019.
  */
 @Autonomous(name = "RED double skystone meet 2")
+@Disabled
 public class RedDoubleSkyStone extends SkyStone6547Meet2 {
 
     public void runOpMode()

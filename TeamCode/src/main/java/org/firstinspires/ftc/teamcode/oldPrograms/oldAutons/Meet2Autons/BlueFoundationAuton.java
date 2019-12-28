@@ -1,14 +1,16 @@
-package org.firstinspires.ftc.teamcode.Autons;
+package org.firstinspires.ftc.teamcode.oldPrograms.oldAutons.Meet2Autons;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import org.firstinspires.ftc.teamcode.oldPrograms.usedInMeet2.SkyStone6547Meet2;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
+import org.firstinspires.ftc.teamcode.oldPrograms.usedInMeet2.SkyStone6547Meet2;
 
 /*
     This auton pulls the foundation to the build site and parks under the skybridge for the RED side
  */
-@Autonomous(name = "RED Foundation Auton meet2")
-public class RedFoundationAuton extends SkyStone6547Meet2 {
+@Autonomous(name = "BLUE Foundation Auton meet2")
+@Disabled
+public class BlueFoundationAuton extends SkyStone6547Meet2 {
 
     public void runOpMode()
     {
@@ -25,7 +27,7 @@ public class RedFoundationAuton extends SkyStone6547Meet2 {
 
         //setLiftLevel(0);
         
-        DriveFieldRealtiveDistance(.3,0,1);
+        DriveFieldRealtiveDistance(.3,180,1);
         TurnPID(180,1);
 
         DriveFieldRealtiveDistance(.3, 90, 3.1); //drive toward stone
@@ -48,7 +50,7 @@ public class RedFoundationAuton extends SkyStone6547Meet2 {
         
         DriveFieldRealtiveDistance(.3,270,.5);
 
-        DriveFieldRealtiveDistance(.5, 180,4); //park to skybridge
+        DriveFieldRealtiveDistance(.5, 0,4); //park to skybridge
 
         setFondationGrabber(0);
 

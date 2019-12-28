@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.testing;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.SkyStone6547Qualifter;
 
 @Autonomous
+@Disabled
 public class StrafeTest extends LinearOpMode {
 
     @Override

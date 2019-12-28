@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547;
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.SampleMecanumDriveREV;
 
@@ -17,12 +18,13 @@ public class TurnTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        SampleMecanumDriveBase drive = new SampleMecanumDriveREV(hardwareMap);
+        DriveTrain6547 bot = new DriveTrain6547(this);
 
         waitForStart();
 
         if (isStopRequested()) return;
 
-        drive.turnSync(Math.toRadians(ANGLE));
+        //bot.turnRealtiveSync(90);
+        bot.turnRealtiveSync(180);
     }
 }

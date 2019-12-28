@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum;
 import android.support.annotation.NonNull;
 
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.ftccommon.SoundPlayer;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
@@ -70,14 +71,14 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
     double deltaY=0;
     double oldDist=0;
 
-    public ExpansionHubMotor lift;
-    public ExpansionHubMotor intakeLeft;
-    public ExpansionHubMotor intakeRight;
+    public DcMotorEx lift;
+    public DcMotorEx intakeLeft;
+    public DcMotorEx intakeRight;
 
-    ExpansionHubServo fondationGrabber;
-    ExpansionHubServo fondationGrabber2;
-    ExpansionHubServo frontGrabber;
-    ExpansionHubServo backGrabber;
+    Servo fondationGrabber;
+    Servo fondationGrabber2;
+    Servo frontGrabber;
+    Servo backGrabber;
 
     public ColorSensor colorSensorSideLeft;
     public ColorSensor colorSensorSideRight;
@@ -104,10 +105,6 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
     private DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private List<DcMotorEx> motors;
     private BNO055IMU imu;
-
-    public Orientation angles;
-    Acceleration gravity;
-    Velocity thing;
 
     OpMode opMode;
     HardwareMap hardwareMap;
@@ -161,13 +158,13 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
     {
         distanceSensorX = hardwareMap.get(Rev2mDistanceSensor.class, "d boi");
         distanceSensorY = hardwareMap.get(Rev2mDistanceSensor.class, "d boi1");
-        lift = (ExpansionHubMotor) hardwareMap.get(DcMotor.class, "lift");
-        intakeLeft = (ExpansionHubMotor) hardwareMap.get(DcMotor.class, "intake left");
-        intakeRight = (ExpansionHubMotor) hardwareMap.get(DcMotor.class, "intake right");
-        fondationGrabber = (ExpansionHubServo) hardwareMap.get(Servo.class, "f grabber");
-        fondationGrabber2 = (ExpansionHubServo) hardwareMap.get(Servo.class, "f grabber1");
-        backGrabber = (ExpansionHubServo) hardwareMap.get(Servo.class, "back grabber");
-        frontGrabber = (ExpansionHubServo) hardwareMap.get(Servo.class, "front grabber");
+        lift =  hardwareMap.get(DcMotorEx.class, "lift");
+        intakeLeft = hardwareMap.get(DcMotorEx.class, "intake left");
+        intakeRight = hardwareMap.get(DcMotorEx.class, "intake right");
+        fondationGrabber = hardwareMap.get(Servo.class, "f grabber");
+        fondationGrabber2 = hardwareMap.get(Servo.class, "f grabber1");
+        backGrabber = hardwareMap.get(Servo.class, "back grabber");
+        frontGrabber = hardwareMap.get(Servo.class, "front grabber");
 
         colorSensorSideRight = hardwareMap.get(ColorSensor.class, "color sensor"); //set color sensors
         colorSensorSideLeft = hardwareMap.get(ColorSensor.class, "color sensor2");
@@ -201,19 +198,6 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
         screamTime.reset();
 
         //opMode.telemetry = dashboard.getopMode.telemetry();
-    }
-    public void initIMUTelemetry() {
-        opMode.telemetry.addAction(new Runnable() {
-            @Override
-            public void run() {
-                // Acquiring the angles is relatively expensive; we don't want
-                // to do that in each of the three items that need that info, as that's
-                // three times the necessary expense.
-                angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-                gravity = imu.getGravity();
-                thing = imu.getVelocity();
-            }
-        });
     }
     private void initGamepads()
     {
@@ -301,7 +285,6 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
     }
     public void outputTelemetry()
     {
-        opMode.telemetry.addData("default IMU angle", angles.firstAngle);
         opMode.telemetry.addData("IMU angle with zero Value", getIMUAngle());
 //        opMode.telemetry.addData("Front Left POW", leftFront.getPower());
 //        opMode.telemetry.addData("Front Right POW", rightFront.getPower());
@@ -443,70 +426,16 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
         double range = max-min;
         return (fondationGrabber2.getPosition()*range) + min;
     }
-    public void TurnPID(double angle, double seconds)
-    {
-        TurnPID(angle, seconds, 1);
-    }
-    public void TurnPID(double angle, double seconds, double motorPowerModifer) { TurnPID(angle, seconds, motorPowerModifer, new MiniPID(.01,0.00001,0.015));}
-    public void TurnPID(double angle, double seconds, double motorPowerModifer, MiniPID miniPID) //use PID to turn the robot
-    {
-        leftRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        rightRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-
-        motorPowerModifer=Math.abs(motorPowerModifer); //make sure the robot will always go the right direction
-        double angleDifference=angle-getIMUAngle();
-        if (Math.abs(angleDifference)>180) //make the angle difference less then 180 to remove unnecessary turning
-        {
-            angleDifference+=(angleDifference>=0) ? -360 : 360;
-        }
-        double tempZeroValue=angleZzeroValue;
-        angleZzeroValue=0;
-        angleZzeroValue=-getIMUAngle();
-
-        miniPID.setOutputLimits(1);
-
-        miniPID.setSetpointRange(40);
-
-        double actual=0;
-        double output=0;
-        //opMode.telemetry.log().add("PID angle difference " + angleDifference);
-        double target=angleDifference;
-        miniPID.setSetpoint(0);
-        miniPID.setSetpoint(target);
-        opMode.telemetry.log().add("PID target angle: " + target + "degrees");
-        runtime.reset();
-        while (((LinearOpMode) opMode).opModeIsActive() && runtime.seconds() < seconds) {
-
-            output = miniPID.getOutput(actual, target);
-            //if (angle>175 || angle <-175) actual = getIMUAngle(true);
-            actual = getIMUAngle();
-            turnLeft(output*motorPowerModifer);
-            opMode.telemetry.addData("Status","Turning PID");
-            opMode.telemetry.addData("power", leftFront.getPower());
-            opMode.telemetry.addData("angle", actual);
-            opMode.telemetry.update();
-            outputTelemetry();
-        }
-        stopRobot();
-        angleZzeroValue=tempZeroValue;
-
-        leftRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    }
     public double getIMUAngle() //gets the gyro angle
     {
-        double currentAngle=angles.firstAngle+angleZzeroValue;
+        double currentAngle=Math.toDegrees(getRawExternalHeading())+angleZzeroValue;
         while (currentAngle>180) currentAngle-=360;
         while (currentAngle<-180) currentAngle+=360;
         return currentAngle;
     }
     public double getIMUAngle(boolean extendBeyond180)
     {
-        double currentAngle=angles.firstAngle+angleZzeroValue;
+        double currentAngle=Math.toDegrees(getRawExternalHeading())+angleZzeroValue;
         if (extendBeyond180) return currentAngle;
         else return getIMUAngle();
     }
@@ -514,38 +443,6 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
     {
         //return colorSensorToBeUsed.red() <65;
         return (colorSensorToBeUsed.red()*colorSensorToBeUsed.green()) / Math.pow(colorSensorToBeUsed.blue(),2) < 3;
-    }
-    public void DriveforLength(double feet,double power) //drive forward or backward for a distance in feet.
-    {
-        opMode.telemetry.log().add("Drving for length");
-        if (power>=0) feet = Math.abs(feet);
-        else feet = -Math.abs(feet);
-        zeroEncoders();
-        driveForward(power);
-        double inches = feet*12;
-        double encodersPerInch = encoderTicksPerRotation/circumferenceOfWheel;
-        double drivingDistanceInEncoderTicks = encodersPerInch*inches;
-        if (drivingDistanceInEncoderTicks>=0) while (rightRear.getCurrentPosition() <=drivingDistanceInEncoderTicks && ((LinearOpMode) opMode).opModeIsActive())
-        {
-            opMode.telemetry.addData("Status","Driving For Length");
-            opMode.telemetry.addData("Encoder ticks to drive (positve)", drivingDistanceInEncoderTicks);
-            opMode.telemetry.addData("IMU angle", getIMUAngle());
-            outputTelemetry();
-        }
-        else while (rightRear.getCurrentPosition() >=drivingDistanceInEncoderTicks && ((LinearOpMode) opMode).opModeIsActive())
-        {
-            opMode.telemetry.addData("Status","Driving For Length");
-            opMode.telemetry.addData("Encoder ticks to drive (negitive)", drivingDistanceInEncoderTicks);
-            opMode.telemetry.addData("IMU angle", getIMUAngle());
-            outputTelemetry();
-        }
-        stopRobot();
-        opMode.telemetry.log().add("Done with Drive for length");
-        opMode.telemetry.log().add("Left Front Encoder Pos:"+ leftFront.getCurrentPosition());
-        opMode.telemetry.log().add("Right Front Encoder Pos:"+ rightFront.getCurrentPosition());
-        opMode.telemetry.log().add("Left Back Encoder Pos:"+ leftRear.getCurrentPosition());
-        opMode.telemetry.log().add("Right Back Encoder Pos:"+ rightRear.getCurrentPosition());
-        opMode.telemetry.log().add("Done with Drive for length");
     }
     public void DriveFieldRealtiveDistanceAndTurnPID(double power, double drivingAngle, double feet, double turningAngle, double rightX) //drive field reative and turn at the same time, however it makes the robot's position slightly unstable
     {
@@ -690,32 +587,6 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
         }
         motor.setPower(0);
     }
-    public void steerRobot(double leftPow, double rightPow)
-    {
-        leftFront.setPower(leftPow);
-        rightFront.setPower(rightPow);
-        leftRear.setPower(leftPow);
-        rightRear.setPower(rightPow);
-    }
-    public void driveForward(double power)
-    {
-        leftFront.setPower(-power);
-        rightFront.setPower(-power);
-        leftRear.setPower(-power);
-        rightRear.setPower(-power);
-    }
-    public void turnLeft(double power) {
-        leftFront.setPower(power);
-        rightFront.setPower(-power);
-        leftRear.setPower(power);
-        rightRear.setPower(-power);
-    }
-    public void DriveLeft(double power) { //strafe left
-        leftFront.setPower(-power);
-        rightFront.setPower(power);
-        leftRear.setPower(power);
-        rightRear.setPower(-power);
-    }
     public void stopRobot()
     {
         leftFront.setPower(0);
@@ -786,11 +657,11 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
             double slope = getSlope(x, y, actualX, actualY);
             double angle = Math.toDegrees(Math.atan2(outputX, -outputY)) + offset;
             DriveFieldRealtiveSimple(power, angle);
-            if (Math.abs(getIMUAngle())>=5)
-            {
-                TurnPID(0,1);
-                seconds++;
-            }
+//            if (Math.abs(getIMUAngle())>=5)
+//            {
+//                turnSync(0);
+//                seconds++;
+//            }
             opMode.telemetry.addData("X pos" , actualX);
             opMode.telemetry.addData("y pos" , actualY);
             opMode.telemetry.update();
@@ -884,7 +755,17 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
         return (y1-y2)/(x1-x2);
     }
 
+    //--------------------------------------------------------------
+    // Get Set Methods
+    //--------------------------------------------------------------
 
+    public double getAngleZzeroValue() {
+        return angleZzeroValue;
+    }
+
+    public void setAngleZzeroValue(double angleZzeroValue) {
+        DriveTrain6547.angleZzeroValue = angleZzeroValue;
+    }
     //--------------------------------------------------------------
     //  Road Runner
     //--------------------------------------------------------------
@@ -934,5 +815,49 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
     @Override
     public double getRawExternalHeading() {
         return imu.getAngularOrientation().firstAngle;
+    }
+
+    public void driveForward(double inches)
+    {
+        followTrajectorySync(trajectoryBuilder()
+        .forward(inches)
+        .build());
+    }
+    public void driveBackward(double inches)
+    {
+        followTrajectorySync(trajectoryBuilder()
+        .back(inches)
+        .build());
+    }
+    public void strafeLeft(double inches)
+    {
+        followTrajectorySync(trajectoryBuilder()
+        .strafeLeft(inches)
+        .build());
+    }
+    public void strafeRight(double inches)
+    {
+        followTrajectorySync(trajectoryBuilder()
+        .strafeRight(inches)
+        .build());
+    }
+    public void turnRealtiveSync(double angle)
+    {
+        double target=angle-getIMUAngle();
+        if (Math.abs(target)>180) //make the angle difference less then 180 to remove unnecessary turning
+        {
+            target+=(target>=0) ? -360 : 360;
+        }
+        opMode.telemetry.log().add("inputted Angle: " + angle + " , turning to: " + target);
+        turnSync(target);
+    }
+    public void turnRealtive(double angle)
+    {
+        double target=angle-getIMUAngle();
+        if (Math.abs(target)>180) //make the angle difference less then 180 to remove unnecessary turning
+        {
+            target+=(target>=0) ? -360 : 360;
+        }
+        turn(target);
     }
 }
