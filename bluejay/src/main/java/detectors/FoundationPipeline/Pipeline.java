@@ -15,9 +15,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Pipeline {
-	
-	private static final int regionSideClipExtensionLength = 120; //120
-	
+
+    private static final int regionSideClipExtensionLength = 120; //120
+
     private static Mat resizedImage = new Mat();
 
     public static  List<Foundation> foundations = new ArrayList<>();
@@ -32,13 +32,13 @@ public class Pipeline {
 
 
     public static Mat process(Mat source0){
-    	if(FtcRobotControllerActivity.PercentAvailable<FtcRobotControllerActivity.LOW_MEMORY_THRESHOLD_PERCENT){
-	        System.gc();
-        }
+//        if(FtcRobotControllerActivity.PercentAvailable<FtcRobotControllerActivity.LOW_MEMORY_THRESHOLD_PERCENT){
+//            System.gc();
+//        }
 
-    	return process(source0, 640, 480);
+        return process(source0, 640, 480);
 
-    	// process(source0, 3264/4, 2448/4);
+        // process(source0, 3264/4, 2448/4);
     }
 
     /**
@@ -114,31 +114,31 @@ public class Pipeline {
         mask = compute.flip(mask);
         yellowTags = compute.add(yellowTags,mask);
 
-        		//Start.display(yellowTags,1,"yellowTAG");
+        //Start.display(yellowTags,1,"yellowTAG");
 
         //setup Mat
         Mat drawInternalHulls = new Mat(yellowTags.rows(), yellowTags.cols(), CvType.CV_8UC3);
 
         Imgproc.rectangle(drawInternalHulls,
-        		new Point(0,0),
-        		new Point(drawInternalHulls.width(),drawInternalHulls.height()),
-        		new Scalar(0,0,0),
-        		-1);
+                new Point(0,0),
+                new Point(drawInternalHulls.width(),drawInternalHulls.height()),
+                new Scalar(0,0,0),
+                -1);
 
         yellowTags = compute.flip(yellowTags);
 
-        	//Start.display(yellowTags,1,"flipTags");
+        //Start.display(yellowTags,1,"flipTags");
         List<MatOfPoint> internalHulls = compute.findHulls(yellowTags);
         internalHulls = compute.filterContours(internalHulls,1500);//1700
 
         compute.drawHulls(internalHulls,drawInternalHulls);
-        		//Start.display(drawInternalHulls,1,"hulls");
+        //Start.display(drawInternalHulls,1,"hulls");
 
         for(MatOfPoint h : internalHulls) {
-        	SkyStone ss = new SkyStone(h);
-        	if(!ss.isBastard) {
-        		skyStones.add(ss);
-        	}
+            SkyStone ss = new SkyStone(h);
+            if(!ss.isBastard) {
+                skyStones.add(ss);
+            }
         }
 
         mask.release();
@@ -151,19 +151,19 @@ public class Pipeline {
      * Takes in yellow masks, and image to annotate on
      * spits out list of Stones
      */
-	private static List<Stone> computeStones(Mat yellowOutput){
-    	Mat dTrans = compute.distanceTransform(yellowOutput,12);
+    private static List<Stone> computeStones(Mat yellowOutput){
+        Mat dTrans = compute.distanceTransform(yellowOutput,12);
         //Start.display(dTrans,1,"trans");
 
-    	List<MatOfPoint> stonesContour = compute.findHulls(dTrans);
+        List<MatOfPoint> stonesContour = compute.findHulls(dTrans);
 
         List<Stone> stones = new ArrayList<>();
 
         for(MatOfPoint con : stonesContour) {
-        	Stone d = new Stone(con);
-        	if(!d.isBastard) {
-        		stones.add(d);
-        	}
+            Stone d = new Stone(con);
+            if(!d.isBastard) {
+                stones.add(d);
+            }
         }
 
         dTrans.release();
@@ -211,31 +211,31 @@ public class Pipeline {
         }*/
         Mat detectedAll = new Mat(redOutput.rows(),redOutput.cols(),redOutput.type());
         Imgproc.rectangle(detectedAll,
-        		new Point(0,0),
-        		new Point(detectedAll.width(),detectedAll.height()),
-        		new Scalar(0,0,0),
-        		-1);
+                new Point(0,0),
+                new Point(detectedAll.width(),detectedAll.height()),
+                new Scalar(0,0,0),
+                -1);
         compute.drawHulls(detectedHulls, detectedAll, new Scalar(255,255,255),-1);
 
         //limit black to regions underneath
         Imgproc.dilate(detectedAll,detectedAll,
-    			Imgproc.getStructuringElement(
-    					Imgproc.MORPH_RECT,
-    					new Size(1,80),
-    					new Point(0,0)
-    				));
+                Imgproc.getStructuringElement(
+                        Imgproc.MORPH_RECT,
+                        new Size(1,80),
+                        new Point(0,0)
+                ));
         detectedAll = compute.flip(detectedAll);
         blackOutput = compute.subtract(blackOutput,detectedAll);
 
         //cut sides of color contours. Field walls are bad.
         for(Detected d:detected) {
-        	Point one = new Point(d.bounds.x,d.bounds.y+d.bounds.height*0.1);
-        	Point two = new Point(d.bounds.x,d.bounds.y+d.bounds.height*0.1+regionSideClipExtensionLength);
-        	Imgproc.line(blackOutput,one, two,new Scalar(new double[] {0,0,0}),1);
+            Point one = new Point(d.bounds.x,d.bounds.y+d.bounds.height*0.1);
+            Point two = new Point(d.bounds.x,d.bounds.y+d.bounds.height*0.1+regionSideClipExtensionLength);
+            Imgproc.line(blackOutput,one, two,new Scalar(new double[] {0,0,0}),1);
 
-        	one = new Point(d.bounds.x+d.bounds.width,d.bounds.y+d.bounds.height*0.1);
-        	two = new Point(d.bounds.x+d.bounds.width,d.bounds.y+d.bounds.height*0.1+regionSideClipExtensionLength);
-        	Imgproc.line(blackOutput,one, two,new Scalar(new double[] {0,0,0}),1);
+            one = new Point(d.bounds.x+d.bounds.width,d.bounds.y+d.bounds.height*0.1);
+            two = new Point(d.bounds.x+d.bounds.width,d.bounds.y+d.bounds.height*0.1+regionSideClipExtensionLength);
+            Imgproc.line(blackOutput,one, two,new Scalar(new double[] {0,0,0}),1);
         }
 
         ArrayList<MatOfPoint> hullsBlack = compute.findHulls(blackOutput);
@@ -262,9 +262,9 @@ public class Pipeline {
         for (Detected black : blacks) {
             for (Detected col : detected) {
                 if (black.x > col.x - 40 && //one above the other, within 40 pix
-                	black.bounds.y < col.bounds.y+col.bounds.height+30 &&//touching, within 30 pix
-                    Math.abs(black.bounds.width*1.0/col.bounds.width-1)  <  0.6)   {//widths match, within 0.6
-                    	foundations.add(Foundation.createFoundation(black, col));
+                        black.bounds.y < col.bounds.y+col.bounds.height+30 &&//touching, within 30 pix
+                        Math.abs(black.bounds.width*1.0/col.bounds.width-1)  <  0.6)   {//widths match, within 0.6
+                    foundations.add(Foundation.createFoundation(black, col));
                 }
             }
         }
@@ -275,4 +275,3 @@ public class Pipeline {
     }
 
 }
-

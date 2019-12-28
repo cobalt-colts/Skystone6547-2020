@@ -174,17 +174,6 @@ public class SkyStoneTeleOpQualifer extends LinearOpMode {
                 bot.angleZzeroValue = -bot.angles.firstAngle;
             }
 
-            if (bot.getRobotPositionX() < 2)
-            {
-                bot.scream();
-                telemetry.log().add("Screaming");
-            }
-            else if (bot.getRobotPositionY() < 2)
-            {
-                bot.scream();
-                telemetry.log().add("Screaming");
-            }
-
            telemetry.addData("Back grabber pos", bot.backGrabber.getPosition());
             telemetry.addData("Front grabber pos", bot.frontGrabber.getPosition());
             telemetry.addData("IMU angle", bot.getIMUAngle());

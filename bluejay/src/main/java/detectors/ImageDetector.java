@@ -25,7 +25,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 
 public class ImageDetector extends StartStoppable implements Localizer{
 	private static final String VUFORIA_KEY =
-			"<--Key Here-->";
+			"Ae+uhsD/////AAABmZYtJjklfUA+odiS4iYxcR+KuWfvzdTw7D7eil8WebsKkjX+HWS3dXJY+m2t6SviUji3Bv0DaVlUOX8/itz18JmUtnzDMlC23xOuX36a9bNnfaSLLkU90FDqG+AdCA5Hmf7yhVXBKYRWOEYjhTLbMj7BR1GGKTJVA7vcmD/w1SjyLMRARMqBG1/ngIhmJqPG7VlVPbXfb3p3ONgNDe3QDXTjLsS2GFzPjlLumyVa+b5o+rChnJJNdrH87vjsdwL8dYeJmUScfI6VOTW9vzPJ84W1EtwjOZkv1vcAuhx12oa1yFxp6+0nXcDC6YnSCxLrW87wpDuvP9CjZgLGiCp7n1llzHoQ5t+XagGDT5JdIROq";
 	//phone attributes
 	private static final boolean PHONE_IS_PORTRAIT = false;
 	// Everything is in mm
@@ -77,7 +77,9 @@ public class ImageDetector extends StartStoppable implements Localizer{
 		
 		parameters.vuforiaLicenseKey = VUFORIA_KEY;
 		parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-		
+
+
+
 		//  Instantiate the Vuforia engine
 		VuforiaLocalizer vuforia = ClassFactory.getInstance().createVuforia(parameters);
 		

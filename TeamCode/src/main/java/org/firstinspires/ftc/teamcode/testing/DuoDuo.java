@@ -67,8 +67,8 @@ public class DuoDuo extends LinearOpMode {
         telemetry.addData("Booting Up", " . . .");
         telemetry.update();
         OpenCvDetector fieldDetector = new OpenCvDetector(this);
-        ImageDetector detector = new ImageDetector(this, false);
-        StoneDetector stone = new StoneDetector(this, false);
+        //ImageDetector detector = new ImageDetector(this, false);
+        //StoneDetector stone = new StoneDetector(this, false);
 
         //stone.start();
         //detector.start();
@@ -106,14 +106,16 @@ public class DuoDuo extends LinearOpMode {
 
             //imu.printposition(imu.getDeltaPosition());
 
+
+
             telemetry.addData("==========", "Loop delimiter");
 
             telemetry.update();
         }
 
         // Disable Tracking when we are done
-        detector.stop();
-        stone.stop();
+        //detector.stop();
+        //stone.stop();
         fieldDetector.stop();
         //imu.stop();
     }
