@@ -72,13 +72,12 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
     double oldDist=0;
 
     public DcMotorEx lift;
-    public DcMotorEx intakeLeft;
-    public DcMotorEx intakeRight;
+    public DcMotorEx intake;
 
     Servo fondationGrabber;
     Servo fondationGrabber2;
-    Servo frontGrabber;
-    Servo backGrabber;
+    public Servo grabberSlide;
+    public Servo grabber;
 
     public ColorSensor colorSensorSideLeft;
     public ColorSensor colorSensorSideRight;
@@ -89,8 +88,8 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
 
     int[] levels = new int[] {700,3000}; //linear slide levels, 0 is bottom, 1 is to drop the skystone on top of the fondation, 2 is on top on the first stone, 3 is on top of the second stone, and so one.
 
-    final int liftMax = 7278;
-    final int liftMin = 50;
+    public final int liftMax = 7278;
+    public final int liftMin = 50;
 
     double lastPosX;
     double lastPosY;
@@ -102,7 +101,7 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
 
     ElapsedTime screamTime = new ElapsedTime();
 
-    private DcMotorEx leftFront, leftRear, rightRear, rightFront;
+    public DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private List<DcMotorEx> motors;
     private BNO055IMU imu;
 
@@ -114,7 +113,7 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
         opMode = _opMode;
         hardwareMap = opMode.hardwareMap;
 
-        LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
+      //  LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
         // TODO: adjust the names of the following hardware devices to match your configuration
         imu = hardwareMap.get(BNO055IMU.class, "imu");
@@ -159,12 +158,11 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
         distanceSensorX = hardwareMap.get(Rev2mDistanceSensor.class, "d boi");
         distanceSensorY = hardwareMap.get(Rev2mDistanceSensor.class, "d boi1");
         lift =  hardwareMap.get(DcMotorEx.class, "lift");
-        intakeLeft = hardwareMap.get(DcMotorEx.class, "intake left");
-        intakeRight = hardwareMap.get(DcMotorEx.class, "intake right");
+        intake = hardwareMap.get(DcMotorEx.class, "intake");
         fondationGrabber = hardwareMap.get(Servo.class, "f grabber");
         fondationGrabber2 = hardwareMap.get(Servo.class, "f grabber1");
-        backGrabber = hardwareMap.get(Servo.class, "back grabber");
-        frontGrabber = hardwareMap.get(Servo.class, "front grabber");
+        grabberSlide = hardwareMap.get(Servo.class, "grabberSlide");
+        grabber = hardwareMap.get(Servo.class, "grabber");
 
         colorSensorSideRight = hardwareMap.get(ColorSensor.class, "color sensor"); //set color sensors
         colorSensorSideLeft = hardwareMap.get(ColorSensor.class, "color sensor2");
@@ -185,9 +183,7 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
 
         opMode.telemetry.log().add("Initialized gamepads");
 
-        opMode.telemetry.log().add("Assigned expansion numbers");
-
-        holdFromFrontGrabber();
+        setGrabber(0);
 
         screamIds.add(hardwareMap.appContext.getResources().getIdentifier("scream1",   "raw", hardwareMap.appContext.getPackageName()));
         screamIds.add(hardwareMap.appContext.getResources().getIdentifier("scream2",   "raw", hardwareMap.appContext.getPackageName()));
@@ -306,60 +302,53 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
     // }
     public void intake(double pow)
     {
-        intakeLeft.setPower(pow);
-        intakeRight.setPower(-pow);
+        intake.setPower(pow);
         opMode.telemetry.log().add("intaking");
     }
     public void outtake(double pow)
     {
-        intakeLeft.setPower(-pow);
-        intakeRight.setPower(pow);
+        intake.setPower(-pow);
         opMode.telemetry.log().add("outtaking");
     }
     public void stopIntake()
     {
-        intakeLeft.setPower(0);
-        intakeRight.setPower(0);
+        intake.setPower(0);
         opMode.telemetry.log().add("stoppe intake");
     }
-    public void releaseGrabbers()
-    {
-        setFrontGrabber(0);
-        setBackGrabber(1);
-    }
-    public void grabBlock()
-    {
-        setFrontGrabber(1);
-        setBackGrabber(1);
-    }
-    public void holdFromBackGrabber()
-    {
-        setFrontGrabber(0);
-        setBackGrabber(1);
-    }
-    public void holdFromFrontGrabber()
-    {
-        setFrontGrabber(1);
-        setBackGrabber(0);
-    }
-    public void setFrontGrabber(double pos)
+    public void setGrabber(double pos)
     {
         double min=0;
-        double max=.44;
+        double max=1;
         double range = max-min;
         pos*=range;
         pos+=min;
-        frontGrabber.setPosition(pos);
+        grabber.setPosition(pos);
     }
-    public void setBackGrabber(double pos)
+    public void setGrabberSlider(double pos)
     {
-        pos = Math.abs(1-pos); //invert pos
-        double min=.18;
-        double max=.635;
+        double min=0;
+        double max=1;
         double range = max-min;
         pos*=range;
         pos+=min;
-        backGrabber.setPosition(pos);
+        grabberSlide.setPosition(pos);
+    }
+    public void updateServo(Servo servo, double gamepadStick, double speed, double max, double min)
+    {
+        double posToAdd = gamepadStick*speed;
+        double servoCurrentPos = grabberSlide.getPosition();
+        //if ((servoCurrentPos > min && gamepadStick > 0) || (servoCurrentPos < max && gamepadStick < 0))
+        //{
+            if (grabberSlide.getPosition() > max) grabberSlide.setPosition(max);
+            else if (grabberSlide.getPosition() < min) grabberSlide.setPosition(min);
+            else {
+                grabberSlide.setPosition(posToAdd + servoCurrentPos);
+            }
+        //}
+    }
+    public void updateServo(Servo servo, double gamepadStick, double speed)
+    {
+        updateServo(servo, gamepadStick, speed, 0, 1);
     }
     public void setLiftLevel(int level)
     {
@@ -805,13 +794,24 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
     }
 
     @Override
-    public void setMotorPowers(double v, double v1, double v2, double v3) {
-        leftFront.setPower(v);
-        leftRear.setPower(v1);
-        rightRear.setPower(v2);
-        rightFront.setPower(v3);
+    public void setMotorPowers(double LF, double LR, double RR, double RF) {
+        leftFront.setPower(LF);
+        leftRear.setPower(LR);
+        rightRear.setPower(RR);
+        rightFront.setPower(RF);
     }
-
+    public void setMotorPowers(double v,double v1, double v2, double v3, double angle)
+    {
+        angle-=getIMUAngle();
+        angle+=45;
+        angle = Math.toRadians(angle);
+        double normalize = 1/Math.cos(Math.toRadians(45));
+        v*=Math.cos(angle)*normalize;
+        v1*=Math.cos(angle)*normalize;
+        v2*=Math.sin(angle)*normalize;
+        v3*=Math.sin(angle)*normalize;
+        setMotorPowers(v,v1,v2,v3);
+    }
     @Override
     public double getRawExternalHeading() {
         return imu.getAngularOrientation().firstAngle;
@@ -844,6 +844,7 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
     public void turnRealtiveSync(double angle)
     {
         double target=angle-getIMUAngle();
+        target-=90;
         if (Math.abs(target)>180) //make the angle difference less then 180 to remove unnecessary turning
         {
             target+=(target>=0) ? -360 : 360;
@@ -858,6 +859,7 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
         {
             target+=(target>=0) ? -360 : 360;
         }
+        angle = Math.toRadians(angle);
         turn(target);
     }
 }
