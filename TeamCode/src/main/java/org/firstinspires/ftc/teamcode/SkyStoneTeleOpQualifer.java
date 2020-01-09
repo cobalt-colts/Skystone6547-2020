@@ -39,8 +39,6 @@ public class SkyStoneTeleOpQualifer extends LinearOpMode {
     ToggleDouble fondationGrabberPos = new ToggleDouble(new double[] {0,0.9},0);
     ToggleDouble grabberToggle = new ToggleDouble(new double[] {grabberMin, grabberMax}, 0);
 
-    double liftPhoneHeight = 5552;
-
     DriveTrain6547 bot;
 
     @Override
@@ -87,17 +85,17 @@ public class SkyStoneTeleOpQualifer extends LinearOpMode {
                 double robotAngle = Math.toRadians(bot.getIMUAngle());
                 double rightX=gamepad1.right_stick_x;
                 rightX*=.5;
-                leftFrontPower =  speed * Math.cos(LeftStickAngle-robotAngle) - rightX;
-                rightFrontPower =  speed * Math.sin(LeftStickAngle-robotAngle) + rightX;
-                leftBackPower =  speed * Math.sin(LeftStickAngle-robotAngle) - rightX;
-                rightBackPower =  speed * Math.cos(LeftStickAngle-robotAngle) + rightX;
+                leftFrontPower =  speed * Math.cos(LeftStickAngle-robotAngle) + rightX;
+                rightFrontPower =  speed * Math.sin(LeftStickAngle-robotAngle) - rightX;
+                leftBackPower =  speed * Math.sin(LeftStickAngle-robotAngle) + rightX;
+                rightBackPower =  speed * Math.cos(LeftStickAngle-robotAngle) - rightX;
             }
             else //regular drive
             {
-                leftFrontPower=-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x;
-                rightFrontPower=-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x;
-                leftBackPower=-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x;
-                rightBackPower=-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x;
+                leftFrontPower=-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x;
+                rightFrontPower=-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x;
+                leftBackPower=-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x;
+                rightBackPower=-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x;
             }
 
             bot.setMotorPowers(leftFrontPower*speedModifer, leftBackPower*speedModifer, rightBackPower*speedModifer, rightFrontPower*speedModifer);
@@ -155,9 +153,15 @@ public class SkyStoneTeleOpQualifer extends LinearOpMode {
 //            {
 //                bot.lift.setPower(liftPower);
 //            }
-            bot.lift.setPower(gamepad2.left_stick_y); //move lift
+            //bot.setLiftPower(gamepad2.left_stick_y); //move lift
 
-            bot.updateServo(bot.grabberSlide, gamepad2.right_stick_x, slideSpeed, .98, .80);
+            bot.lift.setPower(gamepad2.left_stick_y*.5);
+            bot.liftLeft.setPower(gamepad2.right_stick_y*.5);
+
+            if (bot.rightBumper2.isPressed()) bot.updateServo(bot.grabberSlide, 1, slideSpeed, 1, .80);
+            if (bot.leftBumper2.isPressed()) bot.updateServo(bot.grabberSlide, -1, slideSpeed, 1, .80);
+
+            bot.updateServo(bot.grabberSlide, gamepad2.right_stick_x, slideSpeed, 1, .80);
 
             if (gamepad1.right_bumper && gamepad1.left_bumper) //calibrate gyro
             {

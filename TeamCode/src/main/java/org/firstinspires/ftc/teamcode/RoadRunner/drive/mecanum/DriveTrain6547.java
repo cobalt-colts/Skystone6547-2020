@@ -72,6 +72,7 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
     double oldDist=0;
 
     public DcMotorEx lift;
+    public DcMotorEx liftLeft;
     public DcMotorEx intake;
 
     Servo fondationGrabber;
@@ -158,6 +159,7 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
         distanceSensorX = hardwareMap.get(Rev2mDistanceSensor.class, "d boi");
         distanceSensorY = hardwareMap.get(Rev2mDistanceSensor.class, "d boi1");
         lift =  hardwareMap.get(DcMotorEx.class, "lift");
+        liftLeft = hardwareMap.get(DcMotorEx.class, "lift left");
         intake = hardwareMap.get(DcMotorEx.class, "intake");
         fondationGrabber = hardwareMap.get(Servo.class, "f grabber");
         fondationGrabber2 = hardwareMap.get(Servo.class, "f grabber1");
@@ -170,6 +172,7 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
         opMode.telemetry.log().add("Initialized hardware");
 
         lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         lift.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -300,6 +303,11 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
     // {
     //     return lift.getCurrentPosition() > linMin;
     // }
+    public void setLiftPower(double pow)
+    {
+        lift.setPower(pow);
+        liftLeft.setPower(pow);
+    }
     public void intake(double pow)
     {
         intake.setPower(-pow);
@@ -335,6 +343,7 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
     }
     public void updateServo(Servo servo, double gamepadStick, double speed, double max, double min)
     {
+        if (Math.abs(gamepadStick) < .2) return;
         double posToAdd = gamepadStick*speed;
         double servoCurrentPos = grabberSlide.getPosition();
         //if ((servoCurrentPos > min && gamepadStick > 0) || (servoCurrentPos < max && gamepadStick < 0))
@@ -391,6 +400,22 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
         }
 
 
+    }
+    public void updateLift(double gamepadStick, double speed, double leeway)
+    {
+        if (Math.abs(gamepadStick) > .2) return;
+        speed*=gamepadStick;
+
+        double targetPos = lift.getCurrentPosition() + speed;
+
+        if (Math.abs(lift.getCurrentPosition()) > targetPos + leeway || lift.getCurrentPosition() < targetPos - leeway)
+        {
+            lift.setPower(speed);
+        }
+        if (Math.abs(liftLeft.getCurrentPosition()) > targetPos + leeway || liftLeft.getCurrentPosition() < targetPos - leeway)
+        {
+            liftLeft.setPower(speed);
+        }
     }
     public void setFondationGrabber(double pos)
     {
