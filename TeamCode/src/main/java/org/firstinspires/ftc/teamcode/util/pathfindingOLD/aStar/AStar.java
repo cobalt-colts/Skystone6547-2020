@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.util.pathfindingOLD.aStar;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -13,6 +15,7 @@ import java.util.Set;
  * @author Marcelo Surriabre
  * @version 2.1, 2017-02-23
  */
+@Disabled
 public class AStar {
     private static int DEFAULT_HV_COST = 10; // Horizontal - Vertical Cost
     private static int DEFAULT_DIAGONAL_COST = 14;

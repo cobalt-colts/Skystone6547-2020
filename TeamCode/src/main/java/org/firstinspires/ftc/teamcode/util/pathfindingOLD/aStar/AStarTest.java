@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.util.pathfindingOLD.aStar;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+
 import java.util.List;
 
+@Disabled
 public class AStarTest {
 
     public static void main(String[] args) {

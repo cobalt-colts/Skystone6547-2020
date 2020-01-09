@@ -1,8 +1,9 @@
-package org.firstinspires.ftc.teamcode.MuiltthreadingTest;
+package org.firstinspires.ftc.teamcode.testing.MuiltthreadTest.multithreadingTest;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -10,6 +11,7 @@ import org.firstinspires.ftc.teamcode.oldPrograms.usedInMeet2.SkyStone6547Meet2;
 
 @Config
 @TeleOp
+@Disabled
 public class TestMuiltiThread extends SkyStone6547Meet2 {
 
     public static double SQUARE_SIZE=18;

@@ -1,11 +1,14 @@
 package org.firstinspires.ftc.teamcode.util.pathfindingOLD;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+
 import org.firstinspires.ftc.teamcode.util.pathfindingOLD.aStar.AStar;
 import org.firstinspires.ftc.teamcode.util.pathfindingOLD.aStar.Node;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Disabled
 public class SkyStoneField {
 
     final int size = 144;

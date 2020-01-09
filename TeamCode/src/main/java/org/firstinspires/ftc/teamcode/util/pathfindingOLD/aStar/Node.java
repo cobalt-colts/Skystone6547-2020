@@ -1,11 +1,14 @@
 package org.firstinspires.ftc.teamcode.util.pathfindingOLD.aStar;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+
 /**
  * Node Class
  *
  * @author Marcelo Surriabre
  * @version 2.0, 2018-02-23
  */
+@Disabled
 public class Node {
 
     private int g;

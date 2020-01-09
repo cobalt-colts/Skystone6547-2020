@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode.testing.stateMachine;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+
 import org.firstinspires.ftc.teamcode.SkyStone6547Qualifter;
 
 import java.util.List;
 
+@Disabled
 public class StateManager {
 
     SkyStone6547Qualifter bot;

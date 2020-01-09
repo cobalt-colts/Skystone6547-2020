@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.testing.stateMachine;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.SkyStone6547Qualifter;
@@ -7,6 +8,7 @@ import org.firstinspires.ftc.teamcode.SkyStone6547Qualifter;
 import java.util.ArrayList;
 import java.util.List;
 
+@Disabled
 public class StateTesst6547 extends LinearOpMode {
 
     SkyStone6547Qualifter bot;

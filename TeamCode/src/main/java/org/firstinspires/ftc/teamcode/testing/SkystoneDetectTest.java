@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.testing;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.oldPrograms.usedInMeet2.SkyStone6547Meet2;
@@ -11,6 +12,7 @@ The program then determines if the skyStone is the LEFT, CENTER, or RIGHT stone.
 
  */
 @TeleOp
+@Disabled
 public class SkystoneDetectTest extends SkyStone6547Meet2 {
 
     public void runOpMode()

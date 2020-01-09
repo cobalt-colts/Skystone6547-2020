@@ -1,7 +1,9 @@
-package org.firstinspires.ftc.teamcode.MuiltthreadingTest;
+package org.firstinspires.ftc.teamcode.testing.MuiltthreadTest.multithreadingTest;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+@Disabled
 public class AddNumbers implements Runnable {
 
     public boolean isRunning = true;

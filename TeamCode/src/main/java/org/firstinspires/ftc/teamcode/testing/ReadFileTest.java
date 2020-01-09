@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.testing;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+
 import org.firstinspires.ftc.teamcode.OldPrograms.usedInMeet1.SkyStone6547;
 
+@Disabled
 public class ReadFileTest extends SkyStone6547 {
 
     @Override

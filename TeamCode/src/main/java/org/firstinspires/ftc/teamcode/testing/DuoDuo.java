@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode.testing;
 
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -58,6 +59,7 @@ import detectors.StoneDetector;
  */
 
 @TeleOp(name = "The Three <<Holy Systems>>", group = "Primordial Artifact")
+@Disabled
 public class DuoDuo extends LinearOpMode {
 
     public void runOpMode() throws InterruptedException {

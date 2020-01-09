@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.util;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -11,6 +12,7 @@ and use the A button to set the linear slide's current position as zero
 Note: zero is intended to be the lowest the linear slide can go.
  */
 @TeleOp(name = "CalibrateLift")
+@Disabled
 public class CalibrateLift extends SkyStone6547Meet2 {
 
     public void runOpMode()

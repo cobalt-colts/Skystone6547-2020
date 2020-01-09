@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.util.pathfindingOLD;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+
+@Disabled
 public class Rectangle {
 
     private int x1;
