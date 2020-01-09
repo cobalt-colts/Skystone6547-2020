@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.SkyStoneLoc;
 /**
  * Created by Drew from 6547 on 9/27/2019.
  */
-@Autonomous(name = "Blue double skystone Road Runner")
+@Autonomous(name = "Blue single skystone Road Runner", group = "auton")
 public class BlueSingleSkyStoneRoadRunne extends LinearOpMode {
 
     public void runOpMode()
@@ -26,7 +26,7 @@ public class BlueSingleSkyStoneRoadRunne extends LinearOpMode {
         waitForStart();
 
         Trajectory trajectory = bot.trajectoryBuilder()
-                .strafeTo(new Vector2d(-36,40))
+                .strafeTo(new Vector2d(-36,36))
                 .build();
         waitForStart();
 
@@ -39,7 +39,7 @@ public class BlueSingleSkyStoneRoadRunne extends LinearOpMode {
             bot.skyStoneLoc = SkyStoneLoc.LEFT;
             bot.followTrajectorySync(bot.trajectoryBuilder()
                     .back(2)
-                    .strafeRight(5)
+                    .strafeLeft(15)
                     .build());
             telemetry.log().add("LEFT");
 
@@ -50,7 +50,7 @@ public class BlueSingleSkyStoneRoadRunne extends LinearOpMode {
             bot.skyStoneLoc = SkyStoneLoc.RIGHT;
             bot.followTrajectorySync(bot.trajectoryBuilder()
                     .back(2)
-                    .strafeLeft(5)
+                    .strafeRight(15)
                     .build());
         }
         else
@@ -59,10 +59,12 @@ public class BlueSingleSkyStoneRoadRunne extends LinearOpMode {
             bot.skyStoneLoc = SkyStoneLoc.CENTER;
 
         }
+        bot.outtake(1);
+        sleep(500);
         bot.intake(1);
 
         bot.followTrajectorySync(bot.trajectoryBuilder()
-                .forward(12)
+                .forward(24)
                 .build());
 
         //sleep(250);
@@ -75,11 +77,15 @@ public class BlueSingleSkyStoneRoadRunne extends LinearOpMode {
                 .splineTo(new Pose2d(0,45,Math.toRadians(180)))
                 .build());
 
-        //bot.turnRealtiveSync(180);
+        //bot.turnRealtiveSync(180)
 
         bot.followTrajectorySync(bot.trajectoryBuilder()
-                .back(24)
+                .back(12)
                 .build());
+
+        bot.followTrajectorySync(bot.trajectoryBuilder()
+        .forward(14)
+        .build());
 
 //        sleep(1000);
 //        bot.followTrajectorySync(bot.trajectoryBuilder()

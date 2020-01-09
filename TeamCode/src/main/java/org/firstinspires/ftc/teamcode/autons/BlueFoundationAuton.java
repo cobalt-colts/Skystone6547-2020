@@ -11,8 +11,7 @@ import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547;
 /*
     This auton pulls the foundation to the build site and parks under the skybridge for the RED side
  */
-@Autonomous(name = "RED Foundation Auton meet2")
-@Disabled
+@Autonomous(name = "BLUE Foundation Auton road runner", group = "auton")
 public class BlueFoundationAuton extends LinearOpMode
 {
 
@@ -28,7 +27,7 @@ public class BlueFoundationAuton extends LinearOpMode
 
         bot.followTrajectorySync(bot.trajectoryBuilder()
                 .reverse()
-        .splineTo(new Pose2d(45,34,Math.toRadians(90)))
+        .splineTo(new Pose2d(40,34,Math.toRadians(90)))
                 .build());
 
         sleep(500);
@@ -44,20 +43,27 @@ public class BlueFoundationAuton extends LinearOpMode
 
         sleep(100);
 
-        bot.followTrajectorySync(bot.trajectoryBuilder() //turn foundation
-        .splineTo(new Pose2d(50,60,Math.toRadians(0)))
-                .build());
+        for (int i = 0; i < 10; i++)
+        {
+            bot.turnRealtiveSync(0);
+        }
 
         bot.setFondationGrabber(0);
         //DriveFieldRealtiveDistance(.5, 0, 1);
 
         sleep(500);
 
+        bot.followTrajectorySync(bot.trajectoryBuilder()
+                .back(24)
+                .build());
 
         bot.followTrajectorySync(bot.trajectoryBuilder()
-        .strafeLeft(20)
-        .back(36)
-        .build());
+                .strafeRight(20)
+                .build());
+
+        bot.followTrajectorySync(bot.trajectoryBuilder()
+                .forward(36)
+                .build());
 
         sleep(500);
 

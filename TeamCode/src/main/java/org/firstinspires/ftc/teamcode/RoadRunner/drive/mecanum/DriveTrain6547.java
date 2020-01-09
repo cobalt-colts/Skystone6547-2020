@@ -302,12 +302,12 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
     // }
     public void intake(double pow)
     {
-        intake.setPower(pow);
+        intake.setPower(-pow);
         opMode.telemetry.log().add("intaking");
     }
     public void outtake(double pow)
     {
-        intake.setPower(-pow);
+        intake.setPower(pow);
         opMode.telemetry.log().add("outtaking");
     }
     public void stopIntake()
@@ -558,6 +558,60 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
         // leftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         // rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         // rightRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+    public void TurnPID(double angle, double seconds)
+    {
+        TurnPID(angle, seconds, 1);
+    }
+    public void TurnPID(double angle, double seconds, double motorPowerModifer) { TurnPID(angle, seconds, motorPowerModifer,   new MiniPID(.004, 0, .036));}
+    public void TurnPID(double angle, double seconds, double motorPowerModifer, MiniPID miniPID) //use PID to turn the robot
+    {
+        leftRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        rightRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+        motorPowerModifer=Math.abs(motorPowerModifer); //make sure the robot will always go the right direction
+        double angleDifference=angle-getIMUAngle();
+        if (Math.abs(angleDifference)>180) //make the angle difference less then 180 to remove unnecessary turning
+        {
+            angleDifference+=(angleDifference>=0) ? -360 : 360;
+        }
+        double tempZeroValue=angleZzeroValue;
+        angleZzeroValue=0;
+        angleZzeroValue=-getIMUAngle();
+
+        miniPID.setOutputLimits(1);
+
+        miniPID.setSetpointRange(40);
+
+        double actual=0;
+        double output=0;
+        //opMode.telemetry.log().add("PID angle difference " + angleDifference);
+        double target=angleDifference;
+        miniPID.setSetpoint(0);
+        miniPID.setSetpoint(target);
+        opMode.telemetry.log().add("PID target angle: " + target + "degrees");
+        runtime.reset();
+        while (((LinearOpMode) opMode).opModeIsActive() && runtime.seconds() < seconds) {
+
+            output = miniPID.getOutput(actual, target);
+            //if (angle>175 || angle <-175) actual = getIMUAngle(true);
+            actual = getIMUAngle();
+            turnLeft(output*motorPowerModifer);
+            opMode.telemetry.addData("Status","Turning PID");
+            opMode.telemetry.addData("power", leftFront.getPower());
+            opMode.telemetry.addData("angle", actual);
+            opMode.telemetry.update();
+            outputTelemetry();
+        }
+        stopRobot();
+        angleZzeroValue=tempZeroValue;
+
+        leftRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
     public DcMotor zeroEncoder(DcMotor motor)
     {
@@ -861,5 +915,11 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
         }
         angle = Math.toRadians(angle);
         turn(target);
+    }
+    public void turnLeft(double power) {
+        leftFront.setPower(power);
+        rightFront.setPower(-power);
+        leftRear.setPower(power);
+        rightRear.setPower(-power);
     }
 }

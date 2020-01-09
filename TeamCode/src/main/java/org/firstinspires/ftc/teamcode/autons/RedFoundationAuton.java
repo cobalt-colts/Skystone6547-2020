@@ -12,8 +12,7 @@ import org.firstinspires.ftc.teamcode.oldPrograms.usedInMeet2.SkyStone6547Meet2;
 /*
     This auton pulls the foundation to the build site and parks under the skybridge for the RED side
  */
-@Autonomous(name = "RED Foundation Auton meet2")
-@Disabled
+@Autonomous(name = "RED Foundation Auton road runner", group = "auton")
 public class RedFoundationAuton extends LinearOpMode
 {
 
@@ -29,7 +28,7 @@ public class RedFoundationAuton extends LinearOpMode
 
         bot.followTrajectorySync(bot.trajectoryBuilder()
                 .reverse()
-        .splineTo(new Pose2d(45,-34,Math.toRadians(270)))
+        .splineTo(new Pose2d(40,-34,Math.toRadians(270)))
                 .build());
 
         sleep(500);
@@ -45,9 +44,13 @@ public class RedFoundationAuton extends LinearOpMode
 
         sleep(100);
 
-        bot.followTrajectorySync(bot.trajectoryBuilder() //turn foundation
-        .splineTo(new Pose2d(50,-60,Math.toRadians(0)))
-                .build());
+//        bot.followTrajectorySync(bot.trajectoryBuilder() //turn foundation
+//        .splineTo(new Pose2d(50,-60,Math.toRadians(180)))
+//                .build());
+        for (int i = 0; i < 10; i++)
+        {
+            bot.turnRealtiveSync(180);
+        }
 
         bot.setFondationGrabber(0);
         //DriveFieldRealtiveDistance(.5, 0, 1);
@@ -56,11 +59,16 @@ public class RedFoundationAuton extends LinearOpMode
 
 
         bot.followTrajectorySync(bot.trajectoryBuilder()
-        .strafeLeft(20)
-        .back(36)
+                .back(24)
         .build());
 
-        sleep(500);
+       bot.followTrajectorySync(bot.trajectoryBuilder()
+       .strafeLeft(20)
+       .build());
+
+       bot.followTrajectorySync(bot.trajectoryBuilder()
+       .forward(36)
+       .build());
 
         bot.writeFile(bot.GYRO_ANGLE_FILE_NAME, bot.getIMUAngle());
 

@@ -7,15 +7,14 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547;
-import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.SampleMecanumDriveBase;
-import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.SampleMecanumDriveREV;
 import org.firstinspires.ftc.teamcode.SkyStoneLoc;
+import org.opencv.core.Mat;
 
 /**
  * Created by Drew from 6547 on 9/27/2019.
  */
-@Autonomous(name = "RED single skystone Road Runner", group = "auton")
-public class RedSingleSkyStoneRoadRunne extends LinearOpMode {
+@Autonomous(name = "RED double skystone Road Runner", group = "auton")
+public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
 
     public void runOpMode()
     {
@@ -78,7 +77,7 @@ public class RedSingleSkyStoneRoadRunne extends LinearOpMode {
         .splineTo(new Pose2d(0,-45,Math.toRadians(180)))
                 .build());
 
-        bot.turnRealtiveSync(180);
+        //bot.turnRealtiveSync(Math.toRadians(180));
 
         bot.followTrajectorySync(bot.trajectoryBuilder()
         .back(12)
@@ -87,9 +86,68 @@ public class RedSingleSkyStoneRoadRunne extends LinearOpMode {
         //bot.turnRealtiveSync(180);
 
 
-        bot.followTrajectorySync(bot.trajectoryBuilder()
+       bot.followTrajectorySync(bot.trajectoryBuilder()
         .forward(18)
         .build());
+
+
+        bot.followTrajectorySync(bot.trajectoryBuilder()
+        .splineTo(new Pose2d(-30,-42, Math.toRadians(180)))
+        .build());
+
+        if (bot.skyStoneLoc == SkyStoneLoc.RIGHT)
+        {
+            bot.followTrajectorySync(bot.trajectoryBuilder()
+            .forward(5)
+            .build());
+            bot.followTrajectorySync(bot.trajectoryBuilder()
+            .strafeRight(20)
+                    .build());
+        }
+        else if (bot.skyStoneLoc == SkyStoneLoc.CENTER)
+        {
+            bot.followTrajectorySync(bot.trajectoryBuilder()
+            .forward(13)
+            .build());
+
+            bot.followTrajectorySync(bot.trajectoryBuilder()
+            .strafeRight(20)
+            .build());
+        }
+        else if (bot.skyStoneLoc == SkyStoneLoc.LEFT)
+        {
+            bot.followTrajectorySync(bot.trajectoryBuilder()
+                    .forward(20)
+                    .build());
+
+            bot.followTrajectorySync(bot.trajectoryBuilder()
+                    .strafeRight(20)
+                    .build());
+        }
+        bot.followTrajectorySync(bot.trajectoryBuilder()
+        .forward(6)
+        .build());
+
+        bot.followTrajectorySync(bot.trajectoryBuilder()
+                .reverse()
+        .splineTo(new Pose2d(-15,-41, Math.toRadians(180)))
+                .build());
+
+//        bot.turnRealtiveSync(180);
+//        bot.turnRealtiveSync(180);
+//        bot.turnRealtiveSync(180);
+
+        bot.followTrajectorySync(bot.trajectoryBuilder()
+                .back(36)
+                .build());
+
+        bot.followTrajectorySync(bot.trajectoryBuilder()
+        .forward(20)
+        .build());
+
+
+
+
 
 //        sleep(1000);
 //        bot.followTrajectorySync(bot.trajectoryBuilder()
