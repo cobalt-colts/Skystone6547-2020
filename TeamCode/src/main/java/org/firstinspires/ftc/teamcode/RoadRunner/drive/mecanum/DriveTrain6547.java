@@ -922,23 +922,24 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
     }
     public void turnRealtiveSync(double angle)
     {
-        double target=angle-getIMUAngle();
-        target-=90;
-        if (Math.abs(target)>180) //make the angle difference less then 180 to remove unnecessary turning
+        double target=angle-Math.toRadians(getIMUAngle());
+        target-=Math.toRadians(90);
+        if (Math.abs(target)>Math.toRadians(180)) //make the angle difference less then 180 to remove unnecessary turning
         {
-            target+=(target>=0) ? -360 : 360;
+            target+=(target>=0) ? Math.toRadians(-360) : Math.toRadians(360);
         }
         opMode.telemetry.log().add("inputted Angle: " + angle + " , turning to: " + target);
         turnSync(target);
     }
     public void turnRealtive(double angle)
     {
-        double target=angle-getIMUAngle();
-        if (Math.abs(target)>180) //make the angle difference less then 180 to remove unnecessary turning
+        double target=angle-Math.toRadians(getIMUAngle());
+        target-=Math.toRadians(90);
+        if (Math.abs(target)>Math.toRadians(180)) //make the angle difference less then 180 to remove unnecessary turning
         {
-            target+=(target>=0) ? -360 : 360;
+            target+=(target>=0) ? Math.toRadians(-360) : Math.toRadians(360);
         }
-        angle = Math.toRadians(angle);
+        opMode.telemetry.log().add("inputted Angle: " + angle + " , turning to: " + target);
         turn(target);
     }
     public void turnLeft(double power) {

@@ -97,7 +97,6 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
     }
 
     public void turnSync(double angle) {
-        angle = Math.toRadians(angle);
         turn(angle);
         waitForIdle();
     }

@@ -69,14 +69,13 @@ public class BlueDoubleSkyStoneRoadRunner extends LinearOpMode {
         //sleep(250);
 
         //sleep(.25);
-        //bot.turnSync(-90);
+
 
         bot.followTrajectorySync(bot.trajectoryBuilder()
                 .reverse()
                 .splineTo(new Pose2d(0,45,Math.toRadians(180)))
                 .build());
 
-        //bot.turnRealtiveSync(180)
 
         bot.followTrajectorySync(bot.trajectoryBuilder()
                 .back(12)
@@ -128,9 +127,6 @@ public class BlueDoubleSkyStoneRoadRunner extends LinearOpMode {
                 .splineTo(new Pose2d(-15,40, Math.toRadians(180)))
                 .build());
 
-//        bot.turnRealtiveSync(180);
-//        bot.turnRealtiveSync(180);
-//        bot.turnRealtiveSync(180);
 
         bot.followTrajectorySync(bot.trajectoryBuilder()
                 .back(28)
@@ -146,13 +142,11 @@ public class BlueDoubleSkyStoneRoadRunner extends LinearOpMode {
 //        .forward(80)
 //                .build());
 //
-//        bot.turnRealtiveSync(270);
 
 //        bot.followTrajectorySync(bot.trajectoryBuilder()
 //        .forward(72)
 //        .build());
 
-        //bot.turnSync(90);
         //setGrabber(1);
 
         bot.writeFile(bot.GYRO_ANGLE_FILE_NAME, bot.getIMUAngle());

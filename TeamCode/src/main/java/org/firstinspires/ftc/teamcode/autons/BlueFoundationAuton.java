@@ -45,7 +45,7 @@ public class BlueFoundationAuton extends LinearOpMode
 
         for (int i = 0; i < 10; i++)
         {
-            bot.turnRealtiveSync(0);
+            bot.turnRealtiveSync(Math.toRadians(0));
         }
 
         bot.setFondationGrabber(0);

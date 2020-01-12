@@ -70,8 +70,6 @@ public class RedSingleSkyStoneRoadRunne extends LinearOpMode {
 
         //sleep(250);
 
-        //sleep(.25);
-        //bot.turnSync(-90);
 
         bot.followTrajectorySync(bot.trajectoryBuilder()
                 .reverse()
@@ -84,26 +82,10 @@ public class RedSingleSkyStoneRoadRunne extends LinearOpMode {
         .back(12)
         .build());
 
-        //bot.turnRealtiveSync(180);
-
 
         bot.followTrajectorySync(bot.trajectoryBuilder()
         .forward(18)
         .build());
-
-//        sleep(1000);
-//        bot.followTrajectorySync(bot.trajectoryBuilder()
-//        .forward(80)
-//                .build());
-//
-//        bot.turnRealtiveSync(270);
-
-//        bot.followTrajectorySync(bot.trajectoryBuilder()
-//        .forward(72)
-//        .build());
-
-        //bot.turnSync(90);
-        //setGrabber(1);
 
         bot.writeFile(bot.GYRO_ANGLE_FILE_NAME, bot.getIMUAngle());
 
