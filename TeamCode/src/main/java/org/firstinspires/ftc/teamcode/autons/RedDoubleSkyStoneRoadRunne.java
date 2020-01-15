@@ -70,20 +70,17 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
         //sleep(250);
 
         //sleep(.25);
-        //bot.turnSync(-90);
 
         bot.followTrajectorySync(bot.trajectoryBuilder()
                 .reverse()
         .splineTo(new Pose2d(0,-45,Math.toRadians(180)))
                 .build());
 
-        //bot.turnRealtiveSync(Math.toRadians(180));
 
         bot.followTrajectorySync(bot.trajectoryBuilder()
         .back(12)
         .build());
 
-        //bot.turnRealtiveSync(180);
 
 
        bot.followTrajectorySync(bot.trajectoryBuilder()
@@ -133,10 +130,6 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
         .splineTo(new Pose2d(-15,-42, Math.toRadians(180)))
                 .build());
 
-//        bot.turnRealtiveSync(180);
-//        bot.turnRealtiveSync(180);
-//        bot.turnRealtiveSync(180);
-
         bot.followTrajectorySync(bot.trajectoryBuilder()
                 .back(36)
                 .build());
@@ -145,22 +138,6 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
         .forward(20)
         .build());
 
-
-
-
-
-//        sleep(1000);
-//        bot.followTrajectorySync(bot.trajectoryBuilder()
-//        .forward(80)
-//                .build());
-//
-//        bot.turnRealtiveSync(270);
-
-//        bot.followTrajectorySync(bot.trajectoryBuilder()
-//        .forward(72)
-//        .build());
-
-        //bot.turnSync(90);
         //setGrabber(1);
 
         bot.writeFile(bot.GYRO_ANGLE_FILE_NAME, bot.getIMUAngle());

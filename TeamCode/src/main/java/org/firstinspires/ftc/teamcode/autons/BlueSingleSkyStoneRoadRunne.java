@@ -70,14 +70,11 @@ public class BlueSingleSkyStoneRoadRunne extends LinearOpMode {
         //sleep(250);
 
         //sleep(.25);
-        //bot.turnSync(-90);
 
         bot.followTrajectorySync(bot.trajectoryBuilder()
                 .reverse()
                 .splineTo(new Pose2d(0,45,Math.toRadians(180)))
                 .build());
-
-        //bot.turnRealtiveSync(180)
 
         bot.followTrajectorySync(bot.trajectoryBuilder()
                 .back(12)
@@ -86,20 +83,6 @@ public class BlueSingleSkyStoneRoadRunne extends LinearOpMode {
         bot.followTrajectorySync(bot.trajectoryBuilder()
         .forward(14)
         .build());
-
-//        sleep(1000);
-//        bot.followTrajectorySync(bot.trajectoryBuilder()
-//        .forward(80)
-//                .build());
-//
-//        bot.turnRealtiveSync(270);
-
-//        bot.followTrajectorySync(bot.trajectoryBuilder()
-//        .forward(72)
-//        .build());
-
-        //bot.turnSync(90);
-        //setGrabber(1);
 
         bot.writeFile(bot.GYRO_ANGLE_FILE_NAME, bot.getIMUAngle());
 

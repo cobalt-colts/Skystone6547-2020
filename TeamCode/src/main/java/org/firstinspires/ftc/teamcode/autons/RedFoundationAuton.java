@@ -49,7 +49,7 @@ public class RedFoundationAuton extends LinearOpMode
 //                .build());
         for (int i = 0; i < 10; i++)
         {
-            bot.turnRealtiveSync(180);
+            bot.turnRealtiveSync(Math.toRadians(180));
         }
 
         bot.setFondationGrabber(0);
