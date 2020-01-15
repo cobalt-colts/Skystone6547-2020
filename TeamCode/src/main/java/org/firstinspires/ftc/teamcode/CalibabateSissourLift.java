@@ -18,8 +18,8 @@ public class CalibabateSissourLift extends LinearOpMode {
 
         while (opModeIsActive())
         {
-            bot.lift.setPower(gamepad1.left_stick_y);
-            bot.liftLeft.setPower(gamepad1.right_stick_y);
+            bot.lift.setPower(gamepad1.right_stick_y);
+            bot.liftLeft.setPower(gamepad1.left_stick_y);
         }
     }
 }

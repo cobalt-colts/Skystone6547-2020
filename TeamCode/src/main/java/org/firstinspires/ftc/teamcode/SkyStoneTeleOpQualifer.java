@@ -72,9 +72,9 @@ public class SkyStoneTeleOpQualifer extends LinearOpMode {
 
             bot.updateGamepads();
 
-            if (bot.y1.onPress()) speedModifer=.3;
-            if (bot.b1.onPress() && !bot.start1.isPressed()) speedModifer=.7;
-            if (bot.a1.onPress() && !bot.start1.isPressed()) speedModifer=1;
+            if (bot.y1.onPress()) speedModifer=.30;
+            if (bot.b1.onPress() && !bot.start1.isPressed()) speedModifer=.70;
+            if (bot.a1.onPress() && !bot.start1.isPressed()) speedModifer=1.0;
 
             if (bot.x1.onPress()) feildRealtive.toggle(); //toggle field realtive
 
@@ -155,11 +155,11 @@ public class SkyStoneTeleOpQualifer extends LinearOpMode {
 //            }
             //bot.setLiftPower(gamepad2.left_stick_y); //move lift
 
-            bot.lift.setPower(gamepad2.left_stick_y*.5);
-            bot.liftLeft.setPower(gamepad2.right_stick_y*.5);
+            bot.lift.setPower(gamepad2.right_stick_y*.5);
+            bot.liftLeft.setPower(gamepad2.left_stick_y*.5);
 
-            if (bot.rightBumper2.isPressed()) bot.updateServo(bot.grabberSlide, 1, slideSpeed, 1, .80);
-            if (bot.leftBumper2.isPressed()) bot.updateServo(bot.grabberSlide, -1, slideSpeed, 1, .80);
+            if (bot.rightBumper2.isPressed()) bot.updateServo(bot.grabberSlide, 1, slideSpeed, .95, .80);
+            if (bot.leftBumper2.isPressed()) bot.updateServo(bot.grabberSlide, -1, slideSpeed, .95, .80);
 
             bot.updateServo(bot.grabberSlide, gamepad2.right_stick_x, slideSpeed, 1, .80);
 
@@ -170,6 +170,8 @@ public class SkyStoneTeleOpQualifer extends LinearOpMode {
 
             telemetry.addData("IMU angle", bot.getIMUAngle());
             telemetry.addData("zero value" , bot.angleZzeroValue);
+            telemetry.addData("right lift pos", bot.lift.getCurrentPosition());
+            telemetry.addData("left lift pos", bot.liftLeft.getCurrentPosition());
             telemetry.addData("angles.firstAngle",Math.toDegrees(bot.getRawExternalHeading()));
             telemetry.addData("Grabber POS", bot.grabber.getPortNumber());
             telemetry.addData("Grabber Slider POS",bot.grabberSlide.getPosition());

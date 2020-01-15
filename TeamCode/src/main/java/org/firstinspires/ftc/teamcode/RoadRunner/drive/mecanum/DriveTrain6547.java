@@ -109,6 +109,8 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
     OpMode opMode;
     HardwareMap hardwareMap;
 
+    double liftTargetPos=0;
+
     public DriveTrain6547(OpMode _opMode) {
 
         opMode = _opMode;
@@ -346,12 +348,13 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
         if (Math.abs(gamepadStick) < .2) return;
         double posToAdd = gamepadStick*speed;
         double servoCurrentPos = grabberSlide.getPosition();
+        double targetPos = posToAdd + servoCurrentPos;
         //if ((servoCurrentPos > min && gamepadStick > 0) || (servoCurrentPos < max && gamepadStick < 0))
         //{
-            if (grabberSlide.getPosition() > max) grabberSlide.setPosition(max);
-            else if (grabberSlide.getPosition() < min) grabberSlide.setPosition(min);
+            if (targetPos > max) grabberSlide.setPosition(max);
+            else if (targetPos < min) grabberSlide.setPosition(min);
             else {
-                grabberSlide.setPosition(posToAdd + servoCurrentPos);
+                grabberSlide.setPosition(targetPos);
             }
         //}
     }
@@ -403,25 +406,51 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
     }
     public void updateLift(double gamepadStick, double speed, double leeway)
     {
-        if (Math.abs(gamepadStick) > .2) return;
-        speed*=gamepadStick;
-
-        double targetPos = lift.getCurrentPosition() + speed;
-
-        if (Math.abs(lift.getCurrentPosition()) > targetPos + leeway || lift.getCurrentPosition() < targetPos - leeway)
+        double motorSpeed = 1;
+        if (Math.abs(gamepadStick) < .2)
         {
-            lift.setPower(speed);
+            lift.setPower(0);
+            liftLeft.setPower(0);
+            speed = 0;
         }
-        if (Math.abs(liftLeft.getCurrentPosition()) > targetPos + leeway || liftLeft.getCurrentPosition() < targetPos - leeway)
+        else
         {
-            liftLeft.setPower(speed);
+            speed*=gamepadStick;
         }
+        liftTargetPos = Math.abs(lift.getCurrentPosition()) + speed;
+        int leftLiftPos = Math.abs(liftLeft.getCurrentPosition());
+        int rightLiftPos = Math.abs(lift.getCurrentPosition());
+
+        if (rightLiftPos > liftTargetPos + leeway)
+        {
+            lift.setPower(-motorSpeed);
+            opMode.telemetry.addData("RIGHT LIFT MOVING UP", "");
+        }
+        if (rightLiftPos < liftTargetPos - leeway)
+        {
+            lift.setPower(motorSpeed);
+            opMode.telemetry.addData("RIGHT LIFT MOVING DOWN", "");
+        }
+        if (leftLiftPos < liftTargetPos - leeway)
+        {
+            opMode.telemetry.addData("LEFT LIFT MOVING UP", "");
+            liftLeft.setPower(-motorSpeed);
+        }
+        if ( leftLiftPos > liftTargetPos + leeway)
+        {
+            opMode.telemetry.addData("LEFT LIFT MOVING DOWN", "");
+            liftLeft.setPower(motorSpeed);
+        }
+    }
+    public double getLiftTargetPos()
+    {
+        return liftTargetPos;
     }
     public void setFondationGrabber(double pos)
     {
         double min=0;
         double max=.55;
-        double max2 = max+.14;
+        double max2 = max+.17;
         double range = max-min;
         double range2 = max2-min;
         double pos2 = (pos*range2) +min;

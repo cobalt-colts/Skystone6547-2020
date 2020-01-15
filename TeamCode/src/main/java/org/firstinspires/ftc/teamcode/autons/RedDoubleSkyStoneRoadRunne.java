@@ -130,7 +130,7 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
 
         bot.followTrajectorySync(bot.trajectoryBuilder()
                 .reverse()
-        .splineTo(new Pose2d(-15,-41, Math.toRadians(180)))
+        .splineTo(new Pose2d(-15,-42, Math.toRadians(180)))
                 .build());
 
 //        bot.turnRealtiveSync(180);
@@ -165,7 +165,7 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
 
         bot.writeFile(bot.GYRO_ANGLE_FILE_NAME, bot.getIMUAngle());
 
-        telemetry.log().add("wrote file");
+        telemetry.log().add("wrote file at " + bot.getIMUAngle() + " degrees");
 
     }
 }
