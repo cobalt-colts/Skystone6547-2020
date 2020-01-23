@@ -21,20 +21,16 @@ public class testScissoirLiftBalence extends LinearOpMode {
         telemetry.log().add("ready to start");
         waitForStart();
 
-        bot.zeroEncoder(bot.liftLeft);
         bot.zeroEncoder(bot.lift);
 
         while (opModeIsActive())
         {
             if (bot.a1.onPress())
             {
-                bot.zeroEncoder(bot.liftLeft);
                 bot.zeroEncoder(bot.lift);
             }
-            bot.updateLift(gamepad1.left_stick_y, targetSpeed, leeway);
             telemetry.addData("target pos abs", Math.abs(bot.getLiftTargetPos()));
             telemetry.addData("right lift pos abs", Math.abs(bot.lift.getCurrentPosition()));
-            telemetry.addData("left lift pos abs", Math.abs(bot.liftLeft.getCurrentPosition()));
             telemetry.addData("speed", targetSpeed);
             telemetry.addData("leeway", leeway);
             telemetry.update();

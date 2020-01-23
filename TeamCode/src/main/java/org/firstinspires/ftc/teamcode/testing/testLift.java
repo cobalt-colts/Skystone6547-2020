@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.testing;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -19,7 +19,6 @@ public class testLift extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         DriveTrain6547 bot = new DriveTrain6547(this);
 
-        bot.zeroEncoder(bot.liftLeft);
         bot.zeroEncoder(bot.lift);
 
         telemetry.log().add("ready to start");
@@ -28,17 +27,13 @@ public class testLift extends LinearOpMode {
         while (opModeIsActive())
         {
             telemetry.addData("gamepad1 left stick", gamepad1.left_stick_y);
-            bot.updateLift(gamepad1.left_stick_y, liftSpeed, leeway);
 
             if (bot.a1.onPress())
             {
                 bot.zeroEncoder(bot.lift);
-                bot.zeroEncoder(bot.liftLeft);
             }
             telemetry.addData("right lift current pos", bot.lift.getCurrentPosition());
-            telemetry.addData("left lift current pos", bot.liftLeft.getCurrentPosition());
             telemetry.addData("right lift pow", bot.lift.getPower());
-            telemetry.addData("left lift pow", bot.liftLeft.getPower());
             telemetry.update();
         }
 

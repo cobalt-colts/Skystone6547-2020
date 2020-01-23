@@ -65,14 +65,16 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
 
     ElapsedTime runtime = new ElapsedTime();
 
-    public final String GYRO_ANGLE_FILE_NAME="gyroAngle.json";
+    public final String GYRO_ANGLE_FILE_NAME="gyroAngle.txt";
+    public final String LIFT_MAX_FILE_NAME="liftMax.txt";
+    public final String GRABBER_MAX_FILE_NAME = "grabberMax.txt";
+    public final String GRABBER_MIN_FILE_NAME = "grabberMin.txt";
 
     double deltaX=0;
     double deltaY=0;
     double oldDist=0;
 
     public DcMotorEx lift;
-    public DcMotorEx liftLeft;
     public DcMotorEx intake;
 
     Servo fondationGrabber;
@@ -89,8 +91,10 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
 
     int[] levels = new int[] {700,3000}; //linear slide levels, 0 is bottom, 1 is to drop the skystone on top of the fondation, 2 is on top on the first stone, 3 is on top of the second stone, and so one.
 
-    public final int liftMax = 7278;
-    public final int liftMin = 50;
+    public int liftMax = 10000;
+    public int liftMin = 0;
+    public double grabberMin = 0;
+    public double grabberMax = 1;
 
     double lastPosX;
     double lastPosY;
@@ -161,7 +165,6 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
         distanceSensorX = hardwareMap.get(Rev2mDistanceSensor.class, "d boi");
         distanceSensorY = hardwareMap.get(Rev2mDistanceSensor.class, "d boi1");
         lift =  hardwareMap.get(DcMotorEx.class, "lift");
-        liftLeft = hardwareMap.get(DcMotorEx.class, "lift left");
         intake = hardwareMap.get(DcMotorEx.class, "intake");
         fondationGrabber = hardwareMap.get(Servo.class, "f grabber");
         fondationGrabber2 = hardwareMap.get(Servo.class, "f grabber1");
@@ -174,7 +177,6 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
         opMode.telemetry.log().add("Initialized hardware");
 
         lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         lift.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -197,6 +199,12 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
         screamIds.add(hardwareMap.appContext.getResources().getIdentifier("scream5",   "raw", hardwareMap.appContext.getPackageName()));
         screamIds.add(hardwareMap.appContext.getResources().getIdentifier("scream6",   "raw", hardwareMap.appContext.getPackageName()));
         screamTime.reset();
+
+        grabberMin = readFile(GRABBER_MIN_FILE_NAME);
+        grabberMax = readFile(GRABBER_MAX_FILE_NAME);
+
+        liftMax = (int) readFile(LIFT_MAX_FILE_NAME);
+        opMode.telemetry.log().add("Lift Min: " + liftMin + ", Lift Max: " + liftMax);
 
         //opMode.telemetry = dashboard.getopMode.telemetry();
     }
@@ -262,11 +270,11 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
         try {
             File file = AppUtil.getInstance().getSettingsFile(filename);
             ReadWriteFile.writeFile(file, Double.toString(number));
-            //opMode.telemetry.log().add("saved " + number + " in " + filename);
+            opMode.telemetry.log().add("saved " + number + " in " + filename);
         }
         catch(Exception e)
         {
-            // opMode.telemetry.log().add("Unable to write " + number + " in " + filename);
+             opMode.telemetry.log().add("Unable to write " + number + " in " + filename);
         }
     }
     public double readFile(String filename)
@@ -274,13 +282,13 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
         try {
             double output=0;
             File file= AppUtil.getInstance().getSettingsFile(filename);
-            output = Double.parseDouble(ReadWriteFile.readFile(file));
-            //opMode.telemetry.log().add("read " + output + " in " + filename);
+            output = Double.parseDouble(ReadWriteFile.readFile(file).trim());
+            opMode.telemetry.log().add("read " + output + " in " + filename);
             return output;
         }
         catch (Exception e)
         {
-            //opMode.telemetry.log().add("Unable to read " + filename + ", returning 0");
+            opMode.telemetry.log().add("Unable to read " + filename + ", returning 0");
             return 0;
         }
     }
@@ -308,7 +316,6 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
     public void setLiftPower(double pow)
     {
         lift.setPower(pow);
-        liftLeft.setPower(pow);
     }
     public void intake(double pow)
     {
@@ -343,10 +350,14 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
         pos+=min;
         grabberSlide.setPosition(pos);
     }
+    int i = 0;
     public void updateServo(Servo servo, double gamepadStick, double speed, double max, double min)
     {
         if (Math.abs(gamepadStick) < .2) return;
+        i++;
         double posToAdd = gamepadStick*speed;
+        opMode.telemetry.addData("changing pos by ",posToAdd);
+        opMode.telemetry.addData("iteration",i);
         double servoCurrentPos = grabberSlide.getPosition();
         double targetPos = posToAdd + servoCurrentPos;
         //if ((servoCurrentPos > min && gamepadStick > 0) || (servoCurrentPos < max && gamepadStick < 0))
@@ -404,44 +415,44 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
 
 
     }
-    public void updateLift(double gamepadStick, double speed, double leeway)
-    {
-        double motorSpeed = 1;
-        if (Math.abs(gamepadStick) < .2)
-        {
-            lift.setPower(0);
-            liftLeft.setPower(0);
-            speed = 0;
-        }
-        else
-        {
-            speed*=gamepadStick;
-        }
-        liftTargetPos = Math.abs(lift.getCurrentPosition()) + speed;
-        int leftLiftPos = Math.abs(liftLeft.getCurrentPosition());
-        int rightLiftPos = Math.abs(lift.getCurrentPosition());
-
-        if (rightLiftPos > liftTargetPos + leeway)
-        {
-            lift.setPower(-motorSpeed);
-            opMode.telemetry.addData("RIGHT LIFT MOVING UP", "");
-        }
-        if (rightLiftPos < liftTargetPos - leeway)
-        {
-            lift.setPower(motorSpeed);
-            opMode.telemetry.addData("RIGHT LIFT MOVING DOWN", "");
-        }
-        if (leftLiftPos < liftTargetPos - leeway)
-        {
-            opMode.telemetry.addData("LEFT LIFT MOVING UP", "");
-            liftLeft.setPower(-motorSpeed);
-        }
-        if ( leftLiftPos > liftTargetPos + leeway)
-        {
-            opMode.telemetry.addData("LEFT LIFT MOVING DOWN", "");
-            liftLeft.setPower(motorSpeed);
-        }
-    }
+//    public void updateLift(double gamepadStick, double speed, double leeway)
+//    {
+//        double motorSpeed = 1;
+//        if (Math.abs(gamepadStick) < .2)
+//        {
+//            lift.setPower(0);
+//            liftLeft.setPower(0);
+//            speed = 0;
+//        }
+//        else
+//        {
+//            speed*=gamepadStick;
+//        }
+//        liftTargetPos = Math.abs(lift.getCurrentPosition()) + speed;
+//        int leftLiftPos = Math.abs(liftLeft.getCurrentPosition());
+//        int rightLiftPos = Math.abs(lift.getCurrentPosition());
+//
+//        if (rightLiftPos > liftTargetPos + leeway)
+//        {
+//            lift.setPower(-motorSpeed);
+//            opMode.telemetry.addData("RIGHT LIFT MOVING UP", "");
+//        }
+//        if (rightLiftPos < liftTargetPos - leeway)
+//        {
+//            lift.setPower(motorSpeed);
+//            opMode.telemetry.addData("RIGHT LIFT MOVING DOWN", "");
+//        }
+//        if (leftLiftPos < liftTargetPos - leeway)
+//        {
+//            opMode.telemetry.addData("LEFT LIFT MOVING UP", "");
+//            liftLeft.setPower(-motorSpeed);
+//        }
+//        if ( leftLiftPos > liftTargetPos + leeway)
+//        {
+//            opMode.telemetry.addData("LEFT LIFT MOVING DOWN", "");
+//            liftLeft.setPower(motorSpeed);
+//        }
+//    }
     public double getLiftTargetPos()
     {
         return liftTargetPos;

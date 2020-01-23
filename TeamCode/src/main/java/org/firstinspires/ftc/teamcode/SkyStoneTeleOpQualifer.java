@@ -19,8 +19,6 @@ This is the tele-op we use to drive the robot
 @TeleOp(name = "SkyStone Tele-op Qualifier")
 public class SkyStoneTeleOpQualifer extends LinearOpMode {
 
-    public static double grabberMin = 0;
-    public static double grabberMax = 1;
     public static double slideSpeed = .004;
 
     public static double speedModifer=.7; //lowers the speed so it's easier to drive
@@ -37,7 +35,7 @@ public class SkyStoneTeleOpQualifer extends LinearOpMode {
 
     //edit the array to change the foundation grabber position(s)
     ToggleDouble fondationGrabberPos = new ToggleDouble(new double[] {0,0.9},0);
-    ToggleDouble grabberToggle = new ToggleDouble(new double[] {grabberMin, grabberMax}, 0);
+    ToggleDouble grabberToggle = new ToggleDouble(new double[] {0, .4}, 0);
 
     DriveTrain6547 bot;
 
@@ -57,12 +55,13 @@ public class SkyStoneTeleOpQualifer extends LinearOpMode {
 
         telemetry.log().add("Ready to start");
         telemetry.log().add("gyro angle: " + bot.getIMUAngle());
+        telemetry.log().add("lift max: " + bot.liftMax);
 
         waitForStart();
 
         while (opModeIsActive()) {
 
-            grabberToggle = new ToggleDouble(new double[] {grabberMin, grabberMax}, grabberToggle.getToggleIndex());
+            //grabberToggle = new ToggleDouble(new double[] {bot.grabberMin, bot.grabberMax}, grabberToggle.getToggleIndex());
 //            fondationGrabberPos.changeValue(FoundationGrabberMax,1);
 //            fondationGrabberPos.changeValue(FoundationGrabberMin,0);
 //            frontGrabberPos.changeValue(FrontGrabberMin,0);
@@ -155,13 +154,24 @@ public class SkyStoneTeleOpQualifer extends LinearOpMode {
 //            }
             //bot.setLiftPower(gamepad2.left_stick_y); //move lift
 
-            bot.lift.setPower(gamepad2.right_stick_y*.5);
-            bot.liftLeft.setPower(gamepad2.left_stick_y*.5);
-
-            if (bot.rightBumper2.isPressed()) bot.updateServo(bot.grabberSlide, 1, slideSpeed, .95, .80);
-            if (bot.leftBumper2.isPressed()) bot.updateServo(bot.grabberSlide, -1, slideSpeed, .95, .80);
-
-            bot.updateServo(bot.grabberSlide, gamepad2.right_stick_x, slideSpeed, 1, .80);
+            double liftSpeed = -gamepad2.left_stick_y;
+            //bot.lift.setPower(gamepad2.right_stick_y);
+            if (liftSpeed > .2 && bot.lift.getCurrentPosition() < bot.liftMax)
+            {
+                bot.setLiftPower(liftSpeed);
+            }
+            else if (liftSpeed < -.2)
+            {
+                bot.setLiftPower(liftSpeed);
+            }
+            else
+            {
+                bot.setLiftPower(0);
+            }
+//            if (bot.rightBumper2.isPressed()) bot.updateServo(bot.grabberSlide, 1, slideSpeed, bot.grabberMax, bot.grabberMin);
+//            if (bot.leftBumper2.isPressed()) bot.updateServo(bot.grabberSlide, -1, slideSpeed, bot.grabberMax, bot.grabberMin);
+            if (bot.rightBumper2.onPress()) bot.grabberSlide.setPosition(bot.grabberMax);
+            if (bot.leftBumper2.onPress()) bot.grabberSlide.setPosition(bot.grabberMin);
 
             if (gamepad1.right_bumper && gamepad1.left_bumper) //calibrate gyro
             {
@@ -170,15 +180,10 @@ public class SkyStoneTeleOpQualifer extends LinearOpMode {
 
             telemetry.addData("IMU angle", bot.getIMUAngle());
             telemetry.addData("zero value" , bot.angleZzeroValue);
-            telemetry.addData("right lift pos", bot.lift.getCurrentPosition());
-            telemetry.addData("left lift pos", bot.liftLeft.getCurrentPosition());
             telemetry.addData("angles.firstAngle",Math.toDegrees(bot.getRawExternalHeading()));
+            telemetry.addData("lift pos", bot.lift.getCurrentPosition());
             telemetry.addData("Grabber POS", bot.grabber.getPortNumber());
             telemetry.addData("Grabber Slider POS",bot.grabberSlide.getPosition());
-            telemetry.addData("Left Back current Pos", bot.leftRear.getCurrentPosition());
-            telemetry.addData("Left Front current Pos", bot.leftFront.getCurrentPosition());
-            telemetry.addData("Right Front current Pos", bot.rightFront.getCurrentPosition());
-            telemetry.addData("Right Back current Pos", bot.rightRear.getCurrentPosition());
             telemetry.addData("A is full speed, B is half speed, Y is quarter speed","");
             telemetry.addData("Field Realitive Driving ", feildRealtive.output());
             // telemetry.addData("Left Trigger", gamepad1.left_trigger);
