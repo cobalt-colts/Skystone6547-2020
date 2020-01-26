@@ -57,7 +57,7 @@ import static org.firstinspires.ftc.teamcode.RoadRunner.drive.DriveConstants.get
  * Simple mecanum drive hardware implementation for REV hardware. If your hardware configuration
  * satisfies the requirements, SampleMecanumDriveREVOptimized is highly recommended.
  */
-public class DriveTrain6547 extends SampleMecanumDriveBase {
+public class DriveTrain6547 extends MecanumDriveBase6547 {
     final double encoderTicksPerRotation=205;
     final double circumferenceOfWheel=12.566370614359172;
 
@@ -205,6 +205,9 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
 
         liftMax = (int) readFile(LIFT_MAX_FILE_NAME);
         opMode.telemetry.log().add("Lift Min: " + liftMin + ", Lift Max: " + liftMax);
+
+        setAutonLiftTargetPos(lift.getCurrentPosition());
+        setRunLift(false);
 
         //opMode.telemetry = dashboard.getopMode.telemetry();
     }
@@ -414,6 +417,26 @@ public class DriveTrain6547 extends SampleMecanumDriveBase {
         }
 
 
+    }
+
+    @Override
+    public void runAtAllTimes()
+    {
+        if (runLift) setLiftToTargetPos(AutonLiftTargetPos, 100);
+    }
+
+    public void setLiftToTargetPos(int targetPos, int leaway)
+    {
+        int liftPos = lift.getCurrentPosition();
+        if (liftPos > targetPos + leaway)
+        {
+            lift.setPower(-1);
+        }
+        else if (liftPos < targetPos-leaway)
+        {
+            lift.setPower(1);
+        }
+        else lift.setPower(0);
     }
 //    public void updateLift(double gamepadStick, double speed, double leeway)
 //    {

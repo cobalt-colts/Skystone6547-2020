@@ -19,8 +19,6 @@ public class Tetris extends LinearOpMode {
     //TODO : make the screen size customizable, (8x20 might be a bt big)
     //TODO : add a highscore function
 
-
-
     boolean debugMode = false; //debug mode, can be enabled in program by pushing B and Y before the start button is pressed
     String debugModeText = "";
     int rotationErrorCounter = 0; //added this for fun

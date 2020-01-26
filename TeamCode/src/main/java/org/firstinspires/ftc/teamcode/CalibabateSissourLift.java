@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547;
 
-@TeleOp(name = "Calibate Sissour Lift")
+@TeleOp(name = "Calibate Sissour Lift", group = "cali")
 public class CalibabateSissourLift extends LinearOpMode {
 
     @Override

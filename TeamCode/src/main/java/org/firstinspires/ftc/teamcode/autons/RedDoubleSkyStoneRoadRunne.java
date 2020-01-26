@@ -20,6 +20,9 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
     {
         DriveTrain6547 bot = new DriveTrain6547(this);
 
+        bot.setAutonLiftTargetPos(bot.lift.getCurrentPosition());
+        bot.setRunLift(true);
+
         bot.setPoseEstimate(new Pose2d(-36, -62,Math.toRadians(90)));
 
         telemetry.log().add("Ready to start");

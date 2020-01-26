@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.testing;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@TeleOp(name = "odo my odo")
+@TeleOp(name = "odo my odo", group = "odo")
+@Disabled
 public class TestZaOdometryWorldo extends LinearOpMode {
 
     DcMotor odo;

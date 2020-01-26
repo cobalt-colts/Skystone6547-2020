@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547;
 
-@TeleOp(name = "Calibrate Horizontal Servo Slide")
+@TeleOp(name = "Calibrate Horizontal Servo Slide", group = "cali")
 @Config
 public class CalibrateSLider extends LinearOpMode {
 

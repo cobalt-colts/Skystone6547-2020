@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -16,7 +17,7 @@ import edu.spa.ftclib.internal.state.ToggleDouble;
 This is the tele-op we use to drive the robot
  */
 @Config
-@TeleOp(name = "SkyStone Tele-op Qualifier")
+@TeleOp(name = "SkyStone Tele-op Qualifier", group = "_teleOp")
 public class SkyStoneTeleOpQualifer extends LinearOpMode {
 
     public static double slideSpeed = .004;
@@ -41,10 +42,8 @@ public class SkyStoneTeleOpQualifer extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         bot = new DriveTrain6547(this);
-        FtcDashboard dashboard = FtcDashboard.getInstance();
-        TelemetryPacket packet = new TelemetryPacket();
         telemetry.update();
 
         bot.zeroEncoders();
@@ -168,10 +167,10 @@ public class SkyStoneTeleOpQualifer extends LinearOpMode {
             {
                 bot.setLiftPower(0);
             }
-//            if (bot.rightBumper2.isPressed()) bot.updateServo(bot.grabberSlide, 1, slideSpeed, bot.grabberMax, bot.grabberMin);
-//            if (bot.leftBumper2.isPressed()) bot.updateServo(bot.grabberSlide, -1, slideSpeed, bot.grabberMax, bot.grabberMin);
-            if (bot.rightBumper2.onPress()) bot.grabberSlide.setPosition(bot.grabberMax);
-            if (bot.leftBumper2.onPress()) bot.grabberSlide.setPosition(bot.grabberMin);
+            if (bot.rightBumper2.isPressed()) bot.updateServo(bot.grabberSlide, 1, slideSpeed, bot.grabberMax, bot.grabberMin);
+            if (bot.leftBumper2.isPressed()) bot.updateServo(bot.grabberSlide, -1, slideSpeed, bot.grabberMax, bot.grabberMin);
+//            if (bot.rightBumper2.onPress()) bot.grabberSlide.setPosition(bot.grabberMax);
+//            if (bot.leftBumper2.onPress()) bot.grabberSlide.setPosition(bot.grabberMin);
 
             if (gamepad1.right_bumper && gamepad1.left_bumper) //calibrate gyro
             {
@@ -186,12 +185,6 @@ public class SkyStoneTeleOpQualifer extends LinearOpMode {
             telemetry.addData("Grabber Slider POS",bot.grabberSlide.getPosition());
             telemetry.addData("A is full speed, B is half speed, Y is quarter speed","");
             telemetry.addData("Field Realitive Driving ", feildRealtive.output());
-            // telemetry.addData("Left Trigger", gamepad1.left_trigger);
-            // telemetry.addData("Right Trigger", gamepad1.right_trigger);
-            // telemetry.addData("Left Front Power",leftFrontPower);
-            // telemetry.addData("Right Front Power",rightFrontPower);
-            // telemetry.addData("Left Back Power",leftBackPower);
-            // telemetry.addData("Right Back Power",rightBackPower);
             telemetry.addData("Speed modifer", speedModifer);
             telemetry.update();
         }
