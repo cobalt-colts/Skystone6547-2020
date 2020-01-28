@@ -22,12 +22,12 @@ public class CalibabateSissourLift extends LinearOpMode {
         {
             bot.updateGamepads();
             bot.lift.setPower(-gamepad1.right_stick_y);
-            if (bot.a1.onPress())
+            if (bot.a1.onPress()) //if A is pressed, zero lift
             {
                 bot.zeroEncoder(bot.lift);
                 telemetry.log().add("Zeroed Lift");
             }
-            if (bot.b1.onPress())
+            if (bot.b1.onPress()) //if B is pressed, write the max
             {
                 bot.writeFile(bot.LIFT_MAX_FILE_NAME,bot.lift.getCurrentPosition());
             }

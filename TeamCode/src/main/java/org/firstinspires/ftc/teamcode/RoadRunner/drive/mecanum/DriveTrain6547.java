@@ -58,8 +58,8 @@ import static org.firstinspires.ftc.teamcode.RoadRunner.drive.DriveConstants.get
  * satisfies the requirements, SampleMecanumDriveREVOptimized is highly recommended.
  */
 public class DriveTrain6547 extends MecanumDriveBase6547 {
-    final double encoderTicksPerRotation=205;
-    final double circumferenceOfWheel=12.566370614359172;
+    final double encoderTicksPerRotation=205; //not used
+    final double circumferenceOfWheel=12.566370614359172; //not used
 
     public static double angleZzeroValue=0;
 
@@ -69,10 +69,6 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
     public final String LIFT_MAX_FILE_NAME="liftMax.txt";
     public final String GRABBER_MAX_FILE_NAME = "grabberMax.txt";
     public final String GRABBER_MIN_FILE_NAME = "grabberMin.txt";
-
-    double deltaX=0;
-    double deltaY=0;
-    double oldDist=0;
 
     public DcMotorEx lift;
     public DcMotorEx intake;
@@ -102,9 +98,9 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
     Rev2mDistanceSensor distanceSensorX;
     Rev2mDistanceSensor distanceSensorY;
 
-    List<Integer> screamIds = new ArrayList<>();
+    List<Integer> screamIds = new ArrayList<>();//screaming robot (don't put in notebook)
 
-    ElapsedTime screamTime = new ElapsedTime();
+    ElapsedTime screamTime = new ElapsedTime(); //makes the robot scream (don't put in notebook)
 
     public DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private List<DcMotorEx> motors;
@@ -123,7 +119,7 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
       //  LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
         // TODO: adjust the names of the following hardware devices to match your configuration
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu = hardwareMap.get(BNO055IMU.class, "imu"); //get gyro
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
@@ -182,7 +178,7 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
 
         opMode.telemetry.log().add("set hardware");
 
-        setFondationGrabber(0);
+        setFondationGrabber(0); //open foundation grabber
 
         opMode.telemetry.log().add("Initialized IMU");
 
@@ -190,8 +186,9 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
 
         opMode.telemetry.log().add("Initialized gamepads");
 
-        setGrabber(0);
+        setGrabber(0); //open stone grabber
 
+        //load screaming sounds into the bot for reasons
         screamIds.add(hardwareMap.appContext.getResources().getIdentifier("scream1",   "raw", hardwareMap.appContext.getPackageName()));
         screamIds.add(hardwareMap.appContext.getResources().getIdentifier("scream2",   "raw", hardwareMap.appContext.getPackageName()));
         screamIds.add(hardwareMap.appContext.getResources().getIdentifier("scream3",   "raw", hardwareMap.appContext.getPackageName()));
@@ -200,6 +197,9 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
         screamIds.add(hardwareMap.appContext.getResources().getIdentifier("scream6",   "raw", hardwareMap.appContext.getPackageName()));
         screamTime.reset();
 
+        /*
+        read files set in calibration
+         */
         grabberMin = readFile(GRABBER_MIN_FILE_NAME);
         grabberMax = readFile(GRABBER_MAX_FILE_NAME);
 
@@ -207,11 +207,11 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
         opMode.telemetry.log().add("Lift Min: " + liftMin + ", Lift Max: " + liftMax);
 
         setAutonLiftTargetPos(lift.getCurrentPosition());
-        setRunLift(false);
+        setRunLift(false); //robot will not try to move lift unless overwise told
 
         //opMode.telemetry = dashboard.getopMode.telemetry();
     }
-    private void initGamepads()
+    private void initGamepads() //set the buttons to thier values
     {
         a1 = new Button();
         a2 = new Button();
@@ -240,7 +240,7 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
         rightTrigger1 = new Button();
         rightTrigger2 = new Button();
     }
-    public void updateGamepads()
+    public void updateGamepads() //update the gamepad buttons from HOMAR-FTC-Libary for tele-op
     {
         a1.input(opMode.gamepad1.a);
         a2.input(opMode.gamepad2.a);
@@ -420,12 +420,13 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
     }
 
     @Override
-    public void runAtAllTimes()
+    public void runAtAllTimes() //anything in here runs at all times during auton because
     {
-        if (runLift) setLiftToTargetPos(AutonLiftTargetPos, 100);
+
+        if (runLift) setLiftToTargetPos(AutonLiftTargetPos, 50);
     }
 
-    public void setLiftToTargetPos(int targetPos, int leaway)
+    public void setLiftToTargetPos(int targetPos, int leaway) //sets lift to target pos.  No while loops so it can be used in tele-op or a state machine
     {
         int liftPos = lift.getCurrentPosition();
         if (liftPos > targetPos + leaway)
@@ -480,7 +481,7 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
     {
         return liftTargetPos;
     }
-    public void setFondationGrabber(double pos)
+    public void setFondationGrabber(double pos) //take a pos from 0-1 and convert it into the mins and max areas of the servo
     {
         double min=0;
         double max=.55;
@@ -516,7 +517,7 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
         if (extendBeyond180) return currentAngle;
         else return getIMUAngle();
     }
-    public boolean isSkystone(ColorSensor colorSensorToBeUsed)
+    public boolean isSkystone(ColorSensor colorSensorToBeUsed) //checks if color sensor sees a skystone
     {
         //return colorSensorToBeUsed.red() <65;
         return (colorSensorToBeUsed.red()*colorSensorToBeUsed.green()) / Math.pow(colorSensorToBeUsed.blue(),2) < 3;
@@ -647,11 +648,14 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
         // rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         // rightRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
+    @Deprecated
     public void TurnPID(double angle, double seconds)
     {
         TurnPID(angle, seconds, 1);
     }
+    @Deprecated
     public void TurnPID(double angle, double seconds, double motorPowerModifer) { TurnPID(angle, seconds, motorPowerModifer,   new MiniPID(.004, 0, .036));}
+    @Deprecated
     public void TurnPID(double angle, double seconds, double motorPowerModifer, MiniPID miniPID) //use PID to turn the robot
     {
         leftRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -707,6 +711,7 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
         motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         return motor;
     }
+    @Deprecated
     public void runMotor(DcMotor motor, double pow, int target) throws InterruptedException, ExecutionException
     {
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); //zero encoder
@@ -743,6 +748,7 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
             opMode.telemetry.log().add("out of time");
         }
     }
+    @Deprecated
     public double averageDrivetrainEncoder() //average the position from the drive train motors OLD
     {
         double motorPosition=0;
@@ -753,7 +759,9 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
         if (Double.isNaN(motorPosition/4)) return 0;
         else return Math.abs(motorPosition/4);
     }
+    @Deprecated
     public void DriveToPointPID(double x, double y, double seconds) { DriveToPointPID(x,y,seconds,-90);}
+    @Deprecated
     public void DriveToPointPID(double x, double y, double seconds,double offset)
     {
         opMode.telemetry.log().add("Driving PID");
@@ -799,7 +807,9 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
         }
         stopRobot();
     }
+    @Deprecated
     public void strafeToDistanceXPID(double inch, double time) {strafeToDistanceXPID(inch,time,-90);}
+    @Deprecated
     public void strafeToDistanceXPID(double inch, double time, double offset)
     {
         MiniPID miniPID = new MiniPID(.03, 0.000, 0.00);
@@ -824,7 +834,9 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
         }
 
     }
+    @Deprecated
     public void strafeToDistanceYPID(double inch, double gap) { strafeToDistanceYPID(inch,gap,-90);}
+    @Deprecated
     public void strafeToDistanceYPID(double inch, double gap, double offset)
     {
         MiniPID miniPID = new MiniPID(.03, 0.00, 0.0);
@@ -849,6 +861,7 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
         }
         stopRobot();
     }
+    @Deprecated
     public double getRobotPositionX()
     {
         double distance=(distanceSensorX.getDistance(DistanceUnit.INCH));
@@ -865,6 +878,7 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
         lastPosX=distance;
         return distance;
     }
+    @Deprecated
     public double getRobotPositionY()
     {
         double distance=distanceSensorY.getDistance(DistanceUnit.INCH);
@@ -881,6 +895,7 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
         lastPosY=distance;
         return distance;
     }
+    @Deprecated
     double getSlope(double x1, double y1, double x2, double y2)
     {
         return (y1-y2)/(x1-x2);
@@ -942,6 +957,7 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
         rightRear.setPower(RR);
         rightFront.setPower(RF);
     }
+    //set motor powers but it's field realtive.  Unused
     public void setMotorPowers(double v,double v1, double v2, double v3, double angle)
     {
         angle-=getIMUAngle();
@@ -959,6 +975,9 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
         return imu.getAngularOrientation().firstAngle;
     }
 
+    /*
+    test road runner methods, currently not used
+     */
     public void driveForward(double inches)
     {
         followTrajectorySync(trajectoryBuilder()
@@ -983,6 +1002,9 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
         .strafeRight(inches)
         .build());
     }
+    /*
+    Road Runner turn with consideration of the gyro angle
+     */
     public void turnRealtiveSync(double angle)
     {
         double target=angle-Math.toRadians(getIMUAngle());

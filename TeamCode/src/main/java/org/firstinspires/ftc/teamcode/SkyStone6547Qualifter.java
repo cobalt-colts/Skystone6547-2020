@@ -399,7 +399,7 @@ public class SkyStone6547Qualifter{
     {
         double min=0;
         double max=.55;
-        double max2 = max+.14;
+        double max2 = max+.18;
         double range = max-min;
         double range2 = max2-min;
         double pos2 = (pos*range2) +min;

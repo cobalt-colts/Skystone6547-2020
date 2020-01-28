@@ -20,7 +20,7 @@ This is the tele-op we use to drive the robot
 @TeleOp(name = "SkyStone Tele-op Qualifier", group = "_teleOp")
 public class SkyStoneTeleOpQualifer extends LinearOpMode {
 
-    public static double slideSpeed = .004;
+    public static double slideSpeed = .004; //speed of horizontal slide in servo position units
 
     public static double speedModifer=.7; //lowers the speed so it's easier to drive
 
@@ -35,14 +35,14 @@ public class SkyStoneTeleOpQualifer extends LinearOpMode {
     ToggleBoolean feildRealtive = new ToggleBoolean(true);
 
     //edit the array to change the foundation grabber position(s)
-    ToggleDouble fondationGrabberPos = new ToggleDouble(new double[] {0,0.9},0);
+    ToggleDouble fondationGrabberPos = new ToggleDouble(new double[] {0,1},0);
     ToggleDouble grabberToggle = new ToggleDouble(new double[] {0, .4}, 0);
 
-    DriveTrain6547 bot;
+    DriveTrain6547 bot; //the robot class
 
     @Override
     public void runOpMode() {
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry()); //makes telemetry output to the FTC Dashboard
         bot = new DriveTrain6547(this);
         telemetry.update();
 
@@ -70,25 +70,29 @@ public class SkyStoneTeleOpQualifer extends LinearOpMode {
 
             bot.updateGamepads();
 
-            if (bot.y1.onPress()) speedModifer=.30;
+            /*
+            Speed Modifers
+             */
+            if (bot.x1.onPress()) speedModifer=.30;
             if (bot.b1.onPress() && !bot.start1.isPressed()) speedModifer=.70;
             if (bot.a1.onPress() && !bot.start1.isPressed()) speedModifer=1.0;
 
-            if (bot.x1.onPress()) feildRealtive.toggle(); //toggle field realtive
+            if (bot.y1.onPress()) feildRealtive.toggle(); //toggle field realtive
 
             if (feildRealtive.output()) //field realtive code
             {
-                double speed = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
-                double LeftStickAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
-                double robotAngle = Math.toRadians(bot.getIMUAngle());
-                double rightX=gamepad1.right_stick_x;
-                rightX*=.5;
+                double speed = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y); //get speed
+                double LeftStickAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4; //get angle
+                double robotAngle = Math.toRadians(bot.getIMUAngle()); //angle of robot
+                double rightX=gamepad1.right_stick_x; //rotation
+                rightX*=.5; //half rotation value for better turning
+                //offset the angle by the angle of the robot to make it field realtive
                 leftFrontPower =  speed * Math.cos(LeftStickAngle-robotAngle) + rightX;
                 rightFrontPower =  speed * Math.sin(LeftStickAngle-robotAngle) - rightX;
                 leftBackPower =  speed * Math.sin(LeftStickAngle-robotAngle) + rightX;
                 rightBackPower =  speed * Math.cos(LeftStickAngle-robotAngle) - rightX;
             }
-            else //regular drive
+            else //regular drive (different math because this is faster than sins and cosines0
             {
                 leftFrontPower=-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x;
                 rightFrontPower=-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x;
@@ -96,9 +100,15 @@ public class SkyStoneTeleOpQualifer extends LinearOpMode {
                 rightBackPower=-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x;
             }
 
+            //set motor powers based on previous calculations
             bot.setMotorPowers(leftFrontPower*speedModifer, leftBackPower*speedModifer, rightBackPower*speedModifer, rightFrontPower*speedModifer);
-            
-            if (bot.rightTrigger2.onPress())
+
+            /*
+            Toggle Intake:
+            Triggers control intake/outtake
+            Push the same trigger twice to turn the intake motors off
+             */
+            if (bot.rightTrigger2.onPress()) //intake
             {
                 if (!intake)
                 {
@@ -106,21 +116,21 @@ public class SkyStoneTeleOpQualifer extends LinearOpMode {
                     outtake = false;
                     bot.intake(1);
                 }
-                else
+                else //intake button pressed again
                 {
                     intake = false;
                     outtake = false;
                     bot.stopIntake();
                 }
             }
-            else if (bot.leftTrigger2.onPress())
+            else if (bot.leftTrigger2.onPress()) //outtake
             {
                 if (!outtake) {
                     intake = false;
                     outtake = true;
                     bot.outtake(1);
                 }
-                else
+                else //outtake button pressed again
                 {
                     intake = false;
                     outtake = false;
@@ -128,13 +138,13 @@ public class SkyStoneTeleOpQualifer extends LinearOpMode {
                 }
             }
 
-            if (bot.a2.onPress())
+            if (bot.a2.onPress()) //toggle fondation grabber
             {
                 fondationGrabberPos.toggle();
                 bot.setFondationGrabber(fondationGrabberPos.output());
             }
 
-            if (bot.b2.onPress())
+            if (bot.b2.onPress()) //toggle stone grabber
             {
                 grabberToggle.toggle();
                 bot.setGrabber(grabberToggle.output());
@@ -154,12 +164,16 @@ public class SkyStoneTeleOpQualifer extends LinearOpMode {
             //bot.setLiftPower(gamepad2.left_stick_y); //move lift
 
             double liftSpeed = -gamepad2.left_stick_y;
-            //bot.lift.setPower(gamepad2.right_stick_y);
-            if (liftSpeed > .2 && bot.lift.getCurrentPosition() < bot.liftMax)
+            /*
+            Lift controls
+            Deadzone of .2
+            has a maximum, but no minimum
+             */
+            if (liftSpeed > .2 && bot.lift.getCurrentPosition() < bot.liftMax) //if lift is below max and speed is outside of deadzone
             {
                 bot.setLiftPower(liftSpeed);
             }
-            else if (liftSpeed < -.2)
+            else if (liftSpeed < -.2) //if speed is down and outside of deadzone
             {
                 bot.setLiftPower(liftSpeed);
             }
@@ -167,16 +181,17 @@ public class SkyStoneTeleOpQualifer extends LinearOpMode {
             {
                 bot.setLiftPower(0);
             }
-            if (bot.rightBumper2.isPressed()) bot.updateServo(bot.grabberSlide, 1, slideSpeed, bot.grabberMax, bot.grabberMin);
-            if (bot.leftBumper2.isPressed()) bot.updateServo(bot.grabberSlide, -1, slideSpeed, bot.grabberMax, bot.grabberMin);
-//            if (bot.rightBumper2.onPress()) bot.grabberSlide.setPosition(bot.grabberMax);
-//            if (bot.leftBumper2.onPress()) bot.grabberSlide.setPosition(bot.grabberMin);
+            if (bot.rightBumper2.isPressed()) bot.updateServo(bot.grabberSlide, 1, slideSpeed, bot.grabberMax, bot.grabberMin); //move horizontal slide back
+            if (bot.leftBumper2.isPressed()) bot.updateServo(bot.grabberSlide, -1, slideSpeed, bot.grabberMax, bot.grabberMin); //move horizontal slide forward
 
             if (gamepad1.right_bumper && gamepad1.left_bumper) //calibrate gyro
             {
                 bot.angleZzeroValue = -Math.toDegrees(bot.getRawExternalHeading());
             }
 
+            /*
+            Telemetry
+             */
             telemetry.addData("IMU angle", bot.getIMUAngle());
             telemetry.addData("zero value" , bot.angleZzeroValue);
             telemetry.addData("angles.firstAngle",Math.toDegrees(bot.getRawExternalHeading()));

@@ -1,7 +1,9 @@
-package org.firstinspires.ftc.teamcode.OldPrograms.usedInMeet1;
+package org.firstinspires.ftc.teamcode.oldPrograms.usedInMeet1;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import org.firstinspires.ftc.teamcode.OldPrograms.usedInMeet1.SkyStone6547;
 
 /*
 This is the tele-op we use to drive the robot
@@ -148,7 +150,7 @@ public class SkyStoneTeleOp extends SkyStone6547 {
             }
 
 
-            lift.setPower(-gamepad2.left_stick_y);
+            //lift.setPower(-gamepad2.left_stick_y);
 
             if (gamepad2.right_trigger>=.6 && !isTriggerPressed && getGrabber()>=.5)
             {
@@ -194,7 +196,7 @@ public class SkyStoneTeleOp extends SkyStone6547 {
             // telemetry.addData("Left Back current Pos", LeftBack.getCurrentPosition());
             // telemetry.addData("Right Front current Pos", RightFront.getCurrentPosition());
             // telemetry.addData("Right Back current Pos", RightBack.getCurrentPosition());
-            telemetry.addData("spinner pos", spinner.getPosition());
+            //telemetry.addData("spinner pos", spinner.getPosition());
             telemetry.addData("A is full speed, B is half speed, Y is quarter speed","");
             telemetry.addData("Field Realitive Driving ", feildRealtive);
             // telemetry.addData("Left Trigger", gamepad1.left_trigger);
