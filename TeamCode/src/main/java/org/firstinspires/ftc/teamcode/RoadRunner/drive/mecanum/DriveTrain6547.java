@@ -67,6 +67,7 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
 
     public final String GYRO_ANGLE_FILE_NAME="gyroAngle.txt";
     public final String LIFT_MAX_FILE_NAME="liftMax.txt";
+    public final String LIFT_STARTING_POS_FILE_NAME="liftStartPos.txt";
     public final String GRABBER_MAX_FILE_NAME = "grabberMax.txt";
     public final String GRABBER_MIN_FILE_NAME = "grabberMin.txt";
 
@@ -89,6 +90,8 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
 
     public int liftMax = 10000;
     public int liftMin = 0;
+    public int liftStartingPos=0;
+    private int liftLeeway = 50;
     public double grabberMin = 0;
     public double grabberMax = 1;
 
@@ -204,10 +207,11 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
         grabberMax = readFile(GRABBER_MAX_FILE_NAME);
 
         liftMax = (int) readFile(LIFT_MAX_FILE_NAME);
-        opMode.telemetry.log().add("Lift Min: " + liftMin + ", Lift Max: " + liftMax);
+        liftStartingPos = (int) readFile(LIFT_STARTING_POS_FILE_NAME);
+        opMode.telemetry.log().add("Lift Auton Starting Pos: " + liftStartingPos + ", Lift Max: " + liftMax);
 
-        setAutonLiftTargetPos(lift.getCurrentPosition());
-        setRunLift(false); //robot will not try to move lift unless overwise told
+        setLiftTargetPos(liftStartingPos);
+        setRunLift(false); //robot will not try to move lift unless otherwise told
 
         //opMode.telemetry = dashboard.getopMode.telemetry();
     }
@@ -295,15 +299,12 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
             return 0;
         }
     }
-    public void outputTelemetry()
+    public void outputTelemetry() //used for debugging.  This method is called a lot
     {
         opMode.telemetry.addData("IMU angle with zero Value", getIMUAngle());
-//        opMode.telemetry.addData("Front Left POW", leftFront.getPower());
-//        opMode.telemetry.addData("Front Right POW", rightFront.getPower());
-//        opMode.telemetry.addData("Back Left POW", leftRear.getPower());
-//        opMode.telemetry.addData("Back Right POW", rightRear.getPower());
         opMode.telemetry.update();
     }
+    @Deprecated
     public void sleep(double seconds)
     {
         runtime.reset();
@@ -333,7 +334,7 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
     public void stopIntake()
     {
         intake.setPower(0);
-        opMode.telemetry.log().add("stoppe intake");
+        opMode.telemetry.log().add("stopped intake");
     }
     public void setGrabber(double pos)
     {
@@ -346,14 +347,23 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
     }
     public void setGrabberSlider(double pos)
     {
-        double min=0;
-        double max=1;
+        double min=grabberMin;
+        double max=grabberMax;
         double range = max-min;
         pos*=range;
         pos+=min;
         grabberSlide.setPosition(pos);
     }
+    public void ExtendGrabberSlide()
+    {
+        grabberSlide.setPosition(grabberMin);
+    }
+    public void RetractGrabberSlide()
+    {
+        grabberSlide.setPosition(grabberMax);
+    }
     int i = 0;
+    //updates servo for use with a gamepad stick
     public void updateServo(Servo servo, double gamepadStick, double speed, double max, double min)
     {
         if (Math.abs(gamepadStick) < .2) return;
@@ -376,6 +386,7 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
     {
         updateServo(servo, gamepadStick, speed, 0, 1);
     }
+    //set lift level
     public void setLiftLevel(int level)
     {
         setLiftLevel(level, 1);
@@ -420,14 +431,21 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
     }
 
     @Override
-    public void runAtAllTimes() //anything in here runs at all times during auton because
+    public void runAtAllTimes() //anything in here runs at all times during auton because this method is ran during roadRunner's state machine
     {
-
-        if (runLift) setLiftToTargetPos(AutonLiftTargetPos, 50);
+        if (runLift) setLiftToTargetPos(getLiftTargetPos(), getLiftLeeway());
+    }
+    public boolean isLiftAtTargetPos()
+    {
+        if (lift.getCurrentPosition() + getLiftLeeway() < AutonLiftTargetPos && lift.getCurrentPosition() - getLiftLeeway() > AutonLiftTargetPos)
+        {
+            return true;
+        }
+        else return false;
     }
 
-    public void setLiftToTargetPos(int targetPos, int leaway) //sets lift to target pos.  No while loops so it can be used in tele-op or a state machine
-    {
+    public void setLiftToTargetPos(int targetPos, int leaway) //sets lift to target pos.
+    {                                                        // No while loops in this so it can be used in tele-op or a state machine
         int liftPos = lift.getCurrentPosition();
         if (liftPos > targetPos + leaway)
         {
@@ -438,48 +456,6 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
             lift.setPower(1);
         }
         else lift.setPower(0);
-    }
-//    public void updateLift(double gamepadStick, double speed, double leeway)
-//    {
-//        double motorSpeed = 1;
-//        if (Math.abs(gamepadStick) < .2)
-//        {
-//            lift.setPower(0);
-//            liftLeft.setPower(0);
-//            speed = 0;
-//        }
-//        else
-//        {
-//            speed*=gamepadStick;
-//        }
-//        liftTargetPos = Math.abs(lift.getCurrentPosition()) + speed;
-//        int leftLiftPos = Math.abs(liftLeft.getCurrentPosition());
-//        int rightLiftPos = Math.abs(lift.getCurrentPosition());
-//
-//        if (rightLiftPos > liftTargetPos + leeway)
-//        {
-//            lift.setPower(-motorSpeed);
-//            opMode.telemetry.addData("RIGHT LIFT MOVING UP", "");
-//        }
-//        if (rightLiftPos < liftTargetPos - leeway)
-//        {
-//            lift.setPower(motorSpeed);
-//            opMode.telemetry.addData("RIGHT LIFT MOVING DOWN", "");
-//        }
-//        if (leftLiftPos < liftTargetPos - leeway)
-//        {
-//            opMode.telemetry.addData("LEFT LIFT MOVING UP", "");
-//            liftLeft.setPower(-motorSpeed);
-//        }
-//        if ( leftLiftPos > liftTargetPos + leeway)
-//        {
-//            opMode.telemetry.addData("LEFT LIFT MOVING DOWN", "");
-//            liftLeft.setPower(motorSpeed);
-//        }
-//    }
-    public double getLiftTargetPos()
-    {
-        return liftTargetPos;
     }
     public void setFondationGrabber(double pos) //take a pos from 0-1 and convert it into the mins and max areas of the servo
     {
@@ -504,7 +480,7 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
         double range = max-min;
         return (fondationGrabber2.getPosition()*range) + min;
     }
-    public double getIMUAngle() //gets the gyro angle
+    public double getIMUAngle() //gets the gyro angle in degrees
     {
         double currentAngle=Math.toDegrees(getRawExternalHeading())+angleZzeroValue;
         while (currentAngle>180) currentAngle-=360;
@@ -519,9 +495,9 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
     }
     public boolean isSkystone(ColorSensor colorSensorToBeUsed) //checks if color sensor sees a skystone
     {
-        //return colorSensorToBeUsed.red() <65;
         return (colorSensorToBeUsed.red()*colorSensorToBeUsed.green()) / Math.pow(colorSensorToBeUsed.blue(),2) < 3;
     }
+    @Deprecated
     public void DriveFieldRealtiveDistanceAndTurnPID(double power, double drivingAngle, double feet, double turningAngle, double rightX) //drive field reative and turn at the same time, however it makes the robot's position slightly unstable
     {
         zeroEncoders();
@@ -576,6 +552,7 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
         angleZzeroValue = tempZeroValue;
 
     }
+    @Deprecated
     public void DriveFieldRealtiveDistance(double power, double angleInDegrees, double feet, boolean brake)
     {
         power/=2;
@@ -616,10 +593,12 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
         }
 
     }
+    @Deprecated
     public void DriveFieldRealtiveDistance(double power, double angleInDegrees, double feet)
     {
         DriveFieldRealtiveDistance(power, angleInDegrees, feet, true);
     }
+    @Deprecated
     public void DriveFieldRealtiveSimple(double power, double angle) //set the robot's direction based on the gyro.
     {
         power=Math.abs(power);
@@ -911,6 +890,14 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
 
     public void setAngleZzeroValue(double angleZzeroValue) {
         DriveTrain6547.angleZzeroValue = angleZzeroValue;
+    }
+
+    public int getLiftLeeway() {
+        return liftLeeway;
+    }
+
+    public void setLiftLeeway(int liftLeeway) {
+        this.liftLeeway = liftLeeway;
     }
     //--------------------------------------------------------------
     //  Road Runner

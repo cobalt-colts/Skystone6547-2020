@@ -26,7 +26,7 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
         by going up or down if the scissor lift pushes the motor off its original
         target value
          */
-        bot.setAutonLiftTargetPos(bot.lift.getCurrentPosition());
+        bot.setLiftTargetPos(bot.liftStartingPos);
         bot.setRunLift(true);
 
         //set the position of the bot
@@ -36,14 +36,13 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
         waitForStart();
 
         if (isStopRequested()) return;
-        //go to skystones
         waitForStart();
 
         //Go to Skystones
         bot.followTrajectorySync(bot.trajectoryBuilder()
                 .strafeTo(new Vector2d(-36,-36))
                 .build());
-
+        bot.ExtendGrabberSlide();
         //scan stones
         if (bot.isSkystone(bot.colorSensorSideLeft))
         {
@@ -108,6 +107,7 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
         .splineTo(new Pose2d(-30,-42, Math.toRadians(180)))
         .build());
 
+        //prepare to grab the other Skystone
         if (bot.skyStoneLoc == SkyStoneLoc.RIGHT)
         {
             //if right, for forward a tiny bit and strafe
@@ -140,15 +140,17 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
                     .strafeRight(20)
                     .build());
         }
-        //intake stone
+        //grab SkyStone
         bot.followTrajectorySync(bot.trajectoryBuilder()
         .forward(6)
         .build());
+
         //get in path of skybridge
         bot.followTrajectorySync(bot.trajectoryBuilder()
                 .reverse()
         .splineTo(new Pose2d(-15,-42, Math.toRadians(180)))
                 .build());
+
         //go under skybridge and release stone
         bot.followTrajectorySync(bot.trajectoryBuilder()
                 .back(36)

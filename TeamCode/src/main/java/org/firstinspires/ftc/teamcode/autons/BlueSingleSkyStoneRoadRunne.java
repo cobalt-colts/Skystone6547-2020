@@ -18,7 +18,15 @@ public class BlueSingleSkyStoneRoadRunne extends LinearOpMode {
 
     public void runOpMode()
     {
-        DriveTrain6547 bot = new DriveTrain6547(this);
+        DriveTrain6547 bot = new DriveTrain6547(this); //the bot
+          /*
+        Make the lift stay where it's at.  The scissor lift's force is stronger
+        then a motor on brake mode, so we have the lift motor try to keep is's original encoder value
+        by going up or down if the scissor lift pushes the motor off its original
+        target value
+         */
+        bot.setLiftTargetPos(bot.liftStartingPos);
+        bot.setRunLift(true);
 
         bot.setPoseEstimate(new Pose2d(-35,62,Math.toRadians(270)));
 
@@ -86,9 +94,10 @@ public class BlueSingleSkyStoneRoadRunne extends LinearOpMode {
 
         bot.writeFile(bot.GYRO_ANGLE_FILE_NAME, bot.getIMUAngle());
 
-        telemetry.log().add("wrote file");
-
-        sleep(1000);
+        while (opModeIsActive())
+        {
+            bot.outputTelemetry();
+        }
 
     }
 }

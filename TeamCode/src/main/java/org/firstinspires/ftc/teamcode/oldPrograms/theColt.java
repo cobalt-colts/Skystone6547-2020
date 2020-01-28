@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.oldPrograms;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
@@ -42,7 +42,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 
 @Disabled
 /*
-Master code from last year
+Master code from the 2018-2019 Rover Ruckus Season
  */
 class theColt extends LinearOpMode{
     final double encoderTicksPerRotation=510;

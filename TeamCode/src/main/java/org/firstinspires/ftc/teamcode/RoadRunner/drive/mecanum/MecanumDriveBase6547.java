@@ -236,9 +236,13 @@ public abstract class MecanumDriveBase6547 extends MecanumDrive {
         return velocities;
     }
 
-    public void setAutonLiftTargetPos(int autonLiftTargetPos) {
+    public void setLiftTargetPos(int autonLiftTargetPos) {
         AutonLiftTargetPos = autonLiftTargetPos;
         setRunLift(true);
+    }
+
+    public int getLiftTargetPos() {
+        return AutonLiftTargetPos;
     }
 
     public void setRunLift(boolean runLift) {
