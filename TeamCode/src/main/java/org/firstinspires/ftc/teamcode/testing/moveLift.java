@@ -19,6 +19,7 @@ public class moveLift extends LinearOpMode {
         {
             bot.setLiftTargetPos(bot.lift.getCurrentPosition() - 1000);
             bot.setLiftToTargetPos(bot.getLiftTargetPos(), 50);
+            //bot.moveLift(-1000,50,4);
         }
     }
 }

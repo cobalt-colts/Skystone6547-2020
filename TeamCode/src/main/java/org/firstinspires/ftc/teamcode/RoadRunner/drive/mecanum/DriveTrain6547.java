@@ -109,12 +109,12 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
     private List<DcMotorEx> motors;
     private BNO055IMU imu;
 
-    OpMode opMode;
+    LinearOpMode opMode;
     HardwareMap hardwareMap;
 
     double liftTargetPos=0;
 
-    public DriveTrain6547(OpMode _opMode) {
+    public DriveTrain6547(LinearOpMode _opMode) {
 
         opMode = _opMode;
         hardwareMap = opMode.hardwareMap;
@@ -459,6 +459,15 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
             lift.setPower(-.5);
         }
         else lift.setPower(0);
+    }
+    public void moveLift(int modifer, int leaway, double time)
+    {
+        runtime.reset();
+        setLiftTargetPos(lift.getCurrentPosition() + modifer);
+        while (opMode.opModeIsActive() && runtime.seconds() < time) {
+            setLiftToTargetPos(getLiftTargetPos(), leaway);
+            outputTelemetry();
+        }
     }
     public void setFondationGrabber(double pos) //take a pos from 0-1 and convert it into the mins and max areas of the servo
     {
