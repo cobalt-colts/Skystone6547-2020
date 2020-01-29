@@ -1,0 +1,24 @@
+package org.firstinspires.ftc.teamcode.testing;
+
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547;
+
+@Autonomous(name="move lift test", group = "test")
+public class moveLift extends LinearOpMode {
+
+    @Override
+    public void runOpMode() throws InterruptedException {
+        DriveTrain6547 bot = new DriveTrain6547(this);
+
+        telemetry.log().add("Ready to start");
+        waitForStart();
+
+        while (opModeIsActive())
+        {
+            bot.setLiftTargetPos(bot.lift.getCurrentPosition() - 1000);
+            bot.setLiftToTargetPos(bot.getLiftTargetPos(), 50);
+        }
+    }
+}

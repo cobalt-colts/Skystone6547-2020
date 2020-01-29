@@ -238,7 +238,7 @@ public abstract class MecanumDriveBase6547 extends MecanumDrive {
 
     public void setLiftTargetPos(int autonLiftTargetPos) {
         AutonLiftTargetPos = autonLiftTargetPos;
-        setRunLift(true);
+        //setRunLift(true);
     }
 
     public int getLiftTargetPos() {

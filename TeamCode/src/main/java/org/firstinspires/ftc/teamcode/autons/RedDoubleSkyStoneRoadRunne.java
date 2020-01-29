@@ -33,10 +33,10 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
         bot.setPoseEstimate(new Pose2d(-36, -62,Math.toRadians(90)));
 
         telemetry.log().add("Ready to start");
-        waitForStart();
-
-        if (isStopRequested()) return;
-        waitForStart();
+        while (!isStarted())
+        {
+            bot.runAtAllTimes();
+        }
 
         //Go to Skystones
         bot.followTrajectorySync(bot.trajectoryBuilder()
@@ -50,7 +50,7 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
             bot.skyStoneLoc = SkyStoneLoc.LEFT;
             //back up a bit and strafe left
             bot.followTrajectorySync(bot.trajectoryBuilder()
-            .back(2)
+            .back(3)
                     .strafeLeft(15)
             .build());
             telemetry.log().add("LEFT");
@@ -63,14 +63,17 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
             bot.skyStoneLoc = SkyStoneLoc.RIGHT;
             //drive back a bit and strafe right
             bot.followTrajectorySync(bot.trajectoryBuilder()
-                    .back(2)
+                    .back(3)
                     .strafeRight(15)
                     .build());
         }
         else
         {
+            bot.followTrajectorySync(bot.trajectoryBuilder()
+            .back(3)
+            .build());
             //---SKYSTONE CENTER---
-            //don't move, the robot is already in right spot
+            //go back a bit
             telemetry.log().add("CENTER");
             bot.skyStoneLoc = SkyStoneLoc.CENTER;
 
@@ -83,7 +86,7 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
 
         //drive forward and intake stone
         bot.followTrajectorySync(bot.trajectoryBuilder()
-                .forward(24)
+                .forward(18)
         .build());
 
         //spline to under the skybridge
@@ -92,10 +95,15 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
         .splineTo(new Pose2d(0,-45,Math.toRadians(180)))
                 .build());
 
+        bot.setLiftTargetPos(bot.lift.getCurrentPosition() - 500);
+        //bot.setLiftToTargetPos(bot.getLiftTargetPos(), 50);
+
         //drive forward a bit to relay the skystone in the build zone
         bot.followTrajectorySync(bot.trajectoryBuilder()
         .back(12)
         .build());
+
+        bot.setLiftTargetPos(bot.getLiftTargetPos() + 500);
 
         //go back under the skybridge
        bot.followTrajectorySync(bot.trajectoryBuilder()
@@ -112,10 +120,10 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
         {
             //if right, for forward a tiny bit and strafe
             bot.followTrajectorySync(bot.trajectoryBuilder()
-            .forward(5)
+            .forward(3)
             .build());
             bot.followTrajectorySync(bot.trajectoryBuilder()
-            .strafeRight(20)
+            .strafeRight(25)
                     .build());
         }
         else if (bot.skyStoneLoc == SkyStoneLoc.CENTER)
@@ -126,7 +134,7 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
             .build());
 
             bot.followTrajectorySync(bot.trajectoryBuilder()
-            .strafeRight(20)
+            .strafeRight(25)
             .build());
         }
         else if (bot.skyStoneLoc == SkyStoneLoc.LEFT)
@@ -137,18 +145,18 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
                     .build());
 
             bot.followTrajectorySync(bot.trajectoryBuilder()
-                    .strafeRight(20)
+                    .strafeRight(25)
                     .build());
         }
         //grab SkyStone
         bot.followTrajectorySync(bot.trajectoryBuilder()
-        .forward(6)
+        .forward(7)
         .build());
 
         //get in path of skybridge
         bot.followTrajectorySync(bot.trajectoryBuilder()
                 .reverse()
-        .splineTo(new Pose2d(-15,-42, Math.toRadians(180)))
+        .splineTo(new Pose2d(-15,-47, Math.toRadians(180)))
                 .build());
 
         //go under skybridge and release stone

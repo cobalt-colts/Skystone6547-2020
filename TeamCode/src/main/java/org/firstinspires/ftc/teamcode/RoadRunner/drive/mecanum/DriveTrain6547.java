@@ -302,6 +302,8 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
     public void outputTelemetry() //used for debugging.  This method is called a lot
     {
         opMode.telemetry.addData("IMU angle with zero Value", getIMUAngle());
+        opMode.telemetry.addData("target pos", getLiftTargetPos());
+        opMode.telemetry.addData("lift pos", lift.getCurrentPosition());
         opMode.telemetry.update();
     }
     @Deprecated
@@ -433,7 +435,8 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
     @Override
     public void runAtAllTimes() //anything in here runs at all times during auton because this method is ran during roadRunner's state machine
     {
-        if (runLift) setLiftToTargetPos(getLiftTargetPos(), getLiftLeeway());
+        if (true) setLiftToTargetPos(getLiftTargetPos(), 50);
+        outputTelemetry();
     }
     public boolean isLiftAtTargetPos()
     {
@@ -449,11 +452,11 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
         int liftPos = lift.getCurrentPosition();
         if (liftPos > targetPos + leaway)
         {
-            lift.setPower(-1);
+            lift.setPower(-.5);
         }
         else if (liftPos < targetPos-leaway)
         {
-            lift.setPower(1);
+            lift.setPower(-.5);
         }
         else lift.setPower(0);
     }
@@ -461,7 +464,7 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
     {
         double min=0;
         double max=.55;
-        double max2 = max+.17;
+        double max2 = max+.16;
         double range = max-min;
         double range2 = max2-min;
         double pos2 = (pos*range2) +min;
@@ -898,6 +901,14 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
 
     public void setLiftLeeway(int liftLeeway) {
         this.liftLeeway = liftLeeway;
+    }
+
+    public int getLiftStartingPos() {
+        return liftStartingPos;
+    }
+
+    public ElapsedTime getRuntime() {
+        return runtime;
     }
     //--------------------------------------------------------------
     //  Road Runner

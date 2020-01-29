@@ -48,7 +48,7 @@ public class SkyStoneTeleOpQualifer extends LinearOpMode {
 
         bot.zeroEncoders();
 
-        double oldGyroAngle=bot.readFile(bot.GYRO_ANGLE_FILE_NAME); //get the angle the robot was at when auton ended
+        double oldGyroAngle=-bot.readFile(bot.GYRO_ANGLE_FILE_NAME); //get the angle the robot was at when auton ended
         bot.angleZzeroValue=oldGyroAngle;
         bot.writeFile(bot.GYRO_ANGLE_FILE_NAME, 0); //reset the old angle to zero
 
@@ -149,19 +149,6 @@ public class SkyStoneTeleOpQualifer extends LinearOpMode {
                 grabberToggle.toggle();
                 bot.setGrabber(grabberToggle.output());
             }
-
-//            double liftPower = gamepad2.left_stick_y;
-//            double liftPos = Math.abs(bot.lift.getCurrentPosition());
-//
-//            if (liftPower > 0 && bot.lift.getCurrentPosition()<bot.liftMax) //going up
-//            {
-//                bot.lift.setPower(liftPower);
-//            }
-//            else if (liftPower < 0 && bot.lift.getCurrentPosition()>bot.liftMin) //going down
-//            {
-//                bot.lift.setPower(liftPower);
-//            }
-            //bot.setLiftPower(gamepad2.left_stick_y); //move lift
 
             double liftSpeed = -gamepad2.left_stick_y;
             /*
