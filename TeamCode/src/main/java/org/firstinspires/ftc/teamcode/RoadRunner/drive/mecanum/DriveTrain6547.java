@@ -74,8 +74,8 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
     public DcMotorEx lift;
     public DcMotorEx intake;
 
-    Servo fondationGrabber;
-    Servo fondationGrabber2;
+    public Servo fondationGrabber;
+    public Servo fondationGrabber2;
     public Servo grabberSlide;
     public Servo grabber;
 
@@ -113,6 +113,8 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
     HardwareMap hardwareMap;
 
     double liftTargetPos=0;
+
+    boolean isLiftAtStartingPos;
 
     public DriveTrain6547(LinearOpMode _opMode) {
 
@@ -358,11 +360,11 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
     }
     public void ExtendGrabberSlide()
     {
-        grabberSlide.setPosition(grabberMin);
+        grabberSlide.setPosition(grabberMax);
     }
     public void RetractGrabberSlide()
     {
-        grabberSlide.setPosition(grabberMax);
+        grabberSlide.setPosition(grabberMin);
     }
     int i = 0;
     //updates servo for use with a gamepad stick
@@ -440,11 +442,7 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
     }
     public boolean isLiftAtTargetPos()
     {
-        if (lift.getCurrentPosition() + getLiftLeeway() < AutonLiftTargetPos && lift.getCurrentPosition() - getLiftLeeway() > AutonLiftTargetPos)
-        {
-            return true;
-        }
-        else return false;
+       return isLiftAtStartingPos;
     }
 
     public void setLiftToTargetPos(int targetPos, int leaway) //sets lift to target pos.
@@ -453,29 +451,42 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
         if (liftPos > targetPos + leaway)
         {
             lift.setPower(-.5);
+            isLiftAtStartingPos = false;
         }
         else if (liftPos < targetPos-leaway)
         {
-            lift.setPower(-.5);
+            lift.setPower(.5);
+            isLiftAtStartingPos = false;
         }
-        else lift.setPower(0);
+        else
+        {
+            lift.setPower(0);
+            isLiftAtStartingPos = true;
+        }
+
     }
-    public void moveLift(int modifer, int leaway, double time)
+
+    @Deprecated
+    public void moveLift(int modifer, int leaway, double time){
+        moveLift(modifer, leaway);
+    }
+    public void moveLift(int modifer, int leaway)
     {
         runtime.reset();
-        setLiftTargetPos(lift.getCurrentPosition() + modifer);
-        while (opMode.opModeIsActive() && runtime.seconds() < time) {
+        setLiftTargetPos(getLiftStartingPos() + modifer);
+        while (!isLiftAtTargetPos() && opMode.opModeIsActive()) {
             setLiftToTargetPos(getLiftTargetPos(), leaway);
             outputTelemetry();
         }
     }
     public void setFondationGrabber(double pos) //take a pos from 0-1 and convert it into the mins and max areas of the servo
     {
-        double min=0;
-        double max=.55;
-        double max2 = max+.16;
+        double min=.2;
+        double min2=.2;
+        double max=.9;
+        double max2 = .92;
         double range = max-min;
-        double range2 = max2-min;
+        double range2 = max2-min2;
         double pos2 = (pos*range2) +min;
         pos*=range;
         pos+=min;

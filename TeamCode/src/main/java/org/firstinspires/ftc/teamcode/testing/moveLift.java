@@ -15,10 +15,12 @@ public class moveLift extends LinearOpMode {
         telemetry.log().add("Ready to start");
         waitForStart();
 
+        bot.setLiftTargetPos(bot.lift.getCurrentPosition() + 1000);
+
         while (opModeIsActive())
         {
-            bot.setLiftTargetPos(bot.lift.getCurrentPosition() - 1000);
             bot.setLiftToTargetPos(bot.getLiftTargetPos(), 50);
+            bot.outputTelemetry();
             //bot.moveLift(-1000,50,4);
         }
     }

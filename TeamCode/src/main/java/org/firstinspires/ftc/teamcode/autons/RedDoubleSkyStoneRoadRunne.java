@@ -42,7 +42,6 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
         bot.followTrajectorySync(bot.trajectoryBuilder()
                 .strafeTo(new Vector2d(-36,-36))
                 .build());
-        bot.ExtendGrabberSlide();
         //scan stones
         if (bot.isSkystone(bot.colorSensorSideLeft))
         {
@@ -92,27 +91,30 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
         //spline to under the skybridge
         bot.followTrajectorySync(bot.trajectoryBuilder()
                 .reverse()
-        .splineTo(new Pose2d(0,-45,Math.toRadians(180)))
+        .splineTo(new Pose2d(0,-41,Math.toRadians(180)))
+                .reverse()
+                .back(14)
                 .build());
 
-        bot.setLiftTargetPos(bot.lift.getCurrentPosition() - 500);
+        bot.moveLift(400,50);
         //bot.setLiftToTargetPos(bot.getLiftTargetPos(), 50);
 
         //drive forward a bit to relay the skystone in the build zone
-        bot.followTrajectorySync(bot.trajectoryBuilder()
-        .back(12)
-        .build());
+//        bot.followTrajectorySync(bot.trajectoryBuilder()
+//        .back(14)
+//        .build());
 
-        bot.setLiftTargetPos(bot.getLiftTargetPos() + 500);
 
         //go back under the skybridge
        bot.followTrajectorySync(bot.trajectoryBuilder()
-        .forward(18)
+        .forward(12)
         .build());
+
+        bot.moveLift(0, 50);
 
         //spline to next to the other stones
         bot.followTrajectorySync(bot.trajectoryBuilder()
-        .splineTo(new Pose2d(-30,-42, Math.toRadians(180)))
+        .splineTo(new Pose2d(-30,-40, Math.toRadians(180)))
         .build());
 
         //prepare to grab the other Skystone
@@ -150,24 +152,34 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
         }
         //grab SkyStone
         bot.followTrajectorySync(bot.trajectoryBuilder()
-        .forward(7)
+        .forward(8)
         .build());
 
         //get in path of skybridge
         bot.followTrajectorySync(bot.trajectoryBuilder()
                 .reverse()
-        .splineTo(new Pose2d(-15,-47, Math.toRadians(180)))
+        .splineTo(new Pose2d(-15,-43, Math.toRadians(180)))
+                .reverse()
+                .back(35)
                 .build());
 
         //go under skybridge and release stone
-        bot.followTrajectorySync(bot.trajectoryBuilder()
-                .back(36)
-                .build());
+//        bot.followTrajectorySync(bot.trajectoryBuilder()
+//                .back(35)
+ //               .build());
+
+        bot.moveLift(500,50);
 
         //park under skybridge
         bot.followTrajectorySync(bot.trajectoryBuilder()
-        .forward(20)
+        .forward(9)
         .build());
+
+        bot.moveLift(0,50);
+
+        bot.followTrajectorySync(bot.trajectoryBuilder()
+                .forward(10)
+                .build());
 
         //save gyro angle
         bot.writeFile(bot.GYRO_ANGLE_FILE_NAME, bot.getIMUAngle());

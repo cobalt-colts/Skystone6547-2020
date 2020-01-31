@@ -56,7 +56,13 @@ public class SkyStoneTeleOpQualifer extends LinearOpMode {
         telemetry.log().add("gyro angle: " + bot.getIMUAngle());
         telemetry.log().add("lift max: " + bot.liftMax);
 
-        waitForStart();
+        int liftPos = bot.lift.getCurrentPosition();
+
+        if (!isStarted())
+        {
+            bot.setLiftToTargetPos(liftPos, 50);
+        }
+        bot.lift.setPower(0);
 
         while (opModeIsActive()) {
 
@@ -151,16 +157,25 @@ public class SkyStoneTeleOpQualifer extends LinearOpMode {
             }
 
             double liftSpeed = -gamepad2.left_stick_y;
+
+            if (bot.lift.getCurrentPosition() > bot.getLiftStartingPos() + 1000)
+            {
+
+            }
+            else
+            {
+                if (liftSpeed > 0) liftSpeed*=.75;
+            }
             /*
             Lift controls
-            Deadzone of .2
+            Deadzone of .05
             has a maximum, but no minimum
              */
-            if (liftSpeed > .2 && bot.lift.getCurrentPosition() < bot.liftMax) //if lift is below max and speed is outside of deadzone
+            if (liftSpeed > .05 && bot.lift.getCurrentPosition() < bot.liftMax) //if lift is below max and speed is outside of deadzone
             {
                 bot.setLiftPower(liftSpeed);
             }
-            else if (liftSpeed < -.2) //if speed is down and outside of deadzone
+            else if (liftSpeed < -.05) //if speed is down and outside of deadzone
             {
                 bot.setLiftPower(liftSpeed);
             }
