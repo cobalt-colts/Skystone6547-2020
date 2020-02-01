@@ -44,7 +44,7 @@ public class BlueFoundationAutonNoTurn extends LinearOpMode
                 .build());
 
         //grab foundation
-        bot.setFondationGrabber(.9);
+        bot.setFondationGrabber(1);
 
         sleep(1000);
 

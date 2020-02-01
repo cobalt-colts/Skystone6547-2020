@@ -84,17 +84,18 @@ public class BlueDoubleSkyStoneRoadRunner extends LinearOpMode {
         //spline to under the skybridge
         bot.followTrajectorySync(bot.trajectoryBuilder()
                 .reverse()
-                .splineTo(new Pose2d(0,45,Math.toRadians(190)))
-                .reverse()
+                .splineTo(new Pose2d(0,45,Math.toRadians(180)))
+                .build());
+        bot.turnRealtiveSync(Math.toRadians(180));
+
+       bot.setLiftTargetPos(bot.getLiftStartingPos()+250);
+
+        //drive forward a bit to relay the skystone in the build zone
+        bot.followTrajectorySync(bot.trajectoryBuilder()
                 .back(14)
                 .build());
 
         bot.moveLift(500,50);
-
-        //drive forward a bit to relay the skystone in the build zone
-//        bot.followTrajectorySync(bot.trajectoryBuilder()
-//                .back(14)
-//                .build());
 
         //go back under the skybridge
 
@@ -152,14 +153,13 @@ public class BlueDoubleSkyStoneRoadRunner extends LinearOpMode {
         bot.followTrajectorySync(bot.trajectoryBuilder()
                 .reverse()
                 .splineTo(new Pose2d(-15,45, Math.toRadians(180)))
-                .reverse()
-                .back(35)
                 .build());
+        bot.turnRealtiveSync(Math.toRadians(180));
 
         //go under skybridge and release stone
-//        bot.followTrajectorySync(bot.trajectoryBuilder()
-//                .back(35)
-//                .build());
+        bot.followTrajectorySync(bot.trajectoryBuilder()
+                .back(35)
+                .build());
         //park under skybridge
 
         bot.moveLift(500,50);
