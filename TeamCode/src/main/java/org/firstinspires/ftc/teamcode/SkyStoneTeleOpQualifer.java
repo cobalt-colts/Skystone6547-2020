@@ -195,6 +195,7 @@ public class SkyStoneTeleOpQualifer extends LinearOpMode {
             Telemetry
              */
 
+            //bot.updateRobotPosRoadRunner(); //display robot's position
             telemetry.addData("IMU angle", bot.getIMUAngle());
             telemetry.addData("zero value" , bot.angleZzeroValue);
             telemetry.addData("angles.firstAngle",Math.toDegrees(bot.getRawExternalHeading()));

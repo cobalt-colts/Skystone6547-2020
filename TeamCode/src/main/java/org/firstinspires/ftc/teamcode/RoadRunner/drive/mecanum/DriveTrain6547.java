@@ -2,11 +2,15 @@ package org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum;
 
 import android.support.annotation.NonNull;
 
+import com.acmerobotics.dashboard.canvas.Canvas;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.ftccommon.SoundPlayer;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -31,6 +35,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.RoadRunner.util.AxesSigns;
 import org.firstinspires.ftc.teamcode.RoadRunner.util.BNO055IMUUtil;
+import org.firstinspires.ftc.teamcode.RoadRunner.util.DashboardUtil;
 import org.firstinspires.ftc.teamcode.RoadRunner.util.LynxModuleUtil;
 import org.firstinspires.ftc.teamcode.SkyStoneLoc;
 import org.firstinspires.ftc.teamcode.util.MiniPID;
@@ -109,6 +114,8 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
     private List<DcMotorEx> motors;
     private BNO055IMU imu;
 
+    List<LynxModule> allHubs;
+
     LinearOpMode opMode;
     HardwareMap hardwareMap;
 
@@ -174,6 +181,8 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
 
         colorSensorSideRight = hardwareMap.get(ColorSensor.class, "color sensor"); //set color sensors
         colorSensorSideLeft = hardwareMap.get(ColorSensor.class, "color sensor2");
+
+        allHubs = hardwareMap.getAll(LynxModule.class);
 
         opMode.telemetry.log().add("Initialized hardware");
 
@@ -273,6 +282,24 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
         rightTrigger1.input(opMode.gamepad1.right_trigger>=.7);
         rightTrigger2.input(opMode.gamepad2.right_trigger>=.7);
 
+    }
+    public void setBulkReadAuto()
+    {
+        for (LynxModule module : allHubs) {
+            module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
+        }
+    }
+    public void setBulkReadManual()
+    {
+        for (LynxModule module : allHubs) {
+            module.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+        }
+    }
+    public void setBulkReadOff()
+    {
+        for (LynxModule module : allHubs) {
+            module.setBulkCachingMode(LynxModule.BulkCachingMode.OFF);
+        }
     }
     public void writeFile(String filename, double number)
     {
@@ -1044,6 +1071,30 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
         }
         opMode.telemetry.log().add("inputted Angle: " + angle + " , turning to: " + target);
         turn(target);
+    }
+    public void updateRobotPosRoadRunner()
+    {
+        updatePoseEstimate();
+
+        Pose2d currentPose = getPoseEstimate();
+        Pose2d lastError = getLastError();
+
+        TelemetryPacket packet = new TelemetryPacket();
+        Canvas fieldOverlay = packet.fieldOverlay();
+
+        packet.put("x", currentPose.getX());
+        packet.put("y", currentPose.getY());
+        packet.put("heading", currentPose.getHeading());
+
+        packet.put("xError", lastError.getX());
+        packet.put("yError", lastError.getY());
+        packet.put("headingError", lastError.getHeading());
+
+        fieldOverlay.setStroke("#F44336");
+        DashboardUtil.drawRobot(fieldOverlay, currentPose);
+
+        dashboard.sendTelemetryPacket(packet);
+
     }
     public void turnLeft(double power) {
         leftFront.setPower(power);
