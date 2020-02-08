@@ -94,6 +94,8 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
         .splineTo(new Pose2d(0,-41,Math.toRadians(180)))
                 .build());
 
+        bot.turnRealtiveSync(Math.toRadians(180));
+
         bot.setLiftTargetPos(bot.lift.getCurrentPosition() + 250);
         //bot.setLiftToTargetPos(bot.getLiftTargetPos(), 50);
 
@@ -119,12 +121,14 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
         .splineTo(new Pose2d(-30,-40, Math.toRadians(180)))
         .build());
 
+        bot.turnRealtiveSync(Math.toRadians(180));
+
         //prepare to grab the other Skystone
         if (bot.skyStoneLoc == SkyStoneLoc.RIGHT)
         {
             //if right, for forward a tiny bit and strafe
             bot.followTrajectorySync(bot.trajectoryBuilder()
-            .forward(3)
+            .forward(4)
             .build());
             bot.followTrajectorySync(bot.trajectoryBuilder()
             .strafeRight(25)
@@ -140,6 +144,8 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
             bot.followTrajectorySync(bot.trajectoryBuilder()
             .strafeRight(25)
             .build());
+
+
         }
         else if (bot.skyStoneLoc == SkyStoneLoc.LEFT)
         {
@@ -158,10 +164,7 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
         .build());
 
         //get in path of skybridge
-        bot.followTrajectorySync(bot.trajectoryBuilder()
-                .reverse()
-        .splineTo(new Pose2d(-15,-43, Math.toRadians(180)))
-                .build());
+
 
         bot.turnRealtiveSync(Math.toRadians(180));
 

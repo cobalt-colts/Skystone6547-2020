@@ -51,6 +51,7 @@ public class BlueDoubleSkyStoneRoadRunner extends LinearOpMode {
                     .build());
             telemetry.log().add("LEFT");
 
+
         }
         else if (bot.isSkystone(bot.colorSensorSideRight))
         {
@@ -84,9 +85,9 @@ public class BlueDoubleSkyStoneRoadRunner extends LinearOpMode {
         //spline to under the skybridge
         bot.followTrajectorySync(bot.trajectoryBuilder()
                 .reverse()
-                .splineTo(new Pose2d(0,45,Math.toRadians(180)))
+                .splineTo(new Pose2d(0,44,Math.toRadians(180)))
                 .build());
-        bot.turnRealtiveSync(Math.toRadians(180));
+        bot.turnRealtiveSync(Math.toRadians(0));
 
        bot.setLiftTargetPos(bot.getLiftStartingPos()+250);
 
@@ -108,8 +109,10 @@ public class BlueDoubleSkyStoneRoadRunner extends LinearOpMode {
 
         //spline to next to the other stones
         bot.followTrajectorySync(bot.trajectoryBuilder()
-                .splineTo(new Pose2d(-30,40, Math.toRadians(170)))
+                .splineTo(new Pose2d(-30,40, Math.toRadians(180)))
                 .build());
+
+        bot.turnRealtiveSync(Math.toRadians(0));
 
         //prepare to grab other skystone
         if (bot.skyStoneLoc == SkyStoneLoc.RIGHT)
@@ -119,7 +122,7 @@ public class BlueDoubleSkyStoneRoadRunner extends LinearOpMode {
                     .forward(24)
                     .build());
             bot.followTrajectorySync(bot.trajectoryBuilder()
-                    .strafeLeft(19)
+                    .strafeLeft(24.5)
                     .build());
         }
         else if (bot.skyStoneLoc == SkyStoneLoc.CENTER)
@@ -130,7 +133,7 @@ public class BlueDoubleSkyStoneRoadRunner extends LinearOpMode {
                     .build());
 
             bot.followTrajectorySync(bot.trajectoryBuilder()
-                    .strafeLeft(19)
+                    .strafeLeft(24.5)
                     .build());
         }
         else if (bot.skyStoneLoc == SkyStoneLoc.LEFT)
@@ -141,7 +144,7 @@ public class BlueDoubleSkyStoneRoadRunner extends LinearOpMode {
                     .build());
 
             bot.followTrajectorySync(bot.trajectoryBuilder()
-                    .strafeLeft(19)
+                    .strafeLeft(24.5)
                     .build());
         }
         //grab SkyStone
@@ -152,13 +155,13 @@ public class BlueDoubleSkyStoneRoadRunner extends LinearOpMode {
         //get in path of skybridge
         bot.followTrajectorySync(bot.trajectoryBuilder()
                 .reverse()
-                .splineTo(new Pose2d(-15,45, Math.toRadians(180)))
+                .splineTo(new Pose2d(-15,44, Math.toRadians(180)))
                 .build());
-        bot.turnRealtiveSync(Math.toRadians(180));
+        bot.turnRealtiveSync(Math.toRadians(0));
 
         //go under skybridge and release stone
         bot.followTrajectorySync(bot.trajectoryBuilder()
-                .back(35)
+                .back(30)
                 .build());
         //park under skybridge
 
