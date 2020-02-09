@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -16,8 +16,8 @@ import edu.spa.ftclib.internal.state.ToggleDouble;
 This is the tele-op we use to drive the robot
  */
 @Config
-@TeleOp(name = "SkyStone Tele-op Qualifier", group = "_teleOp")
-public class SkyStoneTeleOpQualifer extends LinearOpMode {
+@TeleOp(name = "SkyStone Tele-op State", group = "_teleOp")
+public class SkyStoneTeleOpState extends LinearOpMode {
 
     public static double slideSpeed = .004; //speed of horizontal slide in servo position units
 
@@ -45,7 +45,11 @@ public class SkyStoneTeleOpQualifer extends LinearOpMode {
         bot = new DriveTrain6547(this);
         telemetry.update();
 
-        bot.zeroEncoders();
+        bot.disableEncoders();
+
+        telemetry.log().add("DONE INITIALING");
+
+       // bot.setPoseEstimate(new Pose2d(-36,-63,Math.toRadians(90)));
 
         //get the angle the robot was at when auton ended
         bot.setAngleZzeroValue(-bot.readFile(bot.GYRO_ANGLE_FILE_NAME));
@@ -55,13 +59,7 @@ public class SkyStoneTeleOpQualifer extends LinearOpMode {
         telemetry.log().add("gyro angle: " + bot.getIMUAngle());
         telemetry.log().add("lift max: " + bot.liftMax);
 
-        int liftPos = bot.lift.getCurrentPosition();
-
-        if (!isStarted())
-        {
-            bot.setLiftToTargetPos(liftPos, 50);
-        }
-        bot.lift.setPower(0);
+        waitForStart();
 
         while (opModeIsActive()) {
 
@@ -159,7 +157,7 @@ public class SkyStoneTeleOpQualifer extends LinearOpMode {
 
             if (bot.lift.getCurrentPosition() > bot.getLiftStartingPos() + 1000)
             {
-
+                //probably should change this if statement, but I'm too scared too.
             }
             else
             {
@@ -182,6 +180,7 @@ public class SkyStoneTeleOpQualifer extends LinearOpMode {
             {
                 bot.setLiftPower(0);
             }
+
             if (bot.rightBumper2.isPressed()) bot.updateServo(bot.grabberSlide, 1, slideSpeed, bot.grabberMax, bot.grabberMin); //move horizontal slide back
             if (bot.leftBumper2.isPressed()) bot.updateServo(bot.grabberSlide, -1, slideSpeed, bot.grabberMax, bot.grabberMin); //move horizontal slide forward
 
@@ -194,16 +193,7 @@ public class SkyStoneTeleOpQualifer extends LinearOpMode {
             Telemetry
              */
 
-            telemetry.addData("IMU angle", bot.getIMUAngle());
-            telemetry.addData("zero value" , bot.getAngleZzeroValue());
-            telemetry.addData("angles.firstAngle",Math.toDegrees(bot.getRawExternalHeading()));
-            telemetry.addData("lift pos", bot.lift.getCurrentPosition());
-            telemetry.addData("Grabber POS", bot.grabber.getPortNumber());
-            telemetry.addData("Grabber Slider POS",bot.grabberSlide.getPosition());
-            telemetry.addData("A is full speed, B is half speed, Y is quarter speed","");
-            telemetry.addData("Field Realitive Driving ", feildRealtive.output());
-            telemetry.addData("Speed modifer", speedModifer);
-            telemetry.update();
+            bot.updateRobotPosRoadRunner(); //display robot's position
         }
         bot.stopRobot();
     }

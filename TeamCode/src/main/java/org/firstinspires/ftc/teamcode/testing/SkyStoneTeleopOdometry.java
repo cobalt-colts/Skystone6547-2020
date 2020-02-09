@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.testing;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -9,23 +9,23 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.firstinspires.ftc.teamcode.testing.odometry.OdometryGlobalCoordinatePosition;
 
 /**
- * Created by Sarthak on 10/4/2019.
+ * We Are never going to use this.  We are using Road Runner Insted.
  */
 @TeleOp(name = "Odometry Teleop")
 @Disabled
 public class SkyStoneTeleopOdometry extends LinearOpMode {
     //Drive motors
-    DcMotor right_front, right_back, left_front, left_back;
+    private DcMotor right_front, right_back, left_front, left_back;
     //Odometry Wheels
-    DcMotor verticalLeft, verticalRight, horizontal;
+    private DcMotor verticalLeft, verticalRight, horizontal;
 
-    final double COUNTS_PER_INCH = 307.699557;
+    private final double COUNTS_PER_INCH = 307.699557;
 
     //Hardware Map Names for drive motors and odometry wheels. THIS WILL CHANGE ON EACH ROBOT, YOU NEED TO UPDATE THESE VALUES ACCORDINGLY
-    String rfName = "odo", rbName = "odo", lfName = "odo", lbName = "odo";
-    String verticalLeftEncoderName = rbName, verticalRightEncoderName = lfName, horizontalEncoderName = rfName;
+    private String rfName = "odo", rbName = "odo", lfName = "odo", lbName = "odo";
+    private String verticalLeftEncoderName = rbName, verticalRightEncoderName = lfName, horizontalEncoderName = rfName;
 
-    OdometryGlobalCoordinatePosition globalPositionUpdate;
+    private OdometryGlobalCoordinatePosition globalPositionUpdate;
 
     @Override
     public void runOpMode() throws InterruptedException {

@@ -32,7 +32,7 @@ public class DriveConstants {
      * Set the first flag appropriately. If using the built-in motor velocity PID, update
      * MOTOR_VELO_PID with the tuned coefficients from DriveVelocityPIDTuner.
      */
-    public static final boolean RUN_USING_ENCODER = true;
+    public static final boolean RUN_USING_ENCODER = false;
     public static final PIDCoefficients MOTOR_VELO_PID = new PIDCoefficients(30,0,.7);
 
     /*
@@ -44,7 +44,7 @@ public class DriveConstants {
      * convenience. Make sure to exclude any gear ratio included in MOTOR_CONFIG from GEAR_RATIO.
      */
     public static double WHEEL_RADIUS = 2;
-    public static double GEAR_RATIO = .5; // output (wheel) speed / input (motor) speed
+    public static double GEAR_RATIO = .425; // output (wheel) speed / input (motor) speed
     public static double TRACK_WIDTH = 12;
 
     /*
@@ -53,9 +53,9 @@ public class DriveConstants {
      * motor encoders or have elected not to use them for velocity control, these values should be
      * empirically tuned.
      */
-    public static double kV = 1.0 / rpmToVelocity(getMaxRpm());
-    public static double kA = 0;
-    public static double kStatic = 0;
+    public static double kV = .01000; //1.0 / rpmToVelocity(getMaxRpm());
+    public static double kA = .00004;
+    public static double kStatic = .16879;
 
     /*
      * These values are used to generate the trajectories for you robot. To ensure proper operation,
