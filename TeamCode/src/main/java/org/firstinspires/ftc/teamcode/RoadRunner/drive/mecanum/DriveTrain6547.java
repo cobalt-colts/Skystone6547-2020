@@ -33,6 +33,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
+import org.firstinspires.ftc.teamcode.RoadRunner.drive.localizer.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.localizer.StandardTwowheelLocalizer;
 import org.firstinspires.ftc.teamcode.RoadRunner.util.AxesSigns;
 import org.firstinspires.ftc.teamcode.RoadRunner.util.BNO055IMUUtil;
@@ -160,7 +161,7 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
 
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
-        setLocalizer(new StandardTwowheelLocalizer(hardwareMap, this));
+        setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
 
         initOtherHardware();
 

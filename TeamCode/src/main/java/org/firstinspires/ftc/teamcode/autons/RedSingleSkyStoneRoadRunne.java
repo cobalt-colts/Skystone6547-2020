@@ -23,7 +23,7 @@ public class RedSingleSkyStoneRoadRunne extends LinearOpMode {
         DriveTrain6547 bot = new DriveTrain6547(this); //the robot
 
         /*
-        Make the lift stay where it's at.  The scissor lift's force is stronger
+        Make the lift stay where it's at.  The scissor lift's force is stronger than the motor can handle on brake mode
         then a motor on brake mode, so we have the lift motor try to keep is's original encoder value
         by going up or down if the scissor lift pushes the motor off its original
         target value

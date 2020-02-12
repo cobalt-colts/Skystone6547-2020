@@ -20,7 +20,6 @@ import java.io.File;
  * The Global Positioning Algorithm will not function and will throw an error if this program is not run first
  */
 @TeleOp(name = "Odometry System Calibration", group = "Calibration")
-@Disabled
 public class OdometryCalibration extends LinearOpMode {
     //Drive motors
     DcMotor right_front, right_back, left_front, left_back;
@@ -31,13 +30,13 @@ public class OdometryCalibration extends LinearOpMode {
     BNO055IMU imu;
 
     //Hardware Map Names for drive motors and odometry wheels. THIS WILL CHANGE ON EACH ROBOT, YOU NEED TO UPDATE THESE VALUES ACCORDINGLY
-    String rfName = "rf", rbName = "rb", lfName = "lf", lbName = "lb";
-    String verticalLeftEncoderName = rbName, verticalRightEncoderName = lfName, horizontalEncoderName = rfName;
+    String rfName = "rightFront", rbName = "rightBack", lfName = "leftFront", lbName = "leftBack";
+    String verticalLeftEncoderName = "vertLeft", verticalRightEncoderName = "rightFront", horizontalEncoderName = "sideEncoder";
 
     final double PIVOT_SPEED = 0.5;
 
     //The amount of encoder ticks for each inch the robot moves. THIS WILL CHANGE FOR EACH ROBOT AND NEEDS TO BE UPDATED HERE
-    final double COUNTS_PER_INCH = 307.699557;
+    final double COUNTS_PER_INCH = 1743.855179349648;
 
     ElapsedTime timer = new ElapsedTime();
 
@@ -169,7 +168,6 @@ public class OdometryCalibration extends LinearOpMode {
         left_front.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         left_back.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        left_front.setDirection(DcMotorSimple.Direction.REVERSE);
         right_front.setDirection(DcMotorSimple.Direction.REVERSE);
         right_back.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -199,6 +197,10 @@ public class OdometryCalibration extends LinearOpMode {
         right_back.setPower(rb);
         left_front.setPower(lf);
         left_back.setPower(lb);
+    }
+    public void zeroEncoders()
+    {
+
     }
 
 }

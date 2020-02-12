@@ -29,6 +29,8 @@ public class StandardTwowheelLocalizer extends TwoTrackingWheelLocalizer {
     public static double LATERAL_DISTANCE = 10; // in; distance between the left and right wheels
     public static double FORWARD_OFFSET = 4; // in; offset of the lateral wheel
 
+    public static final double COUNTS_PER_INCH = 1743.855179349648;
+
     private DcMotor frontEncoder,sideEncoder;
 
     private DriveTrain6547 bot;
@@ -51,8 +53,12 @@ public class StandardTwowheelLocalizer extends TwoTrackingWheelLocalizer {
         setBulkReadManual();
     }
 
-    public static double encoderTicksToInches(int ticks) {
-        return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;
+//    public static double encoderTicksToInches(int ticks) {
+//        return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;
+//    }
+    public static double encoderTicksToInches(int ticks)
+    {
+        return ticks/COUNTS_PER_INCH;
     }
 
     @NonNull

@@ -10,19 +10,17 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
  * Created by Sarthak on 10/4/2019.
  */
 @TeleOp(name = "My Odometry OpMode")
-@Disabled
-public class
-MyOdometryOpmode extends LinearOpMode {
+public class MyOdometryOpmode extends LinearOpMode {
     //Drive motors
     DcMotor right_front, right_back, left_front, left_back;
     //Odometry Wheels
     DcMotor verticalLeft, verticalRight, horizontal;
 
-    final double COUNTS_PER_INCH = 307.699557;
+    final double COUNTS_PER_INCH = 1743.855179349648;
 
     //Hardware Map Names for drive motors and odometry wheels. THIS WILL CHANGE ON EACH ROBOT, YOU NEED TO UPDATE THESE VALUES ACCORDINGLY
-    String rfName = "odo", rbName = "odo", lfName = "odo", lbName = "odo";
-    String verticalLeftEncoderName = rbName, verticalRightEncoderName = lfName, horizontalEncoderName = rfName;
+    String rfName = "rightFront", rbName = "rightBack", lfName = "leftFront", lbName = "leftBack";
+    String verticalLeftEncoderName = "vertLeft", verticalRightEncoderName = "rightFront", horizontalEncoderName = "sideEncoder";
 
     OdometryGlobalCoordinatePosition globalPositionUpdate;
 

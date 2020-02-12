@@ -11,17 +11,16 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
  * Example OpMode that runs the GlobalCoordinatePosition thread and accesses the (x, y, theta) coordinate values
  */
 @TeleOp(name = "Global Coordinate Position Test", group = "Calibration")
-@Disabled
 public class GlobalCoordinatePositionUpdateSample extends LinearOpMode {
 
     //Odometry encoder wheels
     DcMotor verticalRight, verticalLeft, horizontal;
 
     //The amount of encoder ticks for each inch the robot moves. This will change for each robot and needs to be changed here
-    final double COUNTS_PER_INCH = 307.699557;
+    final double COUNTS_PER_INCH = 1743.855179349648;
 
     //Hardware map names for the encoder wheels. Again, these will change for each robot and need to be updated below
-    String verticalLeftEncoderName = "rf", verticalRightEncoderName = "lf", horizontalEncoderName = "lb";
+    String verticalLeftEncoderName = "vertLeft", verticalRightEncoderName = "rightFront", horizontalEncoderName = "sideEncoder";
 
     @Override
     public void runOpMode() throws InterruptedException {

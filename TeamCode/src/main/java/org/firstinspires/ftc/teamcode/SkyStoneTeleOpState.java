@@ -49,7 +49,7 @@ public class SkyStoneTeleOpState extends LinearOpMode {
 
         telemetry.log().add("DONE INITIALING");
 
-       // bot.setPoseEstimate(new Pose2d(-36,-63,Math.toRadians(90)));
+        bot.setPoseEstimate(new Pose2d(-36,-63,Math.toRadians(90)));
 
         //get the angle the robot was at when auton ended
         bot.setAngleZzeroValue(-bot.readFile(bot.GYRO_ANGLE_FILE_NAME));
@@ -58,6 +58,8 @@ public class SkyStoneTeleOpState extends LinearOpMode {
         telemetry.log().add("Ready to start");
         telemetry.log().add("gyro angle: " + bot.getIMUAngle());
         telemetry.log().add("lift max: " + bot.liftMax);
+
+        bot.setBulkReadAuto();
 
         waitForStart();
 
@@ -192,7 +194,8 @@ public class SkyStoneTeleOpState extends LinearOpMode {
             /*
             Telemetry
              */
-
+            //Pose2d pos = bot.getPoseEstimate();
+            //bot.setPoseEstimate(new Pose2d(pos.getX(), pos.getY(), bot.getRawExternalHeading()+Math.toRadians(90)));
             bot.updateRobotPosRoadRunner(); //display robot's position
         }
         bot.stopRobot();
