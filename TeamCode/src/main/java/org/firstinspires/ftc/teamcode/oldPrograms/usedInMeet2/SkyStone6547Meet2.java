@@ -31,7 +31,7 @@ import org.openftc.revextensions2.RevBulkData;
 import java.io.File;
 import java.util.Locale;
 
-import edu.spa.ftclib.internal.state.Button;
+import org.firstinspires.ftc.teamcode.util.state.Button;
 /*
 This is the master class with all the methods used in autonomous and tele-op.
  */

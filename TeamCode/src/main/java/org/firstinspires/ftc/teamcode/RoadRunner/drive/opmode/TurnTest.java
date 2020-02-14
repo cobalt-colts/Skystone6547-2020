@@ -24,7 +24,6 @@ public class TurnTest extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        //bot.turnRealtiveSync(90);
-        bot.turnRealtiveSync(180);
+        bot.turnSync(Math.toRadians(90));
     }
 }

@@ -23,13 +23,13 @@ import java.util.List;
 @Config
 public class StandardTwowheelLocalizer extends TwoTrackingWheelLocalizer {
     public static double TICKS_PER_REV = 8192; //(8192 Counts per rev) 2048 Cycles per Revolution.  Info got from rev site
-    public static double WHEEL_RADIUS = 0.8418087058333801; // in  //19 mm
+    public static double WHEEL_RADIUS = 0.765; // in  //19 mm
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 
     public static double LATERAL_DISTANCE = 10; // in; distance between the left and right wheels
     public static double FORWARD_OFFSET = 4; // in; offset of the lateral wheel
 
-    public static final double COUNTS_PER_INCH = 1743.855179349648;
+    //public static double COUNTS_PER_INCH = 1743.855179349648;
 
     private DcMotor frontEncoder,sideEncoder;
 
@@ -38,28 +38,28 @@ public class StandardTwowheelLocalizer extends TwoTrackingWheelLocalizer {
     private List<LynxModule> allHubs;
     public StandardTwowheelLocalizer(HardwareMap hardwareMap, DriveTrain6547 bot) {
         super(Arrays.asList(
-                new Pose2d(-5, 1.625, 0), //sideEncoder parrel to drive train
-                new Pose2d(-5.125, -2, Math.toRadians(90)) // frontEncoder purpendiculat to drive train
+                new Pose2d(1.625, -5, Math.toRadians(0)), //sideEncoder parrel to drive train
+                new Pose2d(2, -5.125, Math.toRadians(90)) // frontEncoder purpendiculat to drive train
         ));
 
         allHubs = hardwareMap.getAll(LynxModule.class);
         this.bot = bot;
 
         sideEncoder = hardwareMap.dcMotor.get("sideEncoder");
-        frontEncoder = hardwareMap.dcMotor.get("rightFront");
+        frontEncoder = hardwareMap.dcMotor.get("vertRight");
 
         sideEncoder.setDirection(DcMotorSimple.Direction.REVERSE);
 
         setBulkReadManual();
     }
 
-//    public static double encoderTicksToInches(int ticks) {
-//        return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;
-//    }
-    public static double encoderTicksToInches(int ticks)
-    {
-        return ticks/COUNTS_PER_INCH;
+    public static double encoderTicksToInches(int ticks) {
+        return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;
     }
+   // public static double encoderTicksToInches(int ticks)
+   // {
+     //   return ticks/COUNTS_PER_INCH;
+//    }
 
     @NonNull
     @Override

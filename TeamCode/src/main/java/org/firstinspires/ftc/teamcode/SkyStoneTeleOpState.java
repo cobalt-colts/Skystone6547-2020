@@ -9,8 +9,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547;
 
-import edu.spa.ftclib.internal.state.ToggleBoolean;
-import edu.spa.ftclib.internal.state.ToggleDouble;
+import org.firstinspires.ftc.teamcode.util.state.ToggleDouble;
+import org.firstinspires.ftc.teamcode.util.state.ToggleBoolean;
 
 /*
 This is the tele-op we use to drive the robot

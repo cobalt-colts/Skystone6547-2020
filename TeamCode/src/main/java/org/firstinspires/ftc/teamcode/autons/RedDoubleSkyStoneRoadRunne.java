@@ -40,8 +40,13 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
 
         //Go to Skystones
         bot.followTrajectorySync(bot.trajectoryBuilder()
-                .strafeTo(new Vector2d(-36,-36))
-                .build());
+        .splineTo(new Pose2d(-35,-36,Math.toRadians(90)))
+        .build());
+
+        sleep(500);
+//        bot.followTrajectorySync(bot.trajectoryBuilder()
+//                .strafeTo(new Vector2d(-36,-36))
+//                .build());
         //scan stones
         if (bot.isSkystone(bot.colorSensorSideLeft))
         {
@@ -49,8 +54,11 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
             bot.skyStoneLoc = SkyStoneLoc.LEFT;
             //back up a bit and strafe left
             bot.followTrajectorySync(bot.trajectoryBuilder()
-            .back(3)
-                    .strafeLeft(15)
+            .back(5)
+            .build());
+
+            bot.followTrajectorySync(bot.trajectoryBuilder()
+            .splineTo(new Pose2d(-40,-30,Math.toRadians(90)))
             .build());
             telemetry.log().add("LEFT");
 
@@ -62,8 +70,10 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
             bot.skyStoneLoc = SkyStoneLoc.RIGHT;
             //drive back a bit and strafe right
             bot.followTrajectorySync(bot.trajectoryBuilder()
-                    .back(3)
-                    .strafeRight(15)
+                    .back(5)
+                    .build());
+            bot.followTrajectorySync(bot.trajectoryBuilder()
+                    .splineTo(new Pose2d(-32,-30,Math.toRadians(90)))
                     .build());
         }
         else

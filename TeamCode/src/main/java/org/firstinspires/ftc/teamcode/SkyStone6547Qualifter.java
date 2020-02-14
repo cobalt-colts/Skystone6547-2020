@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
-import edu.spa.ftclib.internal.state.Button;
+import org.firstinspires.ftc.teamcode.util.state.Button;
 /*
 This is the master class with all the methods used in autonomous and tele-op.
  */

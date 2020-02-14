@@ -17,8 +17,6 @@ import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.SampleMecanumDriv
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.SampleMecanumDriveREV;
 import org.firstinspires.ftc.teamcode.RoadRunner.util.LoggingUtil;
 
-import edu.spa.ftclib.internal.Robot;
-
 import static org.firstinspires.ftc.teamcode.RoadRunner.drive.DriveConstants.RUN_USING_ENCODER;
 import static org.firstinspires.ftc.teamcode.RoadRunner.drive.DriveConstants.getMaxRpm;
 import static org.firstinspires.ftc.teamcode.RoadRunner.drive.DriveConstants.rpmToVelocity;

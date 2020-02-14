@@ -6,9 +6,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.util.MiniPID;
 import org.firstinspires.ftc.teamcode.oldPrograms.usedInMeet2.SkyStone6547Meet2;
 
-import edu.spa.ftclib.internal.state.Button;
-import edu.spa.ftclib.internal.state.ToggleBoolean;
-import edu.spa.ftclib.internal.state.ToggleInt;
+import org.firstinspires.ftc.teamcode.util.state.Button;
+import org.firstinspires.ftc.teamcode.util.state.ToggleInt;
+import org.firstinspires.ftc.teamcode.util.state.ToggleBoolean;
 
 @TeleOp(name="PID tuner")
 @Disabled

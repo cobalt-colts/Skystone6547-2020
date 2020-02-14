@@ -21,8 +21,8 @@ public class rawOdometryTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         rightFrontEncoder = hardwareMap.dcMotor.get("sideEncoder");
-        sideEncoder = hardwareMap.dcMotor.get("rightFront");
-        leftFrontEncoder = hardwareMap.dcMotor.get("vertLeft");
+        sideEncoder = hardwareMap.dcMotor.get("vertRight");
+        leftFrontEncoder = hardwareMap.dcMotor.get("intake");
 
         zeroEncoders();
         //allHubs = hardwareMap.getAll(LynxModule.class);

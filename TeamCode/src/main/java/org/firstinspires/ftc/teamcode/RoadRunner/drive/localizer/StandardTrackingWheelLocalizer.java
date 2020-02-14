@@ -46,9 +46,9 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
                 new Pose2d(-2, -5.125, Math.toRadians(90)) // front
         ));
 
-        leftEncoder = hardwareMap.dcMotor.get("vertLeft");
+        leftEncoder = hardwareMap.dcMotor.get("intake");
         rightEncoder = hardwareMap.dcMotor.get("sideEncoder");
-        frontEncoder = hardwareMap.dcMotor.get("rightFront");
+        frontEncoder = hardwareMap.dcMotor.get("vertRight");
 
         rightEncoder.setDirection(DcMotorSimple.Direction.REVERSE);
     }

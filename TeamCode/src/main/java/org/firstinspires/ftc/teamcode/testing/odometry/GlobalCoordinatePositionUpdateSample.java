@@ -20,7 +20,7 @@ public class GlobalCoordinatePositionUpdateSample extends LinearOpMode {
     final double COUNTS_PER_INCH = 1743.855179349648;
 
     //Hardware map names for the encoder wheels. Again, these will change for each robot and need to be updated below
-    String verticalLeftEncoderName = "vertLeft", verticalRightEncoderName = "rightFront", horizontalEncoderName = "sideEncoder";
+    String verticalLeftEncoderName = "intake", verticalRightEncoderName = "sideEncoder", horizontalEncoderName = "vertRight";
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -41,7 +41,6 @@ public class GlobalCoordinatePositionUpdateSample extends LinearOpMode {
         horizontal encoder travels to the right, it returns positive value
         */
         verticalLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        verticalRight.setDirection(DcMotorSimple.Direction.REVERSE);
         horizontal.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //Set the mode of the odometry encoders to RUN_WITHOUT_ENCODER

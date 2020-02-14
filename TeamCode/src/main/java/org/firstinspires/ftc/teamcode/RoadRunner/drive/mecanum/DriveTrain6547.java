@@ -53,7 +53,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
-import edu.spa.ftclib.internal.state.Button;
+import org.firstinspires.ftc.teamcode.util.state.Button;
 
 import static org.firstinspires.ftc.teamcode.RoadRunner.drive.DriveConstants.MOTOR_VELO_PID;
 import static org.firstinspires.ftc.teamcode.RoadRunner.drive.DriveConstants.RUN_USING_ENCODER;
@@ -161,7 +161,8 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
 
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
-        setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
+        setLocalizer(new StandardTwowheelLocalizer(hardwareMap,this)); //two wheel odometry
+        //setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap)); //three wheel odometry
 
         initOtherHardware();
 
@@ -457,7 +458,7 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
     @Override
     public void runAtAllTimes() //anything in here runs at all times during auton because this method is ran during roadRunner's state machine
     {
-        if (true) setLiftToTargetPos(getLiftTargetPos(), 50);
+        if (runLift) setLiftToTargetPos(getLiftTargetPos(), 50);
         outputTelemetry();
     }
     public boolean isLiftAtTargetPos()

@@ -6,10 +6,8 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.oldPrograms.usedInMeet2.SkyStone6547Meet2;
-
-import edu.spa.ftclib.internal.state.ToggleBoolean;
-import edu.spa.ftclib.internal.state.ToggleDouble;
+import org.firstinspires.ftc.teamcode.util.state.ToggleDouble;
+import org.firstinspires.ftc.teamcode.util.state.ToggleBoolean;
 
 /*
 This is the tele-op we use to drive the robot
