@@ -121,9 +121,9 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
     LinearOpMode opMode;
     HardwareMap hardwareMap;
 
-    double liftTargetPos=0;
-
     boolean isLiftAtStartingPos;
+
+    private boolean runIntakeUntilStone = false;
 
     public DriveTrain6547(LinearOpMode _opMode) {
 
@@ -365,6 +365,7 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
     public void stopIntake()
     {
         intake.setPower(0);
+        setRunIntakeUntilStone(false);
         opMode.telemetry.log().add("stopped intake");
     }
     public void setGrabber(double pos)
@@ -464,8 +465,32 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
     @Override
     public void runAtAllTimes() //anything in here runs at all times during auton because this method is ran during roadRunner's state machine
     {
-        if (runLift) setLiftToTargetPos(getLiftTargetPos(), 50);
+        if (runLift) setLiftToTargetPos(getLiftTargetPos(), getLiftLeeway());
+        if (runIntakeUntilStone) runIntakeUntilStone();
         //outputTelemetry();
+    }
+    public void runIntakeUntilStone()
+    {
+        runIntakeUntilStone(.75);
+    }
+    public void runIntakeUntilStone(double power)
+    {
+        boolean isStoneAtIntake = isStone(intakeColorSensor);
+        boolean isStoneAtEnd = isStone(endColorSensor);
+
+        if (isStoneAtIntake)
+        {
+            intake(.25); //If a stone is under the bot, go slower so it reaches the end
+            if (isStoneAtEnd) {
+                stopIntake(); //if stone reaches the end, stop intaking.
+                //stopIntake includes the setRunIntakeUntilStone(false) method
+            }
+
+        }
+        else //if nothing is detected, intake at disired power
+        {
+            intake(power);
+        }
     }
     public boolean isLiftAtTargetPos()
     {
@@ -541,6 +566,10 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
     public boolean isSkystone(ColorSensor colorSensorToBeUsed) //checks if color sensor sees a skystone
     {
         return (colorSensorToBeUsed.red()*colorSensorToBeUsed.green()) / Math.pow(colorSensorToBeUsed.blue(),2) < 3;
+    }
+    public boolean isStone(ColorSensor colorSensor)
+    {
+        return colorSensor.alpha()>170;
     }
     public void zeroEncoders() //set all the encoders to zero
     {
@@ -625,6 +654,15 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
 
     public ElapsedTime getRuntime() {
         return runtime;
+    }
+
+    public void setRunIntakeUntilStone(boolean val)
+    {
+        runIntakeUntilStone = val;
+    }
+    public boolean getRunIntakeUntilStone()
+    {
+        return runIntakeUntilStone;
     }
     //--------------------------------------------------------------
     //  Road Runner
