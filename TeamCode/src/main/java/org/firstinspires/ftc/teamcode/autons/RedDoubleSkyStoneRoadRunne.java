@@ -13,7 +13,7 @@ import org.opencv.core.Mat;
 /**
  * Created by Drew from 6547 on 9/27/2019.
  */
-@Autonomous(name = "RED double skystone Road Runner", group = "auton")
+@Autonomous(name = "RED double skystone State", group = "auton")
 public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
 
     public void runOpMode()
@@ -27,7 +27,7 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
         target value
          */
         bot.setLiftTargetPos(bot.liftStartingPos);
-        bot.setRunLift(true);
+        bot.setRunLift(false);
 
         //set the position of the bot
         bot.setPoseEstimate(new Pose2d(-36, -62,Math.toRadians(90)));
@@ -40,7 +40,7 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
 
         //Go to Skystones
         bot.followTrajectorySync(bot.trajectoryBuilder()
-        .splineTo(new Pose2d(-35,-36,Math.toRadians(90)))
+        .splineTo(new Pose2d(-35,-32,Math.toRadians(90)))
         .build());
 
         sleep(500);
@@ -56,9 +56,11 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
             bot.followTrajectorySync(bot.trajectoryBuilder()
             .back(5)
             .build());
+            //open intake
+            bot.intake(1);
 
             bot.followTrajectorySync(bot.trajectoryBuilder()
-            .splineTo(new Pose2d(-40,-30,Math.toRadians(90)))
+            .splineTo(new Pose2d(-46,-24,Math.toRadians(135)))
             .build());
             telemetry.log().add("LEFT");
 
@@ -72,14 +74,19 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
             bot.followTrajectorySync(bot.trajectoryBuilder()
                     .back(5)
                     .build());
+            //open intake
+            bot.intake(1);
+
             bot.followTrajectorySync(bot.trajectoryBuilder()
-                    .splineTo(new Pose2d(-32,-30,Math.toRadians(90)))
+                    .splineTo(new Pose2d(-26,-24,Math.toRadians(135)))
                     .build());
         }
         else
         {
+            //open intake
+            bot.intake(1);
             bot.followTrajectorySync(bot.trajectoryBuilder()
-            .back(3)
+                    .splineTo(new Pose2d(-36,-24,Math.toRadians(90)))
             .build());
             //---SKYSTONE CENTER---
             //go back a bit
@@ -89,46 +96,26 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
         }
 
         //open intake
-        bot.outtake(1);
-        sleep(500);
         bot.intake(1);
 
         //drive forward and intake stone
-        bot.followTrajectorySync(bot.trajectoryBuilder()
-                .forward(18)
-        .build());
+//        bot.followTrajectorySync(bot.trajectoryBuilder()
+//                .forward(18)
+//        .build());
 
         //spline to under the skybridge
         bot.followTrajectorySync(bot.trajectoryBuilder()
                 .reverse()
-        .splineTo(new Pose2d(0,-41,Math.toRadians(180)))
+        .splineTo(new Pose2d(0,-38,Math.toRadians(180)))
+                .splineTo(new Pose2d(15,-38,Math.toRadians(180)))
                 .build());
 
         bot.turnRealtiveSync(Math.toRadians(180));
 
-        bot.setLiftTargetPos(bot.lift.getCurrentPosition() + 250);
-        //bot.setLiftToTargetPos(bot.getLiftTargetPos(), 50);
 
-        //drive forward a bit to relay the skystone in the build zone
+        //go to other stone
         bot.followTrajectorySync(bot.trajectoryBuilder()
-        .back(14)
-        .build());
-
-        bot.moveLift(500,50);
-
-        bot.setLiftTargetPos(bot.lift.getCurrentPosition() + 250);
-
-
-        //go back under the skybridge
-       bot.followTrajectorySync(bot.trajectoryBuilder()
-        .forward(12)
-        .build());
-
-        bot.moveLift(0, 50);
-
-        //spline to next to the other stones
-        bot.followTrajectorySync(bot.trajectoryBuilder()
-        .splineTo(new Pose2d(-30,-40, Math.toRadians(180)))
+        .splineTo(new Pose2d(-25,-30,Math.toRadians(180)))
         .build());
 
         bot.turnRealtiveSync(Math.toRadians(180));
@@ -137,22 +124,28 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
         if (bot.skyStoneLoc == SkyStoneLoc.RIGHT)
         {
             //if right, for forward a tiny bit and strafe
+//            bot.followTrajectorySync(bot.trajectoryBuilder()
+//            .forward(4)
+//            .build());
+//            bot.followTrajectorySync(bot.trajectoryBuilder()
+//            .strafeRight(25)
+//                    .build());
             bot.followTrajectorySync(bot.trajectoryBuilder()
-            .forward(4)
+            .splineTo(new Pose2d(-40,-20,Math.toRadians(135)))
             .build());
-            bot.followTrajectorySync(bot.trajectoryBuilder()
-            .strafeRight(25)
-                    .build());
         }
         else if (bot.skyStoneLoc == SkyStoneLoc.CENTER)
         {
             //if center, go forward a bit and strafe
+//            bot.followTrajectorySync(bot.trajectoryBuilder()
+//            .forward(13)
+//            .build());
+//
+//            bot.followTrajectorySync(bot.trajectoryBuilder()
+//            .strafeRight(15)
+//            .build());
             bot.followTrajectorySync(bot.trajectoryBuilder()
-            .forward(13)
-            .build());
-
-            bot.followTrajectorySync(bot.trajectoryBuilder()
-            .strafeRight(25)
+            .splineTo(new Pose2d(-50,-22, Math.toRadians(135)))
             .build());
 
 
@@ -160,41 +153,31 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
         else if (bot.skyStoneLoc == SkyStoneLoc.LEFT)
         {
             //if left, go forward a lot and strafe
-            bot.followTrajectorySync(bot.trajectoryBuilder()
-                    .forward(20)
-                    .build());
+//            bot.followTrajectorySync(bot.trajectoryBuilder()
+//                    .forward(20)
+//                    .build());
+//
+//            bot.followTrajectorySync(bot.trajectoryBuilder()
+//                    .strafeRight(15)
+//                    .build());
 
             bot.followTrajectorySync(bot.trajectoryBuilder()
-                    .strafeRight(25)
+                    .splineTo(new Pose2d(-58,-20,Math.toRadians(135)))
                     .build());
         }
-        //grab SkyStone
-        bot.followTrajectorySync(bot.trajectoryBuilder()
-        .forward(8)
-        .build());
 
-        //get in path of skybridge
-
-
-        bot.turnRealtiveSync(Math.toRadians(180));
 
         //go under skybridge and release stone
-        bot.followTrajectorySync(bot.trajectoryBuilder()
-                .back(35)
-                .build());
+       bot.followTrajectorySync(bot.trajectoryBuilder()
+               .reverse()
+       .splineTo(new Pose2d(0,-36,Math.toRadians(180)))
+               .splineTo(new Pose2d(-10,-36,Math.toRadians(180)))
+       .build());
 
-        bot.moveLift(500,50);
+       bot.followTrajectorySync(bot.trajectoryBuilder()
+       .strafeTo(new Vector2d(0,-36))
+       .build());
 
-        //park under skybridge
-        bot.followTrajectorySync(bot.trajectoryBuilder()
-        .forward(9)
-        .build());
-
-        bot.moveLift(0,50);
-
-        bot.followTrajectorySync(bot.trajectoryBuilder()
-                .forward(10)
-                .build());
 
         //save gyro angle
         bot.writeFile(bot.GYRO_ANGLE_FILE_NAME, bot.getIMUAngle());

@@ -33,6 +33,7 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.view.View;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -40,6 +41,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547;
 
 import java.util.Locale;
 
@@ -54,7 +56,7 @@ import java.util.Locale;
  */
 
 @TeleOp
-@Disabled
+@Config
 public class ColorSensorTest extends LinearOpMode {
 
     /**
@@ -86,32 +88,15 @@ public class ColorSensorTest extends LinearOpMode {
      * to the target object.
      *
      */
-    ColorSensor sensorColor;
-    DistanceSensor sensorDistance;
-
+    public static double INTAKE_SPEED = .5;
+    public static double INTAKE_SPEED_2 = .25;
     @Override
     public void runOpMode() {
 
+
+
         // get a reference to the color sensor.
-        sensorColor = hardwareMap.get(ColorSensor.class, "color sensor");
-
-        // get a reference to the distance sensor that shares the same name.
-        sensorDistance = hardwareMap.get(DistanceSensor.class, "color sensor");
-
-        // hsvValues is an array that will hold the hue, saturation, and value information.
-        float[] hsvValues = {0F, 0F, 0F};
-
-        // values is a reference to the hsvValues array.
-        final float[] values = hsvValues;
-
-        // sometimes it helps to multiply the raw RGB values with a scale factor
-        // to amplify/attentuate the measured values.
-        final double SCALE_FACTOR = 255;
-
-        // get a reference to the RelativeLayout so we can change the background
-        // color of the Robot Controller app to match the hue detected by the RGB sensor.
-        int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
-        final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
+        DriveTrain6547 bot = new DriveTrain6547(this);
 
         // wait for the start button to be pressed.
         waitForStart();
@@ -122,37 +107,47 @@ public class ColorSensorTest extends LinearOpMode {
             // convert the RGB values to HSV values.
             // multiply by the SCALE_FACTOR.
             // then cast it back to int (SCALE_FACTOR is a double)
-            Color.RGBToHSV((int) (sensorColor.red() * SCALE_FACTOR),
-                    (int) (sensorColor.green() * SCALE_FACTOR),
-                    (int) (sensorColor.blue() * SCALE_FACTOR),
-                    hsvValues);
+
+            boolean isStone = isStone(bot.intakeColorSensor);
+
+            if (isStone || isStone(bot.endColorSensor))
+            {
+                if (isStone(bot.endColorSensor))
+                {
+                    bot.stopIntake();
+                }
+                else
+                {
+                    bot.intake(INTAKE_SPEED_2);
+                }
+            }
+            else
+            {
+                bot.intake(INTAKE_SPEED);
+            }
 
             // send the info back to driver station using telemetry function.
-            telemetry.addData("Distance (cm)",
-                    String.format(Locale.US, "%.02f", sensorDistance.getDistance(DistanceUnit.CM)));
-            telemetry.addData("Alpha", sensorColor.alpha());
-            telemetry.addData("Red  ", sensorColor.red());
-            telemetry.addData("Green", sensorColor.green());
-            telemetry.addData("Blue ", sensorColor.blue());
-            telemetry.addData("Hue", hsvValues[0]);
+            telemetry.addData("Is Intake Stone: " , isStone(bot.intakeColorSensor));
+            telemetry.addData("Intake Alpha", bot.intakeColorSensor.alpha());
+            telemetry.addData("Intake Red  ", bot.intakeColorSensor.red());
+            telemetry.addData("Intake Green", bot.intakeColorSensor.green());
+            telemetry.addData("Intake Blue ", bot.intakeColorSensor.blue());
+            telemetry.addData("Is End Stone", isStone(bot.endColorSensor));
+            telemetry.addData("Is End SkyStone", bot.isSkystone(bot.endColorSensor));
+            telemetry.addData("End Alpha", bot.endColorSensor.alpha());
+            telemetry.addData("End Red  ", bot.endColorSensor.red());
+            telemetry.addData("End Green", bot.endColorSensor.green());
+            telemetry.addData("End Blue ", bot.endColorSensor.blue());
 
             // change the background color to match the color detected by the RGB sensor.
             // pass a reference to the hue, saturation, and value array as an argument
             // to the HSVToColor method.
-            relativeLayout.post(new Runnable() {
-                public void run() {
-                    relativeLayout.setBackgroundColor(Color.HSVToColor(0xff, values));
-                }
-            });
 
             telemetry.update();
         }
-
-        // Set the panel back to the default color
-        relativeLayout.post(new Runnable() {
-            public void run() {
-                relativeLayout.setBackgroundColor(Color.WHITE);
-            }
-        });
+    }
+    public boolean isStone(ColorSensor colorSensor)
+    {
+        return colorSensor.alpha()>170;
     }
 }

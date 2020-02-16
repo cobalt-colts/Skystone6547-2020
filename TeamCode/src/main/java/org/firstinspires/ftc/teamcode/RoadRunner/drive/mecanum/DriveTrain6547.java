@@ -14,6 +14,7 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -86,6 +87,8 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
 
     public ColorSensor colorSensorSideLeft;
     public ColorSensor colorSensorSideRight;
+    public ColorSensor intakeColorSensor;
+    public ColorSensor endColorSensor;
 
     public SkyStoneLoc skyStoneLoc=SkyStoneLoc.CENTER; //defualt to center
 
@@ -102,6 +105,8 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
 
     Rev2mDistanceSensor distanceSensorX;
     Rev2mDistanceSensor distanceSensorY;
+
+    public AnalogInput limitSwitch;
 
     List<Integer> screamIds = new ArrayList<>();//screaming robot (don't put in notebook)
 
@@ -169,8 +174,7 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
     }
     public void initOtherHardware()
     {
-        distanceSensorX = hardwareMap.get(Rev2mDistanceSensor.class, "d boi");
-        distanceSensorY = hardwareMap.get(Rev2mDistanceSensor.class, "d boi1");
+        limitSwitch = hardwareMap.get(AnalogInput.class, "limitSwitch");
         lift =  hardwareMap.get(DcMotorEx.class, "lift");
         intake = hardwareMap.get(DcMotorEx.class, "intake");
         fondationGrabber = hardwareMap.get(Servo.class, "f grabber");
@@ -180,6 +184,8 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
 
         colorSensorSideRight = hardwareMap.get(ColorSensor.class, "color sensor"); //set color sensors
         colorSensorSideLeft = hardwareMap.get(ColorSensor.class, "color sensor2");
+        intakeColorSensor = hardwareMap.get(ColorSensor.class, "intake color sensor");
+        endColorSensor = hardwareMap.get(ColorSensor.class,"end color sensor");
 
         allHubs = hardwareMap.getAll(LynxModule.class);
 
@@ -459,7 +465,7 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
     public void runAtAllTimes() //anything in here runs at all times during auton because this method is ran during roadRunner's state machine
     {
         if (runLift) setLiftToTargetPos(getLiftTargetPos(), 50);
-        outputTelemetry();
+        //outputTelemetry();
     }
     public boolean isLiftAtTargetPos()
     {

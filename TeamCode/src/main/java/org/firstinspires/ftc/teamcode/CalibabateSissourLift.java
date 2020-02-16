@@ -15,6 +15,7 @@ public class CalibabateSissourLift extends LinearOpMode {
         telemetry.log().add("ready to start");
         waitForStart();
         telemetry.log().add("Use the left stick and the right stick to move the lift");
+        bot.setBulkReadOff();
         
         
 

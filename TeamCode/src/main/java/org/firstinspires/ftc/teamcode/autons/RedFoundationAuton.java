@@ -1,22 +1,28 @@
 package org.firstinspires.ftc.teamcode.autons;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.RoadRunner.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547;
 
 
 /*
     This auton pulls the foundation to the build site and parks under the skybridge for the RED side
  */
-@Autonomous(name = "RED Foundation Auton road runner", group = "auton")
+@Autonomous(name = "RED Foundation Auton State", group = "auton")
 public class RedFoundationAuton extends LinearOpMode
 {
 
     public void runOpMode()
     {
+        DriveConstants.BASE_CONSTRAINTS =  new DriveConstraints(
+                100.0, 70, 0.0,
+                Math.toRadians(180.0), Math.toRadians(180.0), 0.0);
+
         DriveTrain6547 bot = new DriveTrain6547(this); //the bot
           /*
         Make the lift stay where it's at.  The scissor lift's force is stronger
@@ -25,7 +31,7 @@ public class RedFoundationAuton extends LinearOpMode
         target value
          */
         bot.setLiftTargetPos(bot.liftStartingPos);
-        bot.setRunLift(true);
+        bot.setRunLift(false);
 
         //set position of robot
         bot.setPoseEstimate(new Pose2d(35,-62,Math.toRadians(270)));
@@ -37,9 +43,11 @@ public class RedFoundationAuton extends LinearOpMode
         waitForStart();
 
         //drive to foundation
+
+
         bot.followTrajectorySync(bot.trajectoryBuilder()
                 .reverse()
-        .splineTo(new Pose2d(40,-34,Math.toRadians(270)))
+        .splineTo(new Pose2d(45,-27,Math.toRadians(270)))
                 .build());
 
         //grab foundation
@@ -48,17 +56,23 @@ public class RedFoundationAuton extends LinearOpMode
         sleep(1000);
 
         //pull foundation
+//        bot.followTrajectorySync(bot.trajectoryBuilder()
+//                .forward(36)
+//                .build());
+
         bot.followTrajectorySync(bot.trajectoryBuilder()
-                .forward(36)
-                .build());
+                    .splineTo(new Pose2d(35, -65, Math.toRadians(180)))
+                    .build());
+
+        bot.turnRealtiveSync(Math.toRadians(90));
 
         sleep(100);
 
         //turn 90 to put fondation to the wall
-        for (int i = 0; i < 10; i++)
-        {
-            bot.turnRealtiveSync(Math.toRadians(180));
-        }
+//        for (int i = 0; i < 10; i++)
+//        {
+//            bot.turnRealtiveSync(Math.toRadians(180));
+//        }
 
         //release foundation grabber
         bot.setFondationGrabber(0);
@@ -71,14 +85,19 @@ public class RedFoundationAuton extends LinearOpMode
         .build());
 
         //strafe to wall
-       bot.followTrajectorySync(bot.trajectoryBuilder()
-       .strafeLeft(20)
-       .build());
+//       bot.followTrajectorySync(bot.trajectoryBuilder()
+//       .strafeLeft(20)
+//       .build());
+//
+//       //drive forward to park under SkyBridge
+//       bot.followTrajectorySync(bot.trajectoryBuilder()
+//       .forward(36)
+//       .build());
 
-       //drive forward to park under SkyBridge
-       bot.followTrajectorySync(bot.trajectoryBuilder()
-       .forward(36)
-       .build());
+        bot.followTrajectorySync(bot.trajectoryBuilder()
+                .splineTo(new Pose2d(30,-65,Math.toRadians(180)))
+        .splineTo(new Pose2d(0,-75,Math.toRadians(180)))
+        .build());
 
        //save gyro angle
         bot.writeFile(bot.GYRO_ANGLE_FILE_NAME, bot.getIMUAngle());

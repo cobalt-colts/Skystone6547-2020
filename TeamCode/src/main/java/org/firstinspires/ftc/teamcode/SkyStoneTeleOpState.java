@@ -156,25 +156,12 @@ public class SkyStoneTeleOpState extends LinearOpMode {
             }
 
             double liftSpeed = -gamepad2.left_stick_y;
-
-            if (bot.lift.getCurrentPosition() > bot.getLiftStartingPos() + 1000)
-            {
-                //probably should change this if statement, but I'm too scared too.
-            }
-            else
-            {
-                if (liftSpeed > 0) liftSpeed*=.75;
-            }
             /*
             Lift controls
             Deadzone of .05
             has a maximum, but no minimum
              */
-            if (liftSpeed > .05 && bot.lift.getCurrentPosition() < bot.liftMax) //if lift is below max and speed is outside of deadzone
-            {
-                bot.setLiftPower(liftSpeed);
-            }
-            else if (liftSpeed < -.05) //if speed is down and outside of deadzone
+            if (liftSpeed > .05 || liftSpeed < -.05) //if lift is below max and speed is outside of deadzone
             {
                 bot.setLiftPower(liftSpeed);
             }
