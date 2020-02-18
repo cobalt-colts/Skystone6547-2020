@@ -4,14 +4,13 @@ import android.support.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.localization.ThreeTrackingWheelLocalizer;
 import com.acmerobotics.roadrunner.localization.TwoTrackingWheelLocalizer;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547;
+import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547State;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,10 +32,10 @@ public class StandardTwowheelLocalizer extends TwoTrackingWheelLocalizer {
 
     private DcMotor frontEncoder,sideEncoder;
 
-    private DriveTrain6547 bot;
+    private DriveTrain6547State bot;
 
     private List<LynxModule> allHubs;
-    public StandardTwowheelLocalizer(HardwareMap hardwareMap, DriveTrain6547 bot) {
+    public StandardTwowheelLocalizer(HardwareMap hardwareMap, DriveTrain6547State bot) {
         super(Arrays.asList(
                 new Pose2d(1.625, -5, Math.toRadians(0)), //sideEncoder parrel to drive train
                 new Pose2d(-2, -5.125, Math.toRadians(90)) // frontEncoder purpendiculat to drive train

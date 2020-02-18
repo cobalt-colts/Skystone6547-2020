@@ -30,16 +30,12 @@
 package org.firstinspires.ftc.teamcode.testing;
 
 import com.qualcomm.hardware.lynx.LynxModule;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.RobotLog;
 
-import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547;
+import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547State;
 
-import java.util.Iterator;
 import java.util.List;
 
 /*
@@ -93,7 +89,7 @@ public class bulkReadTest extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        DriveTrain6547 bot = new DriveTrain6547(this);
+        DriveTrain6547State bot = new DriveTrain6547State(this);
 
         int cycles;
 

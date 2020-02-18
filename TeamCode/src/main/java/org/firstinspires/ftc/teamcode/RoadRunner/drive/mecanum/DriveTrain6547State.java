@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.oldPrograms.usedInQualifier;
+package org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum;
 
 import android.support.annotation.NonNull;
 
@@ -11,6 +11,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -20,22 +21,19 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.ReadWriteFile;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.localizer.StandardTwowheelLocalizer;
 import org.firstinspires.ftc.teamcode.RoadRunner.util.AxesSigns;
 import org.firstinspires.ftc.teamcode.RoadRunner.util.BNO055IMUUtil;
 import org.firstinspires.ftc.teamcode.RoadRunner.util.DashboardUtil;
-import org.firstinspires.ftc.teamcode.SkyStoneLoc;
-import org.firstinspires.ftc.teamcode.util.MiniPID;
-
+import org.firstinspires.ftc.teamcode.util.SkyStoneLoc;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import org.firstinspires.ftc.teamcode.util.state.Button;
 
@@ -48,10 +46,7 @@ import static org.firstinspires.ftc.teamcode.RoadRunner.drive.DriveConstants.get
  * Simple mecanum drive hardware implementation for REV hardware. If your hardware configuration
  * satisfies the requirements, SampleMecanumDriveREVOptimized is highly recommended.
  */
-@SuppressWarnings({"unchecked", "deprecated"})
-public class DriveTrain6547 extends MecanumDriveBase6547 {
-    private final double encoderTicksPerRotation=205; //not used
-    final double circumferenceOfWheel=12.566370614359172; //not used
+public class DriveTrain6547State extends MecanumDriveBase6547State {
 
     private static double angleZzeroValue=0;
 
@@ -73,6 +68,8 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
 
     public ColorSensor colorSensorSideLeft;
     public ColorSensor colorSensorSideRight;
+    public ColorSensor intakeColorSensor;
+    public ColorSensor endColorSensor;
 
     public SkyStoneLoc skyStoneLoc=SkyStoneLoc.CENTER; //defualt to center
 
@@ -87,11 +84,10 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
     public double grabberMin = 0;
     public double grabberMax = 1;
 
-    double lastPosX;
-    double lastPosY;
-
     Rev2mDistanceSensor distanceSensorX;
     Rev2mDistanceSensor distanceSensorY;
+
+    public AnalogInput limitSwitch;
 
     List<Integer> screamIds = new ArrayList<>();//screaming robot (don't put in notebook)
 
@@ -106,11 +102,11 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
     LinearOpMode opMode;
     HardwareMap hardwareMap;
 
-    double liftTargetPos=0;
-
     boolean isLiftAtStartingPos;
 
-    public DriveTrain6547(LinearOpMode _opMode) {
+    private boolean runIntakeUntilStone = false;
+
+    public DriveTrain6547State(LinearOpMode _opMode) {
 
         opMode = _opMode;
         hardwareMap = opMode.hardwareMap;
@@ -151,14 +147,15 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
 
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
+        setLocalizer(new StandardTwowheelLocalizer(hardwareMap,this)); //two wheel odometry
+        //setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap)); //three wheel odometry
 
         initOtherHardware();
 
     }
     public void initOtherHardware()
     {
-        distanceSensorX = hardwareMap.get(Rev2mDistanceSensor.class, "d boi");
-        distanceSensorY = hardwareMap.get(Rev2mDistanceSensor.class, "d boi1");
+        limitSwitch = hardwareMap.get(AnalogInput.class, "limitSwitch");
         lift =  hardwareMap.get(DcMotorEx.class, "lift");
         intake = hardwareMap.get(DcMotorEx.class, "intake");
         fondationGrabber = hardwareMap.get(Servo.class, "f grabber");
@@ -168,26 +165,31 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
 
         colorSensorSideRight = hardwareMap.get(ColorSensor.class, "color sensor"); //set color sensors
         colorSensorSideLeft = hardwareMap.get(ColorSensor.class, "color sensor2");
+        intakeColorSensor = hardwareMap.get(ColorSensor.class, "intake color sensor");
+        endColorSensor = hardwareMap.get(ColorSensor.class,"end color sensor");
 
         allHubs = hardwareMap.getAll(LynxModule.class);
 
-        opMode.telemetry.log().add("Initialized hardware");
+        RobotLog.v("Initialized hardware");
+
 
         lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        opMode.telemetry.log().add("set  lift to brake");
+        RobotLog.v("set  lift to brake");
 
         lift.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        opMode.telemetry.log().add("set hardware");
+        RobotLog.v("set hardware");
 
         setFondationGrabber(0); //open foundation grabber
 
-        opMode.telemetry.log().add("Initialized IMU");
+        openGrabber();
+
+        RobotLog.v("Initialized IMU");
 
         initGamepads();
 
-        opMode.telemetry.log().add("Initialized gamepads");
+        RobotLog.v("Initialized gamepads");
 
         setGrabber(0); //open stone grabber
 
@@ -208,6 +210,8 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
 
         liftMax = (int) readFile(LIFT_MAX_FILE_NAME);
         liftStartingPos = (int) readFile(LIFT_STARTING_POS_FILE_NAME);
+
+        //display files to user
         opMode.telemetry.log().add("Lift Auton Starting Pos: " + liftStartingPos + ", Lift Max: " + liftMax);
 
         setLiftTargetPos(liftStartingPos);
@@ -330,19 +334,6 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
         opMode.telemetry.addData("lift pos", lift.getCurrentPosition());
         opMode.telemetry.update();
     }
-    @Deprecated
-    public void sleep(double seconds)
-    {
-        runtime.reset();
-        while (runtime.seconds()<=seconds && ((LinearOpMode) opMode).opModeIsActive())
-        {
-            opMode.telemetry.addData("Status","Sleeping for " + (seconds-runtime.seconds()) + " seconds");
-        }
-    }
-    // public boolean isLiftHighEnoungh()
-    // {
-    //     return lift.getCurrentPosition() > linMin;
-    // }
     public void setLiftPower(double pow)
     {
         lift.setPower(pow);
@@ -350,17 +341,18 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
     public void intake(double pow)
     {
         intake.setPower(-pow);
-        opMode.telemetry.log().add("intaking");
+        RobotLog.v("intaking");
     }
     public void outtake(double pow)
     {
         intake.setPower(pow);
-        opMode.telemetry.log().add("outtaking");
+        RobotLog.v("outtaking");
     }
     public void stopIntake()
     {
         intake.setPower(0);
-        opMode.telemetry.log().add("stopped intake");
+        setRunIntakeUntilStone(false);
+        RobotLog.v("stopped intake");
     }
     public void setGrabber(double pos)
     {
@@ -370,6 +362,14 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
         pos*=range;
         pos+=min;
         grabber.setPosition(pos);
+    }
+    public void openGrabber()
+    {
+        setGrabber(1);
+    }
+    public void closeGrabber()
+    {
+        setGrabber(0);
     }
     public void setGrabberSlider(double pos)
     {
@@ -459,8 +459,32 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
     @Override
     public void runAtAllTimes() //anything in here runs at all times during auton because this method is ran during roadRunner's state machine
     {
-        if (true) setLiftToTargetPos(getLiftTargetPos(), 50);
-        outputTelemetry();
+        if (runLift) setLiftToTargetPos(getLiftTargetPos(), getLiftLeeway());
+        if (runIntakeUntilStone) runIntakeUntilStone();
+        //outputTelemetry();
+    }
+    public void runIntakeUntilStone()
+    {
+        runIntakeUntilStone(.75);
+    }
+    public void runIntakeUntilStone(double power)
+    {
+        boolean isStoneAtIntake = isStone(intakeColorSensor);
+        boolean isStoneAtEnd = isStone(endColorSensor);
+
+        if (isStoneAtIntake)
+        {
+            intake(.25); //If a stone is under the bot, go slower so it reaches the end
+        }
+        else if (isStoneAtEnd)
+        {
+            stopIntake(); //if stone reaches the end, stop intaking.
+            //stopIntake includes the setRunIntakeUntilStone(false) method
+        }
+        else //if nothing is detected, intake at disired power
+        {
+            intake(power);
+        }
     }
     public boolean isLiftAtTargetPos()
     {
@@ -486,11 +510,6 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
             isLiftAtStartingPos = true;
         }
 
-    }
-
-    @Deprecated
-    public void moveLift(int modifer, int leaway, double time){
-        moveLift(modifer, leaway);
     }
     public void moveLift(int modifer, int leaway)
     {
@@ -542,120 +561,9 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
     {
         return (colorSensorToBeUsed.red()*colorSensorToBeUsed.green()) / Math.pow(colorSensorToBeUsed.blue(),2) < 3;
     }
-    @Deprecated
-    public void DriveFieldRealtiveDistanceAndTurnPID(double power, double drivingAngle, double feet, double turningAngle, double rightX) //drive field reative and turn at the same time, however it makes the robot's position slightly unstable
+    public boolean isStone(ColorSensor colorSensor)
     {
-        zeroEncoders();
-
-        //turning calculations
-
-        rightX=Math.abs(rightX); //make sure the robot will always go the right direction
-        MiniPID miniPID = new MiniPID(.004, 0, .036);
-        double angleDifference=turningAngle-getIMUAngle();
-        if (Math.abs(angleDifference)>180) //make the angle difference less then 180 to remove unnecessary turning
-        {
-            angleDifference+=(angleDifference>=0) ? -360 : 360;
-        }
-        double tempZeroValue=angleZzeroValue;
-        angleZzeroValue=0;
-        angleZzeroValue=-getIMUAngle();
-
-        miniPID.setOutputLimits(1);
-
-        miniPID.setSetpointRange(40);
-
-        double actual=0;
-        double output=0;
-        opMode.telemetry.log().add("PID angle difference " + angleDifference);
-        double target=angleDifference;
-        miniPID.setSetpoint(0);
-        miniPID.setSetpoint(target);
-        opMode.telemetry.log().add("PID target angle: " + target + "degrees");
-
-        //encoder calculations
-
-        drivingAngle-=tempZeroValue;
-        double inches = feet*12;
-        double encodersPerInch = encoderTicksPerRotation/circumferenceOfWheel;
-        double drivingDistanceInEncoderTicks = encodersPerInch*inches;
-        double speed = power;
-        double desiredAngle =Math.toRadians(drivingAngle)-Math.PI / 4;
-        //double robotAngle = Math.toRadians(getIMUAngle());
-        opMode.telemetry.log().add("average encoder" + averageDrivetrainEncoder());
-        while (((LinearOpMode) opMode).opModeIsActive() && Math.abs(averageDrivetrainEncoder())<Math.abs(drivingDistanceInEncoderTicks))
-        {
-            rightX = miniPID.getOutput(getIMUAngle());
-            double robotAngle = Math.toRadians(getIMUAngle());
-            leftFront.setPower(speed * Math.cos(desiredAngle-robotAngle) + rightX);
-            rightFront.setPower(speed * Math.sin(desiredAngle-robotAngle) - rightX);
-            leftRear.setPower(speed * Math.sin(desiredAngle-robotAngle) + rightX);
-            rightRear.setPower(speed * Math.cos(desiredAngle-robotAngle) - rightX);
-            opMode.telemetry.addData("Status", "Driving Field Realtive and turning PID");
-            outputTelemetry();
-        }
-        stopRobot();
-        angleZzeroValue = tempZeroValue;
-
-    }
-    @Deprecated
-    public void DriveFieldRealtiveDistance(double power, double angleInDegrees, double feet, boolean brake)
-    {
-        power/=2;
-        angleInDegrees+=180;
-        zeroEncoders();
-        double inches = feet*12;
-        double encodersPerInch = encoderTicksPerRotation/circumferenceOfWheel;
-        double drivingDistanceInEncoderTicks = encodersPerInch*inches;
-        double speed = power;
-        double desiredAngle =Math.toRadians(angleInDegrees)-Math.PI / 4;
-        //double robotAngle = Math.toRadians(getIMUAngle());
-        double rightX = 0;
-        opMode.telemetry.log().add("averge encoder" + averageDrivetrainEncoder());
-        while (((LinearOpMode) opMode).opModeIsActive() && Math.abs(averageDrivetrainEncoder())<Math.abs(drivingDistanceInEncoderTicks))
-        {
-            double robotAngle = Math.toRadians(getIMUAngle());
-            leftFront.setPower(speed * Math.cos(desiredAngle-robotAngle) + rightX);
-            rightFront.setPower(speed * Math.sin(desiredAngle-robotAngle) - rightX);
-            leftRear.setPower(speed * Math.sin(desiredAngle-robotAngle) + rightX);
-            rightRear.setPower(speed * Math.cos(desiredAngle-robotAngle) - rightX);
-            opMode.telemetry.addData("Status","Driving Field Relative");
-            outputTelemetry();
-        }
-        if (!brake) //let the motors coast when the robot is stoped
-        {
-            leftRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            rightRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        }
-        stopRobot();
-        if (!brake) //revert the changes.
-        {
-            leftRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            rightRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        }
-
-    }
-    @Deprecated
-    public void DriveFieldRealtiveDistance(double power, double angleInDegrees, double feet)
-    {
-        DriveFieldRealtiveDistance(power, angleInDegrees, feet, true);
-    }
-    @Deprecated
-    public void DriveFieldRealtiveSimple(double power, double angle) //set the robot's direction based on the gyro.
-    {
-        power=Math.abs(power);
-        angle+=180;
-        double angleInRadians =Math.toRadians(angle)-Math.PI / 4;
-        double robotAngle = Math.toRadians(getIMUAngle());
-        double rightX = 0;
-        leftFront.setPower(power * Math.cos(angleInRadians-robotAngle) + rightX);
-        rightFront.setPower(power * Math.sin(angleInRadians-robotAngle) - rightX);
-        leftRear.setPower(power * Math.sin(angleInRadians-robotAngle) + rightX);
-        rightRear.setPower(power * Math.cos(angleInRadians-robotAngle) - rightX);
-
+        return colorSensor.alpha()>170;
     }
     public void zeroEncoders() //set all the encoders to zero
     {
@@ -683,80 +591,11 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
         rightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); //zero encoders
         rightRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
-    @Deprecated
-    public void TurnPID(double angle, double seconds)
-    {
-        TurnPID(angle, seconds, 1);
-    }
-    @Deprecated
-    public void TurnPID(double angle, double seconds, double motorPowerModifer) { TurnPID(angle, seconds, motorPowerModifer,   new MiniPID(.004, 0, .036));}
-    @Deprecated
-    public void TurnPID(double angle, double seconds, double motorPowerModifer, MiniPID miniPID) //use PID to turn the robot
-    {
-        leftRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        rightRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-
-        motorPowerModifer=Math.abs(motorPowerModifer); //make sure the robot will always go the right direction
-        double angleDifference=angle-getIMUAngle();
-        if (Math.abs(angleDifference)>180) //make the angle difference less then 180 to remove unnecessary turning
-        {
-            angleDifference+=(angleDifference>=0) ? -360 : 360;
-        }
-        double tempZeroValue=angleZzeroValue;
-        angleZzeroValue=0;
-        angleZzeroValue=-getIMUAngle();
-
-        miniPID.setOutputLimits(1);
-
-        miniPID.setSetpointRange(40);
-
-        double actual=0;
-        double output=0;
-        //opMode.telemetry.log().add("PID angle difference " + angleDifference);
-        double target=angleDifference;
-        miniPID.setSetpoint(0);
-        miniPID.setSetpoint(target);
-        opMode.telemetry.log().add("PID target angle: " + target + "degrees");
-        runtime.reset();
-        while (((LinearOpMode) opMode).opModeIsActive() && runtime.seconds() < seconds) {
-
-            output = miniPID.getOutput(actual, target);
-            //if (angle>175 || angle <-175) actual = getIMUAngle(true);
-            actual = getIMUAngle();
-            turnLeft(output*motorPowerModifer);
-            opMode.telemetry.addData("Status","Turning PID");
-            opMode.telemetry.addData("power", leftFront.getPower());
-            opMode.telemetry.addData("angle", actual);
-            opMode.telemetry.update();
-            outputTelemetry();
-        }
-        stopRobot();
-        angleZzeroValue=tempZeroValue;
-
-        leftRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    }
     public DcMotor zeroEncoder(DcMotor motor)
     {
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         return motor;
-    }
-    @Deprecated
-    public void runMotor(DcMotor motor, double pow, int target) throws InterruptedException, ExecutionException
-    {
-        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); //zero encoder
-        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        sleep(.4);
-        while (((LinearOpMode) opMode).opModeIsActive() && Math.abs(motor.getCurrentPosition()) < Math.abs(target))
-        {
-            motor.setPower(pow);
-        }
-        motor.setPower(0);
     }
     public void stopRobot()
     {
@@ -783,159 +622,6 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
             opMode.telemetry.log().add("out of time");
         }
     }
-    @Deprecated
-    public double averageDrivetrainEncoder() //average the position from the drive train motors OLD
-    {
-        double motorPosition=0;
-        motorPosition+=Math.abs(leftRear.getCurrentPosition());
-        motorPosition+=Math.abs(leftFront.getCurrentPosition());
-        motorPosition+=Math.abs(rightRear.getCurrentPosition());
-        motorPosition+=Math.abs(rightFront.getCurrentPosition());
-        if (Double.isNaN(motorPosition/4)) return 0;
-        else return Math.abs(motorPosition/4);
-    }
-    @Deprecated
-    public void DriveToPointPID(double x, double y, double seconds) { DriveToPointPID(x,y,seconds,-90);}
-    @Deprecated
-    public void DriveToPointPID(double x, double y, double seconds,double offset)
-    {
-        opMode.telemetry.log().add("Driving PID");
-        MiniPID miniPID = new MiniPID(.05, 0.000, 0.00);
-        miniPID.setSetpoint(0);
-        miniPID.setSetpoint(x);
-        miniPID.setOutputLimits(1);
-
-        miniPID.setSetpointRange(40);
-
-        double actualX=0;
-        double outputX=0;
-
-        MiniPID miniPIDY = new MiniPID(.10, 0.00, 0.05);
-        miniPIDY.setSetpoint(0);
-        miniPIDY.setSetpoint(y);
-        miniPIDY.setOutputLimits(1);
-
-        miniPIDY.setSetpointRange(40);
-
-        double actualY=0;
-        double outputY=0;
-
-        runtime.reset();
-        while (((LinearOpMode) opMode).opModeIsActive() && runtime.seconds()<seconds) {
-            actualX = getRobotPositionX();
-            outputX = miniPID.getOutput(actualX, x);
-            actualY = getRobotPositionY();
-            outputY = miniPIDY.getOutput(actualY, y);
-            double power = Math.hypot(outputX, outputY);
-            //if (power>.8) power = .8; //set max power as .8
-            double slope = getSlope(x, y, actualX, actualY);
-            double angle = Math.toDegrees(Math.atan2(outputX, -outputY)) + offset;
-            DriveFieldRealtiveSimple(power, angle);
-//            if (Math.abs(getIMUAngle())>=5)
-//            {
-//                turnSync(0);
-//                seconds++;
-//            }
-            opMode.telemetry.addData("X pos" , actualX);
-            opMode.telemetry.addData("y pos" , actualY);
-            opMode.telemetry.update();
-        }
-        stopRobot();
-    }
-    @Deprecated
-    public void strafeToDistanceXPID(double inch, double time) {strafeToDistanceXPID(inch,time,-90);}
-    @Deprecated
-    public void strafeToDistanceXPID(double inch, double time, double offset)
-    {
-        MiniPID miniPID = new MiniPID(.03, 0.000, 0.00);
-        double target = inch;
-        miniPID.setSetpoint(0);
-        miniPID.setSetpoint(target);
-        miniPID.setOutputLimits(1);
-
-        miniPID.setSetpointRange(40);
-
-        double actual=0;
-        double output=0;
-        runtime.reset();
-        while (((LinearOpMode) opMode).opModeIsActive() && runtime.seconds()<time) {
-
-            actual = getRobotPositionX();
-            output = miniPID.getOutput(actual, target);
-            DriveFieldRealtiveSimple(output, (output>=0) ? 90+offset : 270+offset);
-            opMode.telemetry.addData("Output", output);
-            opMode.telemetry.addData("Pos X", getRobotPositionX());
-            opMode.telemetry.update();
-        }
-
-    }
-    @Deprecated
-    public void strafeToDistanceYPID(double inch, double gap) { strafeToDistanceYPID(inch,gap,-90);}
-    @Deprecated
-    public void strafeToDistanceYPID(double inch, double gap, double offset)
-    {
-        MiniPID miniPID = new MiniPID(.03, 0.00, 0.0);
-        double target = inch;
-        miniPID.setSetpoint(0);
-        miniPID.setSetpoint(target);
-        miniPID.setOutputLimits(1);
-
-        miniPID.setSetpointRange(40);
-
-        double actual=0;
-        double output=0;
-        runtime.reset();
-        while (((LinearOpMode) opMode).opModeIsActive() && runtime.seconds()<gap) {
-
-            actual = getRobotPositionY();
-            output = miniPID.getOutput(actual, target);
-            DriveFieldRealtiveSimple(output, (output>=0) ? 180+offset : 0+offset);
-            opMode.telemetry.addData("Output", output);
-            opMode.telemetry.addData("Pos Y", getRobotPositionY());
-            opMode.telemetry.update();
-        }
-        stopRobot();
-    }
-    @Deprecated
-    public double getRobotPositionX()
-    {
-        double distance=(distanceSensorX.getDistance(DistanceUnit.INCH));
-        if (Double.isNaN(distance))
-        {
-            opMode.telemetry.log().add("DISTANCE Y VALUE WAS NaN");
-            return 2.5;
-        }
-        if (distance>144)
-        {
-            opMode.telemetry.log().add("overshot X distance");
-            return lastPosX;
-        }
-        lastPosX=distance;
-        return distance;
-    }
-    @Deprecated
-    public double getRobotPositionY()
-    {
-        double distance=distanceSensorY.getDistance(DistanceUnit.INCH);
-        if (Double.isNaN(distance))
-        {
-            opMode.telemetry.log().add("DISTANCE Y VALUE WAS NaN");
-            return 2.5;
-        }
-        if (distance>144)
-        {
-            opMode.telemetry.log().add("overshot Y distance");
-            return lastPosY;
-        }
-        lastPosY=distance;
-        return distance;
-    }
-    @Deprecated
-    double getSlope(double x1, double y1, double x2, double y2)
-    {
-        return (y1-y2)/(x1-x2);
-    }
-
     //--------------------------------------------------------------
     // Get Set Methods
     //--------------------------------------------------------------
@@ -945,7 +631,7 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
     }
 
     public void setAngleZzeroValue(double angleZzeroValue) {
-        DriveTrain6547.angleZzeroValue = angleZzeroValue;
+        DriveTrain6547State.angleZzeroValue = angleZzeroValue;
     }
 
     public int getLiftLeeway() {
@@ -962,6 +648,15 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
 
     public ElapsedTime getRuntime() {
         return runtime;
+    }
+
+    public void setRunIntakeUntilStone(boolean val)
+    {
+        runIntakeUntilStone = val;
+    }
+    public boolean getRunIntakeUntilStone()
+    {
+        return runIntakeUntilStone;
     }
     //--------------------------------------------------------------
     //  Road Runner

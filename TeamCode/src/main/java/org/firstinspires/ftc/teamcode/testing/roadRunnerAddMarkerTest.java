@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.RoadRunner.actions.Intake;
-import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547;
+import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547State;
 
 @Autonomous
 public class roadRunnerAddMarkerTest extends LinearOpMode {
@@ -13,7 +13,7 @@ public class roadRunnerAddMarkerTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        DriveTrain6547 bot = new DriveTrain6547(this);
+        DriveTrain6547State bot = new DriveTrain6547State(this);
 
         telemetry.addData("Ready to start","");
         telemetry.update();

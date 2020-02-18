@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547;
+import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547State;
 
 @TeleOp(name = "test scissor lift calibrate")
 @Config
@@ -17,7 +17,7 @@ public class testLift extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        DriveTrain6547 bot = new DriveTrain6547(this);
+        DriveTrain6547State bot = new DriveTrain6547State(this);
 
         bot.zeroEncoder(bot.lift);
 

@@ -37,7 +37,7 @@ import static org.firstinspires.ftc.teamcode.RoadRunner.drive.DriveConstants.kV;
  * handled in subclasses.
  */
 @Config
-public abstract class MecanumDriveBase6547 extends MecanumDrive {
+public abstract class MecanumDriveBase6547Qual extends MecanumDrive {
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
 
@@ -66,7 +66,7 @@ public abstract class MecanumDriveBase6547 extends MecanumDrive {
     private List<Double> lastWheelPositions;
     private double lastTimestamp;
 
-    public MecanumDriveBase6547() {
+    public MecanumDriveBase6547Qual() {
         super(kV, kA, kStatic, TRACK_WIDTH);
 
         dashboard = FtcDashboard.getInstance();

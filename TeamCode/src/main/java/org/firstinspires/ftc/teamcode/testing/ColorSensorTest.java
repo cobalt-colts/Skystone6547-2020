@@ -29,21 +29,12 @@
 
 package org.firstinspires.ftc.teamcode.testing;
 
-import android.app.Activity;
-import android.graphics.Color;
-import android.view.View;
-
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547;
-
-import java.util.Locale;
+import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547State;
 
 /*
  * This is an example LinearOpMode that shows how to use
@@ -96,7 +87,7 @@ public class ColorSensorTest extends LinearOpMode {
 
 
         // get a reference to the color sensor.
-        DriveTrain6547 bot = new DriveTrain6547(this);
+        DriveTrain6547State bot = new DriveTrain6547State(this);
 
         // wait for the start button to be pressed.
         waitForStart();

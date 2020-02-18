@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.oldPrograms.usedInMeet2.SkyStone6547Meet2;
-import org.firstinspires.ftc.teamcode.SkyStoneLoc;
+import org.firstinspires.ftc.teamcode.util.SkyStoneLoc;
 
 /**
  * Created by Drew from 6547 on 9/27/2019.

@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 
 import org.firstinspires.ftc.teamcode.OldPrograms.usedInMeet1.SkyStone6547;
-import org.firstinspires.ftc.teamcode.SkyStoneLoc;
+import org.firstinspires.ftc.teamcode.util.SkyStoneLoc;
 
 /*
 This auton moves one skystone to the other half of the field and then parks under the skybridge for the BLUE side.

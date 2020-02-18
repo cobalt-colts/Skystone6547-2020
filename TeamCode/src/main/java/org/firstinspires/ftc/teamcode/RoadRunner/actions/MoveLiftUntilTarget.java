@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.RoadRunner.actions;
 
-import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547;
+import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547State;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
@@ -8,17 +8,17 @@ import kotlin.jvm.functions.Function0;
 public class MoveLiftUntilTarget implements Function0<Unit> {
 
 
-    DriveTrain6547 bot;
+    DriveTrain6547State bot;
     int target;
     int leeway;
 
-    public MoveLiftUntilTarget(DriveTrain6547 bot, int target, int leeway)
+    public MoveLiftUntilTarget(DriveTrain6547State bot, int target, int leeway)
     {
         this.bot = bot;
         this.target = target;
         this.leeway = leeway;
     }
-    public MoveLiftUntilTarget(DriveTrain6547 bot, int target)
+    public MoveLiftUntilTarget(DriveTrain6547State bot, int target)
     {
         this.bot = bot;
         this.target = target;

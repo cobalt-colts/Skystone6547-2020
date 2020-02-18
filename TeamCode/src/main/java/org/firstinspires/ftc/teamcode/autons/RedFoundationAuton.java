@@ -4,11 +4,10 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.DriveConstants;
-import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547;
+import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547State;
 
 
 /*
@@ -24,7 +23,7 @@ public class RedFoundationAuton extends LinearOpMode
                 100.0, 70, 0.0,
                 Math.toRadians(180.0), Math.toRadians(180.0), 0.0);
 
-        DriveTrain6547 bot = new DriveTrain6547(this); //the bot
+        DriveTrain6547State bot = new DriveTrain6547State(this); //the bot
           /*
         Make the lift stay where it's at.  The scissor lift's force is stronger
         then a motor on brake mode, so we have the lift motor try to keep is's original encoder value

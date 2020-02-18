@@ -9,8 +9,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.RoadRunner.actions.Intake;
 import org.firstinspires.ftc.teamcode.RoadRunner.actions.IntakeUntilStone;
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.DriveConstants;
-import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547;
-import org.firstinspires.ftc.teamcode.SkyStoneLoc;
+import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547State;
+import org.firstinspires.ftc.teamcode.util.SkyStoneLoc;
 
 /**
  * Created by Drew from 6547 on 9/27/2019.
@@ -25,7 +25,7 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
                 80, 40, 0.0,
                 Math.toRadians(180.0), Math.toRadians(180.0), 0.0);
 
-        DriveTrain6547 bot = new DriveTrain6547(this); //the robot
+        DriveTrain6547State bot = new DriveTrain6547State(this); //the robot
 
         /*
         Make the lift stay where it's at.  The scissor lift's force is stronger

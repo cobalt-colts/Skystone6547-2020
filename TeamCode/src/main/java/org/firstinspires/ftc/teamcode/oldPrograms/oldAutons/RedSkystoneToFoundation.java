@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 
 import org.firstinspires.ftc.teamcode.OldPrograms.usedInMeet1.SkyStone6547;
-import org.firstinspires.ftc.teamcode.SkyStoneLoc;
+import org.firstinspires.ftc.teamcode.util.SkyStoneLoc;
 
 /**
  * Created by Drew from 6547 on 9/27/2019.

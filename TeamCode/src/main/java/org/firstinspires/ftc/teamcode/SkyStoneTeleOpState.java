@@ -7,7 +7,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547;
+import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547State;
 
 import org.firstinspires.ftc.teamcode.util.state.ToggleDouble;
 import org.firstinspires.ftc.teamcode.util.state.ToggleBoolean;
@@ -37,12 +37,12 @@ public class SkyStoneTeleOpState extends LinearOpMode {
     private ToggleDouble fondationGrabberPos = new ToggleDouble(new double[] {0,1},0);
     private ToggleDouble grabberToggle = new ToggleDouble(new double[] {0, .4}, 0);
 
-    private DriveTrain6547 bot; //the robot class
+    private DriveTrain6547State bot; //the robot class
 
     @Override
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry()); //makes telemetry output to the FTC Dashboard
-        bot = new DriveTrain6547(this);
+        bot = new DriveTrain6547State(this);
         telemetry.update();
 
         bot.disableEncoders();
