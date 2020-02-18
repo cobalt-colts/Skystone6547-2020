@@ -29,7 +29,7 @@ import java.util.List;
 @Config
 public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer {
     public static double TICKS_PER_REV = 8192; //(8192 Counts per rev) 2048 Cycles per Revolution.  Info got from rev site
-    public static double WHEEL_RADIUS = .748031; // in  //19 mm
+    public static double WHEEL_RADIUS = 0.765; // in  //19 mm
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 
     public static double LATERAL_DISTANCE = 9.625; // in; distance between the left and right wheels
@@ -41,8 +41,8 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
 
     public StandardTrackingWheelLocalizer(HardwareMap hardwareMap) {
         super(Arrays.asList(
-                new Pose2d(0, LATERAL_DISTANCE / 2, 0), // left
-                new Pose2d(0, -LATERAL_DISTANCE / 2, 0), // right
+                new Pose2d(1.625, LATERAL_DISTANCE / 2, 0), // left
+                new Pose2d(1.625, -LATERAL_DISTANCE / 2, 0), // right
                 new Pose2d(-2, -5.125, Math.toRadians(90)) // front
         ));
 

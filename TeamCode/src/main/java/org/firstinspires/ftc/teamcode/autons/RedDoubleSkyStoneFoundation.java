@@ -15,8 +15,8 @@ import org.firstinspires.ftc.teamcode.SkyStoneLoc;
 /**
  * Created by Drew from 6547 on 9/27/2019.
  */
-@Autonomous(name = "RED double skystone State", group = "auton")
-public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
+@Autonomous(name = "RED double skystone Foundation State", group = "auton")
+public class RedDoubleSkyStoneFoundation extends LinearOpMode {
 
     public void runOpMode()
     {
@@ -91,7 +91,7 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
             bot.followTrajectorySync(bot.trajectoryBuilder()
                     .back(4)
                     .addMarker(new IntakeUntilStone(bot))
-                    .strafeTo(new Vector2d(-20,-30))
+                    .strafeTo(new Vector2d(-18,-30))
                     .build());
         }
         else
@@ -125,14 +125,31 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
         //spline to under the skybridge
         bot.followTrajectorySync(bot.trajectoryBuilder()
                 .reverse()
-                .addMarker(1.5,new Intake(bot,1))
-        .splineTo(new Pose2d(0,-38,Math.toRadians(180)))
-                .splineTo(new Pose2d(10,-38,Math.toRadians(180)))
+                .splineTo(new Pose2d(0,-40,Math.toRadians(180)))
+                .splineTo(new Pose2d(35,-40,Math.toRadians(180)))
+                .splineTo(new Pose2d(45,-21,Math.toRadians(270)))
                 .build());
 
-        bot.intake(1);
+        bot.setFondationGrabber(1);
+
+        sleep(500);
+
+        bot.followTrajectorySync(bot.trajectoryBuilder()
+                .forward(20)
+                .splineTo(new Pose2d(33, -60, Math.toRadians(180)))
+                .build());
+
+        bot.turnSync(Math.toRadians(-200));
 
         //go to other stone
+
+        bot.setFondationGrabber(0);
+
+        bot.followTrajectorySync(bot.trajectoryBuilder()
+                .back(24)
+                .addMarker(1,new Intake(bot,1))
+        .splineTo(new Pose2d(0,-40,Math.toRadians(180)))
+        .build());
 
         bot.setRunIntakeUntilStone(true);
 

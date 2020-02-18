@@ -6,14 +6,11 @@ import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.ftccommon.SoundPlayer;
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -24,35 +21,19 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.ReadWriteFile;
+import com.qualcomm.robotcore.util.RobotLog;
 
-import org.firstinspires.ftc.robotcore.external.Func;
-import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
-import org.firstinspires.ftc.teamcode.RoadRunner.drive.localizer.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.localizer.StandardTwowheelLocalizer;
 import org.firstinspires.ftc.teamcode.RoadRunner.util.AxesSigns;
 import org.firstinspires.ftc.teamcode.RoadRunner.util.BNO055IMUUtil;
 import org.firstinspires.ftc.teamcode.RoadRunner.util.DashboardUtil;
-import org.firstinspires.ftc.teamcode.RoadRunner.util.LynxModuleUtil;
 import org.firstinspires.ftc.teamcode.SkyStoneLoc;
-import org.firstinspires.ftc.teamcode.util.MiniPID;
-import org.openftc.revextensions2.ExpansionHubEx;
-import org.openftc.revextensions2.ExpansionHubMotor;
-import org.openftc.revextensions2.ExpansionHubServo;
-import org.openftc.revextensions2.RevBulkData;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.ExecutionException;
 
 import org.firstinspires.ftc.teamcode.util.state.Button;
 
@@ -189,23 +170,26 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
 
         allHubs = hardwareMap.getAll(LynxModule.class);
 
-        opMode.telemetry.log().add("Initialized hardware");
+        RobotLog.v("Initialized hardware");
+
 
         lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        opMode.telemetry.log().add("set  lift to brake");
+        RobotLog.v("set  lift to brake");
 
         lift.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        opMode.telemetry.log().add("set hardware");
+        RobotLog.v("set hardware");
 
         setFondationGrabber(0); //open foundation grabber
 
-        opMode.telemetry.log().add("Initialized IMU");
+        openGrabber();
+
+        RobotLog.v("Initialized IMU");
 
         initGamepads();
 
-        opMode.telemetry.log().add("Initialized gamepads");
+        RobotLog.v("Initialized gamepads");
 
         setGrabber(0); //open stone grabber
 
@@ -226,6 +210,8 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
 
         liftMax = (int) readFile(LIFT_MAX_FILE_NAME);
         liftStartingPos = (int) readFile(LIFT_STARTING_POS_FILE_NAME);
+
+        //display files to user
         opMode.telemetry.log().add("Lift Auton Starting Pos: " + liftStartingPos + ", Lift Max: " + liftMax);
 
         setLiftTargetPos(liftStartingPos);
@@ -355,18 +341,18 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
     public void intake(double pow)
     {
         intake.setPower(-pow);
-        opMode.telemetry.log().add("intaking");
+        RobotLog.v("intaking");
     }
     public void outtake(double pow)
     {
         intake.setPower(pow);
-        opMode.telemetry.log().add("outtaking");
+        RobotLog.v("outtaking");
     }
     public void stopIntake()
     {
         intake.setPower(0);
         setRunIntakeUntilStone(false);
-        opMode.telemetry.log().add("stopped intake");
+        RobotLog.v("stopped intake");
     }
     public void setGrabber(double pos)
     {
@@ -376,6 +362,14 @@ public class DriveTrain6547 extends MecanumDriveBase6547 {
         pos*=range;
         pos+=min;
         grabber.setPosition(pos);
+    }
+    public void openGrabber()
+    {
+        setGrabber(1);
+    }
+    public void closeGrabber()
+    {
+        setGrabber(0);
     }
     public void setGrabberSlider(double pos)
     {

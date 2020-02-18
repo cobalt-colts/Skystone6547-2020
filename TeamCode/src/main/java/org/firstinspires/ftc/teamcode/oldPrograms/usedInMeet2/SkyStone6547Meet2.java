@@ -71,8 +71,9 @@ public class SkyStone6547Meet2 extends LinearOpMode{
     public double[] driveTrainExpanstionHubNumbers;
 
     public ExpansionHubMotor lift;
-    public ExpansionHubMotor intakeLeft;
-    public ExpansionHubMotor intakeRight;
+//    public ExpansionHubMotor intakeLeft;
+//    public ExpansionHubMotor intakeRight;
+    public ExpansionHubMotor intake;
 
     ExpansionHubServo fondationGrabber;
     ExpansionHubServo fondationGrabber2;
@@ -110,12 +111,13 @@ public class SkyStone6547Meet2 extends LinearOpMode{
         LeftFront= (ExpansionHubMotor) hardwareMap.get(DcMotor.class, "leftFront");
         RightFront = (ExpansionHubMotor) hardwareMap.get(DcMotor.class, "rightFront");
         lift = (ExpansionHubMotor) hardwareMap.get(DcMotor.class, "lift");
-        intakeLeft = (ExpansionHubMotor) hardwareMap.get(DcMotor.class, "intake left");
-        intakeRight = (ExpansionHubMotor) hardwareMap.get(DcMotor.class, "intake right");
+//        intakeLeft = (ExpansionHubMotor) hardwareMap.get(DcMotor.class, "intake left");
+//        intakeRight = (ExpansionHubMotor) hardwareMap.get(DcMotor.class, "intake right");
+        intake = (ExpansionHubMotor) hardwareMap.get(DcMotor.class, "intake");
         fondationGrabber = (ExpansionHubServo) hardwareMap.get(Servo.class, "f grabber");
         fondationGrabber2 = (ExpansionHubServo) hardwareMap.get(Servo.class, "f grabber1");
-        backGrabber = (ExpansionHubServo) hardwareMap.get(Servo.class, "back grabber");
-        frontGrabber = (ExpansionHubServo) hardwareMap.get(Servo.class, "front grabber");
+        //backGrabber = (ExpansionHubServo) hardwareMap.get(Servo.class, "back grabber");
+        //frontGrabber = (ExpansionHubServo) hardwareMap.get(Servo.class, "front grabber");
 
         colorSensorSideRight = hardwareMap.get(ColorSensor.class, "color sensor"); //set color sensors
         colorSensorSideLeft = hardwareMap.get(ColorSensor.class, "color sensor2");
@@ -151,7 +153,7 @@ public class SkyStone6547Meet2 extends LinearOpMode{
 
         telemetry.log().add("Assigned expansion numbers");
 
-        holdFromFrontGrabber();
+        //holdFromFrontGrabber();
 
         //telemetry = dashboard.getTelemetry();
     }
@@ -263,21 +265,18 @@ public class SkyStone6547Meet2 extends LinearOpMode{
     // }
     public void intake(double pow)
     {
-        intakeLeft.setPower(pow);
-        intakeRight.setPower(-pow);
+        intake.setPower(pow);
         telemetry.log().add("intaking");
     }
     public void outtake(double pow)
     {
-        intakeLeft.setPower(-pow);
-        intakeRight.setPower(pow);
+        intake.setPower(-pow);
         telemetry.log().add("outtaking");
     }
     public void stopIntake()
     {
-        intakeLeft.setPower(0);
-        intakeRight.setPower(0);
-        telemetry.log().add("stoppe intake");
+      intake.setPower(0);
+        telemetry.log().add("stopped intake");
     }
     public void releaseGrabbers()
     {
@@ -362,11 +361,12 @@ public class SkyStone6547Meet2 extends LinearOpMode{
     }
     public void setFondationGrabber(double pos)
     {
-        double min=0;
-        double max=.55;
-        double max2 = max+.14;
+        double min=.2;
+        double min2=.2;
+        double max=.9;
+        double max2 = .92;
         double range = max-min;
-        double range2 = max2-min;
+        double range2 = max2-min2;
         double pos2 = (pos*range2) +min;
         pos*=range;
         pos+=min;

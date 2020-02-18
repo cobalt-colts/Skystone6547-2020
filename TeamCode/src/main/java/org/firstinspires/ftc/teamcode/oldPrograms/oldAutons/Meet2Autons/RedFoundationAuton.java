@@ -10,7 +10,6 @@ import org.firstinspires.ftc.teamcode.oldPrograms.usedInMeet2.SkyStone6547Meet2;
     This auton pulls the foundation to the build site and parks under the skybridge for the RED side
  */
 @Autonomous(name = "RED Foundation Auton meet2")
-@Disabled
 public class RedFoundationAuton extends SkyStone6547Meet2 {
 
     public void runOpMode()

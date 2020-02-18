@@ -15,8 +15,11 @@ import org.firstinspires.ftc.teamcode.SkyStoneLoc;
 /**
  * Created by Drew from 6547 on 9/27/2019.
  */
-@Autonomous(name = "RED double skystone State", group = "auton")
-public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
+@Autonomous(name = "RED/Blue double skystone Foundation State", group = "auton")
+public class DoubleSkystoneFoundation extends LinearOpMode {
+
+    private boolean isRed;
+    private double yModifer; //all y values are multiplied by this in order to mirror this auton for blue side
 
     public void runOpMode()
     {
@@ -39,10 +42,33 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
 
         bot.openGrabber();
 
-        //set the position of the bot
-        bot.setPoseEstimate(new Pose2d(-36, -62,Math.toRadians(90)));
+        //get side of field by driver input
 
-        telemetry.log().add("Ready to start");
+        telemetry.addData("Push B for RED, X for BLUE","");
+        telemetry.update();
+
+
+        while (!gamepad1.x && !gamepad1.b)
+        {
+            //do nothing until button is pressed
+        }
+        if (gamepad1.x) //blue
+        {
+            isRed = false;
+            yModifer = -1; //mirror y axis
+        }
+        else //red
+        {
+            isRed = true;
+            yModifer = 1;
+        }
+
+
+        //set the position of the bot
+        bot.setPoseEstimate(new Pose2d(-36, -62*yModifer,Math.toRadians(90)));
+
+        telemetry.addData("Ready to start","");
+        telemetry.update();
         while (!isStarted())
         {
             bot.runAtAllTimes();
@@ -50,7 +76,7 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
 
         //Go to Skystones
         bot.followTrajectorySync(bot.trajectoryBuilder()
-        .splineTo(new Pose2d(-35,-31,Math.toRadians(90)))
+        .splineTo(new Pose2d(-35,-31*yModifer,Math.toRadians(90)))
         .build());
 
         sleep(500);
@@ -62,24 +88,24 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
         if (bot.isSkystone(bot.colorSensorSideLeft))
         {
             // ---SKYSTONE LEFT---
-            bot.skyStoneLoc = SkyStoneLoc.LEFT;
-            //back up a bit and strafe left
-//            bot.followTrajectorySync(bot.trajectoryBuilder()
-//            .back(5)
-//            .build());
-//            //open intake
-//            bot.setRunIntakeUntilStone(true);
-//
-//            bot.followTrajectorySync(bot.trajectoryBuilder()
-//            .splineTo(new Pose2d(-46,-24,Math.toRadians(135)))
-//            .build());
-
-            bot.followTrajectorySync(bot.trajectoryBuilder()
-                    .back(4)
-                    .addMarker(new IntakeUntilStone(bot))
-            .strafeTo(new Vector2d(-52,-30))
-            .build());
             telemetry.log().add("LEFT");
+            bot.skyStoneLoc = SkyStoneLoc.LEFT;
+
+            if (isRed) { //if red
+                bot.followTrajectorySync(bot.trajectoryBuilder()
+                        .back(4)
+                        .addMarker(new IntakeUntilStone(bot))
+                        .strafeTo(new Vector2d(-52, -30))
+                        .build());
+            }
+            else //if blue (this is the same path as going right for RED)
+            {
+                bot.followTrajectorySync(bot.trajectoryBuilder()
+                        .back(4)
+                        .addMarker(new IntakeUntilStone(bot))
+                        .strafeTo(new Vector2d(-18,30))
+                        .build());
+            }
 
         }
         else if (bot.isSkystone(bot.colorSensorSideRight))
@@ -87,14 +113,25 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
             //---SKYSTONE RIGHT---
             telemetry.log().add("RIGHT");
             bot.skyStoneLoc = SkyStoneLoc.RIGHT;
-            //drive back a bit and strafe right
-            bot.followTrajectorySync(bot.trajectoryBuilder()
-                    .back(4)
-                    .addMarker(new IntakeUntilStone(bot))
-                    .strafeTo(new Vector2d(-20,-30))
-                    .build());
+
+            if (isRed) {
+                //drive back a bit and strafe right
+                bot.followTrajectorySync(bot.trajectoryBuilder()
+                        .back(4)
+                        .addMarker(new IntakeUntilStone(bot))
+                        .strafeTo(new Vector2d(-18, -30))
+                        .build());
+            }
+            else //if blue (path is same as left for RED)
+            {
+                bot.followTrajectorySync(bot.trajectoryBuilder()
+                        .back(4)
+                        .addMarker(new IntakeUntilStone(bot))
+                        .strafeTo(new Vector2d(-52, 30))
+                        .build());
+            }
         }
-        else
+        else //center (same for both colors)
         {
             //open intake
             bot.setRunIntakeUntilStone(true);
@@ -125,14 +162,31 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
         //spline to under the skybridge
         bot.followTrajectorySync(bot.trajectoryBuilder()
                 .reverse()
-                .addMarker(1.5,new Intake(bot,1))
-        .splineTo(new Pose2d(0,-38,Math.toRadians(180)))
-                .splineTo(new Pose2d(10,-38,Math.toRadians(180)))
+                .splineTo(new Pose2d(0,-40*yModifer,Math.toRadians(180)))
+                .splineTo(new Pose2d(35,-40*yModifer,Math.toRadians(180)))
+                .splineTo(new Pose2d(45,-21*yModifer,Math.toRadians(270)))
                 .build());
 
-        bot.intake(1);
+        bot.setFondationGrabber(1);
+
+        sleep(500);
+
+        bot.followTrajectorySync(bot.trajectoryBuilder()
+                .forward(20)
+                .splineTo(new Pose2d(33, -60*yModifer, Math.toRadians(180)))
+                .build());
+
+        bot.turnSync(Math.toRadians(-200));
 
         //go to other stone
+
+        bot.setFondationGrabber(0);
+
+        bot.followTrajectorySync(bot.trajectoryBuilder()
+                .back(24)
+                .addMarker(1,new Intake(bot,1))
+        .splineTo(new Pose2d(0,-40*yModifer,Math.toRadians(180)))
+        .build());
 
         bot.setRunIntakeUntilStone(true);
 
@@ -140,54 +194,32 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
         double constY = -34;
 
         //prepare to grab the other Skystone
-        if (bot.skyStoneLoc == SkyStoneLoc.RIGHT)
+        if ((bot.skyStoneLoc == SkyStoneLoc.RIGHT && isRed) || (bot.skyStoneLoc == SkyStoneLoc.LEFT && !isRed))
         {
-            //if right, for forward a tiny bit and strafe
-//            bot.followTrajectorySync(bot.trajectoryBuilder()
-//            .forward(4)
-//            .build());
-//            bot.followTrajectorySync(bot.trajectoryBuilder()
-//            .strafeRight(25)
-//                    .build());
             bot.followTrajectorySync(bot.trajectoryBuilder()
-                    .splineTo(new Pose2d(constX,constY,Math.toRadians(180)))
-            .splineTo(new Pose2d(-45,-22,Math.toRadians(135)))
+                    .splineTo(new Pose2d(constX,constY*yModifer,Math.toRadians(180)))
+            .splineTo(new Pose2d(-45,-22*yModifer,Math.toRadians(135)))
             .build());
         }
         else if (bot.skyStoneLoc == SkyStoneLoc.CENTER)
         {
-            //if center, go forward a bit and strafe
-//            bot.followTrajectorySync(bot.trajectoryBuilder()
-//            .forward(13)
-//            .build());
-//
-//            bot.followTrajectorySync(bot.trajectoryBuilder()
-//            .strafeRight(15)
-//            .build());
+
             bot.followTrajectorySync(bot.trajectoryBuilder()
-                    .splineTo(new Pose2d(constX-5,constY,Math.toRadians(180)))
-            .splineTo(new Pose2d(-50,-22, Math.toRadians(130)))
+                    .splineTo(new Pose2d(constX-5,constY*yModifer,Math.toRadians(180)))
+            .splineTo(new Pose2d(-50,-22*yModifer, Math.toRadians(130)))
             .build());
 
 
         }
-        else if (bot.skyStoneLoc == SkyStoneLoc.LEFT)
+        else if ((bot.skyStoneLoc == SkyStoneLoc.LEFT && isRed) || (bot.skyStoneLoc == SkyStoneLoc.RIGHT && !isRed))
         {
-            //if left, go forward a lot and strafe
-//            bot.followTrajectorySync(bot.trajectoryBuilder()
-//                    .forward(20)
-//                    .build());
-//
-//            bot.followTrajectorySync(bot.trajectoryBuilder()
-//                    .strafeRight(15)
-//                    .build());
-
             bot.followTrajectorySync(bot.trajectoryBuilder()
-                    .splineTo(new Pose2d(constX,constY,Math.toRadians(180)))
-                    .splineTo(new Pose2d(-60,-22,Math.toRadians(140)))
+                    .splineTo(new Pose2d(constX,constY*yModifer,Math.toRadians(180)))
+                    .splineTo(new Pose2d(-60,-22*yModifer,Math.toRadians(140)))
                     .build());
         }
 
+        //if the bot has not grabbed a stone yet, go forward a bit
         if (bot.getRunIntakeUntilStone()) {
             bot.followTrajectorySync(bot.trajectoryBuilder()
                     .forward(8)
@@ -195,17 +227,21 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
         }
 
 
-        //go under skybridge and release stone
+        //deliver second stone
        bot.followTrajectorySync(bot.trajectoryBuilder()
                .reverse()
-       .splineTo(new Pose2d(0,-36,Math.toRadians(180)))
+       .splineTo(new Pose2d(0,-36*yModifer,Math.toRadians(180)))
                .addMarker(1.5,new Intake(bot,1))
-               .splineTo(new Pose2d(-8,-36,Math.toRadians(180)))
+               .splineTo(new Pose2d(-8,-36*yModifer,Math.toRadians(180)))
        .build());
 
+        //park under skybridge
+
        bot.followTrajectorySync(bot.trajectoryBuilder()
-       .strafeTo(new Vector2d(0,-33))
+       .strafeTo(new Vector2d(0,-33*yModifer))
        .build());
+
+       //strafe to give more room to allience partner
 
        bot.followTrajectorySync(bot.trajectoryBuilder()
        .strafeRight(10)

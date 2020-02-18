@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.autons;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -56,15 +57,13 @@ public class RedFoundationAuton extends LinearOpMode
         sleep(1000);
 
         //pull foundation
-//        bot.followTrajectorySync(bot.trajectoryBuilder()
-//                .forward(36)
-//                .build());
 
         bot.followTrajectorySync(bot.trajectoryBuilder()
-                    .splineTo(new Pose2d(35, -65, Math.toRadians(180)))
+                .forward(20)
+                    .splineTo(new Pose2d(33, -60, Math.toRadians(180)))
                     .build());
 
-        bot.turnRealtiveSync(Math.toRadians(90));
+        bot.turnSync(Math.toRadians(-200));
 
         sleep(100);
 
@@ -95,8 +94,11 @@ public class RedFoundationAuton extends LinearOpMode
 //       .build());
 
         bot.followTrajectorySync(bot.trajectoryBuilder()
-                .splineTo(new Pose2d(30,-65,Math.toRadians(180)))
-        .splineTo(new Pose2d(0,-75,Math.toRadians(180)))
+                .strafeTo(new Vector2d(30,-65))
+        .build());
+
+        bot.followTrajectorySync(bot.trajectoryBuilder()
+        .strafeLeft(20)
         .build());
 
        //save gyro angle
