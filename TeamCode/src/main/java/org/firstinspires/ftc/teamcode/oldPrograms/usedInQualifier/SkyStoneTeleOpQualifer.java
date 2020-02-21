@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.oldPrograms.usedInQualifier;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -16,6 +17,7 @@ This is the tele-op we use to drive the robot
  */
 @Config
 @TeleOp(name = "SkyStone Tele-op Qualifier", group = "_teleOp")
+@Disabled
 public class SkyStoneTeleOpQualifer extends LinearOpMode {
 
     public static double slideSpeed = .004; //speed of horizontal slide in servo position units

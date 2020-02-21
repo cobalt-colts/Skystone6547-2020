@@ -57,6 +57,7 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
     public final String LIFT_STARTING_POS_FILE_NAME="liftStartPos.txt";
     public final String GRABBER_MAX_FILE_NAME = "grabberMax.txt";
     public final String GRABBER_MIN_FILE_NAME = "grabberMin.txt";
+    public final String ROBOT_POS_FILE_NAME = "robotPos.txt";
 
     public DcMotorEx lift;
     public DcMotorEx intake;
@@ -312,6 +313,18 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
              opMode.telemetry.log().add("Unable to write " + number + " in " + filename);
         }
     }
+    public void writeFile(String filename, String str)
+    {
+        try {
+            File file = AppUtil.getInstance().getSettingsFile(filename);
+            ReadWriteFile.writeFile(file, str);
+            opMode.telemetry.log().add("saved \"" + str + "\" in " + filename);
+        }
+        catch(Exception e)
+        {
+            opMode.telemetry.log().add("Unable to write \"" + str + "\" in " + filename);
+        }
+    }
     public double readFile(String filename)
     {
         try {
@@ -326,6 +339,43 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
             opMode.telemetry.log().add("Unable to read " + filename + ", returning 0");
             return 0;
         }
+    }
+    public String readFileString(String filename)
+    {
+        try {
+            String output;
+            File file= AppUtil.getInstance().getSettingsFile(filename);
+            output = ReadWriteFile.readFile(file).trim();
+            opMode.telemetry.log().add("read " + output + " in " + filename);
+            return output;
+        }
+        catch (Exception e)
+        {
+            opMode.telemetry.log().add("Unable to read " + filename + ", returning 0");
+            return "";
+        }
+    }
+    public void saveRobotPos()
+    {
+        //Not using toString because that rounds the pos to 3 decimal places.  I want more decimal places because I want to
+        Pose2d currentPos = getPoseEstimate();
+        double x = currentPos.getX();
+        double y = currentPos.getY();
+        double angleRAD = currentPos.getHeading();
+        StringBuilder stringBuilder = new StringBuilder();
+        String pos = stringBuilder.append(x).append(",").append(y).append(",").append(angleRAD).toString();
+        writeFile(ROBOT_POS_FILE_NAME,pos);
+    }
+    public Pose2d readRobotPos()
+    {
+        String posString = readFileString(ROBOT_POS_FILE_NAME);
+        String[] numStrings = posString.split(",");
+
+        double x = Double.valueOf(numStrings[0]);
+        double y = Double.valueOf(numStrings[1]);
+        double angleRAD = Double.valueOf(numStrings[2]);
+
+        return new Pose2d(x,y,angleRAD);
     }
     public void outputTelemetry() //used for debugging.  This method is called a lot
     {
@@ -474,12 +524,15 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
 
         if (isStoneAtIntake)
         {
-            intake(.25); //If a stone is under the bot, go slower so it reaches the end
-        }
-        else if (isStoneAtEnd)
-        {
-            stopIntake(); //if stone reaches the end, stop intaking.
-            //stopIntake includes the setRunIntakeUntilStone(false) method
+            //If a stone is under the bot, go slower so it reaches the end
+            if (isStoneAtEnd)
+            {
+                stopIntake();
+            }
+            else
+            {
+                intake(.25);
+            }
         }
         else //if nothing is detected, intake at disired power
         {
@@ -496,12 +549,12 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
         int liftPos = lift.getCurrentPosition();
         if (liftPos > targetPos + leaway)
         {
-            lift.setPower(-.5);
+            lift.setPower(-1);
             isLiftAtStartingPos = false;
         }
         else if (liftPos < targetPos-leaway)
         {
-            lift.setPower(.5);
+            lift.setPower(1);
             isLiftAtStartingPos = false;
         }
         else

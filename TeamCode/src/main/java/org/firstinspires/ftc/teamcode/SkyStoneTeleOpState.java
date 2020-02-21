@@ -49,7 +49,9 @@ public class SkyStoneTeleOpState extends LinearOpMode {
 
         telemetry.log().add("DONE INITIALING");
 
-        bot.setPoseEstimate(new Pose2d(-36,-63,Math.toRadians(90)));
+        double startingAngle = bot.readFile(bot.GYRO_ANGLE_FILE_NAME);
+
+        bot.setPoseEstimate(new Pose2d(-36,-63,Math.toRadians(startingAngle)));
 
         //get the angle the robot was at when auton ended
         bot.setAngleZzeroValue(-bot.readFile(bot.GYRO_ANGLE_FILE_NAME));
@@ -88,7 +90,7 @@ public class SkyStoneTeleOpState extends LinearOpMode {
             {
                 double speed = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y); //get speed
                 double LeftStickAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4; //get angle
-                double robotAngle = Math.toRadians(bot.getIMUAngle()); //angle of robot
+                double robotAngle = bot.getPoseEstimate().getHeading(); //angle of robot
                 double rightX=gamepad1.right_stick_x; //rotation
                 rightX*=.5; //half rotation value for better turning
                 //offset the angle by the angle of the robot to make it field realtive

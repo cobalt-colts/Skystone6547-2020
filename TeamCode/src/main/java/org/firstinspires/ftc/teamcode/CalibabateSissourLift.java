@@ -25,6 +25,8 @@ public class CalibabateSissourLift extends LinearOpMode {
             bot.lift.setPower(-gamepad1.right_stick_y);
             if (bot.a1.onPress()) //if A is pressed, write the auton starting pos
             {
+                bot.zeroEncoder(bot.lift);
+                //TODO: Remove below statement
                 bot.writeFile(bot.LIFT_STARTING_POS_FILE_NAME,bot.lift.getCurrentPosition());
             }
             if (bot.b1.onPress()) //if B is pressed, write the max

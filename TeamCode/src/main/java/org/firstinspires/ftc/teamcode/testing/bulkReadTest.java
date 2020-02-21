@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode.testing;
 
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -74,6 +75,7 @@ import java.util.List;
 
  */
 @TeleOp (name = "Bulk Read Test", group = "Tests")
+@Disabled
 public class bulkReadTest extends LinearOpMode {
 
     final int       TEST_CYCLES    = 500;   // Number of control cycles to run to determine cycle times.
