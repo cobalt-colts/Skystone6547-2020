@@ -9,11 +9,14 @@ import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547Sta
 @TeleOp
 public class limitSwitchTest extends LinearOpMode {
 
+    AnalogInput limitSwitch3;
     @Override
     public void runOpMode() throws InterruptedException {
         DriveTrain6547State bot = new DriveTrain6547State(this);
+        bot.limitSwitch = hardwareMap.get(AnalogInput.class, "limitSwitch");
 
-        AnalogInput switch2 = hardwareMap.get(AnalogInput.class, "ls2");
+        AnalogInput limitSwitch2 = hardwareMap.get(AnalogInput.class, "limitSwitch");
+        limitSwitch3 = hardwareMap.get(AnalogInput.class, "limitSwitch");
 
         telemetry.addData("ready to start","");
         telemetry.update();
@@ -23,7 +26,8 @@ public class limitSwitchTest extends LinearOpMode {
         while (opModeIsActive())
         {
             telemetry.addData("Limit Switch Voltage", bot.limitSwitch.getVoltage());
-            telemetry.addData("Limit Switch Port 0 Voltage",switch2.getVoltage());
+            telemetry.addData("Limit Switch Voltage 2",limitSwitch2.getVoltage());
+            telemetry.addData("Limit Switch Voltage 3",limitSwitch3.getVoltage());
             telemetry.update();
         }
     }

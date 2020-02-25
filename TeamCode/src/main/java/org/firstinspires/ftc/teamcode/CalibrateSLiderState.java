@@ -49,7 +49,7 @@ public class CalibrateSLiderState extends LinearOpMode {
         }
 
         double grabberMax = bot.grabberSlide.getPosition();
-        double grabberMin = grabberMax-.215;
+        double grabberMin = grabberMax-.220;
 
         bot.writeFile(bot.GRABBER_MIN_FILE_NAME,grabberMin);
         bot.writeFile(bot.GRABBER_MAX_FILE_NAME,grabberMax);
@@ -57,19 +57,26 @@ public class CalibrateSLiderState extends LinearOpMode {
         telemetry.clear();
         telemetry.addData("Servo Calibrated Successfully.  Now testing","");
 
+        bot.grabberSlide.setPosition(grabberMin);
+        telemetry.clear();
+        telemetry.addData("Moving to MIN","");
+        telemetry.update();
+
+        sleep(3500);
+
         bot.grabberSlide.setPosition(grabberMax);
         telemetry.clear();
         telemetry.addData("Moving to MAX","");
         telemetry.update();
 
-        sleep(2000);
+        sleep(3500);
 
         bot.grabberSlide.setPosition(grabberMin);
         telemetry.clear();
         telemetry.addData("Moving to MIN","");
         telemetry.update();
 
-        sleep(2000);
+        sleep(3500);
 
     }
 }

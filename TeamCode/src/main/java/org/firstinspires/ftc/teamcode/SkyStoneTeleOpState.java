@@ -35,7 +35,7 @@ public class SkyStoneTeleOpState extends LinearOpMode {
 
     //edit the array to change the foundation grabber position(s)
     private ToggleDouble fondationGrabberPos = new ToggleDouble(new double[] {0,1},0);
-    private ToggleDouble grabberToggle = new ToggleDouble(new double[] {0, .4}, 0);
+    private ToggleDouble grabberToggle = new ToggleDouble(new double[] {0, 1}, 0);
 
     private DriveTrain6547State bot; //the robot class
 

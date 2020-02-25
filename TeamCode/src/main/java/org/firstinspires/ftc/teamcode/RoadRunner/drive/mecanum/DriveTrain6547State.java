@@ -10,12 +10,14 @@ import com.qualcomm.ftccommon.SoundPlayer;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
+import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -71,6 +73,7 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
     public ColorSensor colorSensorSideRight;
     public ColorSensor intakeColorSensor;
     public ColorSensor endColorSensor;
+    public ColorSensor rightEndColorSensor;
 
     public SkyStoneLoc skyStoneLoc=SkyStoneLoc.CENTER; //defualt to center
 
@@ -89,6 +92,7 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
     Rev2mDistanceSensor distanceSensorY;
 
     public AnalogInput limitSwitch;
+    public RevTouchSensor touchSensor;
 
     List<Integer> screamIds = new ArrayList<>();//screaming robot (don't put in notebook)
 
@@ -157,6 +161,7 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
     public void initOtherHardware()
     {
         limitSwitch = hardwareMap.get(AnalogInput.class, "limitSwitch");
+        touchSensor = hardwareMap.get(RevTouchSensor.class, "ts2");
         lift =  hardwareMap.get(DcMotorEx.class, "lift");
         intake = hardwareMap.get(DcMotorEx.class, "intake");
         fondationGrabber = hardwareMap.get(Servo.class, "f grabber");
@@ -168,11 +173,11 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
         colorSensorSideLeft = hardwareMap.get(ColorSensor.class, "color sensor2");
         intakeColorSensor = hardwareMap.get(ColorSensor.class, "intake color sensor");
         endColorSensor = hardwareMap.get(ColorSensor.class,"end color sensor");
+        rightEndColorSensor = hardwareMap.get(ColorSensor.class, "rightEndColorSensor");
 
         allHubs = hardwareMap.getAll(LynxModule.class);
 
         RobotLog.v("Initialized hardware");
-
 
         lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -407,7 +412,7 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
     public void setGrabber(double pos)
     {
         double min=0;
-        double max=1;
+        double max=.5;
         double range = max-min;
         pos*=range;
         pos+=min;
@@ -432,21 +437,18 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
     }
     public void ExtendGrabberSlide()
     {
-        grabberSlide.setPosition(grabberMax);
+        setGrabberSlider(1);
     }
     public void RetractGrabberSlide()
     {
-        grabberSlide.setPosition(grabberMin);
+        setGrabberSlider(0);
     }
-    int i = 0;
     //updates servo for use with a gamepad stick
     public void updateServo(Servo servo, double gamepadStick, double speed, double max, double min)
     {
         if (Math.abs(gamepadStick) < .2) return;
-        i++;
         double posToAdd = gamepadStick*speed;
         opMode.telemetry.addData("changing pos by ",posToAdd);
-        opMode.telemetry.addData("iteration",i);
         double servoCurrentPos = grabberSlide.getPosition();
         double targetPos = posToAdd + servoCurrentPos;
         //if ((servoCurrentPos > min && gamepadStick > 0) || (servoCurrentPos < max && gamepadStick < 0))
@@ -511,6 +513,9 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
     {
         if (runLift) setLiftToTargetPos(getLiftTargetPos(), getLiftLeeway());
         if (runIntakeUntilStone) runIntakeUntilStone();
+        opMode.telemetry.addData("Left END RED: ",endColorSensor.red());
+        opMode.telemetry.addData("Right END RED", rightEndColorSensor.red());
+        opMode.telemetry.update();
         //outputTelemetry();
     }
     public void runIntakeUntilStone()
@@ -519,25 +524,35 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
     }
     public void runIntakeUntilStone(double power)
     {
-        boolean isStoneAtIntake = isStone(intakeColorSensor);
-        boolean isStoneAtEnd = isStone(endColorSensor);
-
-        if (isStoneAtIntake)
+        if (isStoneAtIntake())
         {
             //If a stone is under the bot, go slower so it reaches the end
-            if (isStoneAtEnd)
-            {
-                stopIntake();
-            }
-            else
-            {
-                intake(.25);
-            }
+            RobotLog.v("Stone at intake of robot");
+            stopIntake();
+            return;
         }
-        else //if nothing is detected, intake at disired power
+        if (isStoneAtEnd())
         {
-            intake(power);
+            //stone at end.
+            RobotLog.v("Stone at end of robot");
+            RobotLog.v("Left Color Sensor R: " + endColorSensor.red() + ", G: " + endColorSensor.green() +", B: " + endColorSensor.blue() + ", a: " + endColorSensor.alpha());
+            RobotLog.v("Right Color Sensor R: " + rightEndColorSensor.red() + ", G: " + rightEndColorSensor.green() +", B: " + rightEndColorSensor.blue() + ", a: " + rightEndColorSensor.alpha());
+            stopIntake();
+            return;
+            //closeGrabber();
         }
+
+        intake(power);
+    }
+    public void grabStoneInIntake()
+    {
+        runtime.reset();
+        while (!isStoneAtEnd() && opMode.opModeIsActive() && runtime.seconds() < .5)
+        {
+            intake(.5);
+        }
+        opMode.sleep(500);
+        closeGrabber();
     }
     public boolean isLiftAtTargetPos()
     {
@@ -566,6 +581,7 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
     }
     public void moveLift(int modifer, int leaway)
     {
+        RobotLog.v("Moving Lift to " + modifer);
         runtime.reset();
         setLiftTargetPos(getLiftStartingPos() + modifer);
         while (!isLiftAtTargetPos() && opMode.opModeIsActive()) {
@@ -614,9 +630,25 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
     {
         return (colorSensorToBeUsed.red()*colorSensorToBeUsed.green()) / Math.pow(colorSensorToBeUsed.blue(),2) < 3;
     }
+    public boolean isStoneAtEnd()
+    {
+        if (isStone(rightEndColorSensor) || isStone(endColorSensor))
+        {
+            return true;
+        }
+        else return false;
+    }
     public boolean isStone(ColorSensor colorSensor)
     {
-        return colorSensor.alpha()>170;
+        return colorSensor.red()>110;
+    }
+    public boolean isStoneAtIntake()
+    {
+        return intakeColorSensor.alpha() > 170;
+    }
+    public boolean isLimitSwitchPressed()
+    {
+        return limitSwitch.getVoltage() > 2.5;
     }
     public void zeroEncoders() //set all the encoders to zero
     {

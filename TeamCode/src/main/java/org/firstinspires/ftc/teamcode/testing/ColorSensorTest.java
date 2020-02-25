@@ -48,39 +48,8 @@ import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547Sta
  */
 
 @TeleOp
-@Disabled
 @Config
 public class ColorSensorTest extends LinearOpMode {
-
-    /**
-     * Note that the REV Robotics Color-Distance incorporates two sensors into one device.
-     * It has an IR proximity sensor which is used to calculate distance and an RGB color sensor.
-     *
-     * There will be some variation in the values measured depending on whether you are using a
-     * V3 color sensor versus the older V2 and V1 sensors, as the V3 is based around a different chip.
-     *
-     * For V1/V2, the light/distance sensor saturates at around 2" (5cm).  This means that targets that are 2"
-     * or closer will display the same value for distance/light detected.
-     *
-     * For V3, the distance sensor as configured can handle distances between 0.25" (~0.6cm) and 6" (~15cm).
-     * Any target closer than 0.25" will dislay as 0.25" and any target farther than 6" will display as 6".
-     *
-     * Note that the distance sensor function of both chips is built around an IR proximity sensor, which is
-     * sensitive to ambient light and the reflectivity of the surface against which you are measuring. If
-     * very accurate distance is required you should consider calibrating the raw optical values read from the
-     * chip to your exact situation.
-     *
-     * Although you configure a single REV Robotics Color-Distance sensor in your configuration file,
-     * you can treat the sensor as two separate sensors that share the same name in your op mode.
-     *
-     * In this example, we represent the detected color by a hue, saturation, and value color
-     * model (see https://en.wikipedia.org/wiki/HSL_and_HSV).  We change the background
-     * color of the screen to match the detected color.
-     *
-     * In this example, we  also use the distance sensor to display the distance
-     * to the target object.
-     *
-     */
     public static double INTAKE_SPEED = .5;
     public static double INTAKE_SPEED_2 = .25;
     @Override
@@ -101,23 +70,24 @@ public class ColorSensorTest extends LinearOpMode {
             // multiply by the SCALE_FACTOR.
             // then cast it back to int (SCALE_FACTOR is a double)
 
-            boolean isStone = isStone(bot.intakeColorSensor);
-
-            if (isStone || isStone(bot.endColorSensor))
-            {
-                if (isStone(bot.endColorSensor))
-                {
-                    bot.stopIntake();
-                }
-                else
-                {
-                    bot.intake(INTAKE_SPEED_2);
-                }
-            }
-            else
-            {
-                bot.intake(INTAKE_SPEED);
-            }
+//            boolean isStoneAtIntake = bot.isStone(bot.intakeColorSensor);
+//            boolean isStoneAtEnd = isStoneAtEnd(bot);
+//
+//            if (isStoneAtIntake)
+//            {
+//                //If a stone is under the bot, go slower so it reaches the end
+//                bot.intake(INTAKE_SPEED_2);
+//            }
+//            else if (isStoneAtEnd)
+//            {
+//                //stone at end.
+//                bot.stopIntake();
+//            }
+//            else //if nothing is detected, intake at regular power
+//            {
+//                bot.intake(INTAKE_SPEED);
+//            }
+            bot.runIntakeUntilStone(INTAKE_SPEED);
 
             // send the info back to driver station using telemetry function.
             telemetry.addData("Is Intake Stone: " , isStone(bot.intakeColorSensor));
@@ -126,11 +96,15 @@ public class ColorSensorTest extends LinearOpMode {
             telemetry.addData("Intake Green", bot.intakeColorSensor.green());
             telemetry.addData("Intake Blue ", bot.intakeColorSensor.blue());
             telemetry.addData("Is End Stone", isStone(bot.endColorSensor));
-            telemetry.addData("Is End SkyStone", bot.isSkystone(bot.endColorSensor));
             telemetry.addData("End Alpha", bot.endColorSensor.alpha());
             telemetry.addData("End Red  ", bot.endColorSensor.red());
             telemetry.addData("End Green", bot.endColorSensor.green());
             telemetry.addData("End Blue ", bot.endColorSensor.blue());
+            telemetry.addData("Is Right End SkyStone", bot.isStone(bot.rightEndColorSensor));
+            telemetry.addData("Right End Alpha", bot.rightEndColorSensor.alpha());
+            telemetry.addData("Right End Red  ", bot.rightEndColorSensor.red());
+            telemetry.addData("Right End Green", bot.rightEndColorSensor.green());
+            telemetry.addData("Right End Blue ", bot.rightEndColorSensor.blue());
 
             // change the background color to match the color detected by the RGB sensor.
             // pass a reference to the hue, saturation, and value array as an argument
@@ -139,8 +113,16 @@ public class ColorSensorTest extends LinearOpMode {
             telemetry.update();
         }
     }
+    public boolean isStoneAtEnd(DriveTrain6547State bot)
+    {
+        if (isStone(bot.rightEndColorSensor) || isStone(bot.endColorSensor))
+        {
+            return true;
+        }
+        return false;
+    }
     public boolean isStone(ColorSensor colorSensor)
     {
-        return colorSensor.alpha()>170;
+        return colorSensor.red()>100;
     }
 }
