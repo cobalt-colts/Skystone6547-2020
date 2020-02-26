@@ -177,25 +177,25 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
 
         allHubs = hardwareMap.getAll(LynxModule.class);
 
-        RobotLog.v("Initialized hardware");
+        RobotLog.d("Initialized hardware");
 
         lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        RobotLog.v("set  lift to brake");
+        RobotLog.d("set  lift to brake");
 
         lift.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        RobotLog.v("set hardware");
+        RobotLog.d("set hardware");
 
         setFondationGrabber(0); //open foundation grabber
 
         openGrabber();
 
-        RobotLog.v("Initialized IMU");
+        RobotLog.d("Initialized IMU");
 
         initGamepads();
 
-        RobotLog.v("Initialized gamepads");
+        RobotLog.d("Initialized gamepads");
 
         setGrabber(0); //open stone grabber
 
@@ -222,6 +222,8 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
 
         setLiftTargetPos(liftStartingPos);
         setRunLift(false); //robot will not try to move lift unless otherwise told
+
+        setBulkReadAuto();
 
         //opMode.telemetry = dashboard.getopMode.telemetry();
     }
@@ -396,18 +398,18 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
     public void intake(double pow)
     {
         intake.setPower(-pow);
-        RobotLog.v("intaking");
+        RobotLog.d("intaking");
     }
     public void outtake(double pow)
     {
         intake.setPower(pow);
-        RobotLog.v("outtaking");
+        RobotLog.d("outtaking");
     }
     public void stopIntake()
     {
         intake.setPower(0);
         setRunIntakeUntilStone(false);
-        RobotLog.v("stopped intake");
+        RobotLog.d("stopped intake");
     }
     public void setGrabber(double pos)
     {
@@ -463,6 +465,10 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
     public void updateServo(Servo servo, double gamepadStick, double speed)
     {
         updateServo(servo, gamepadStick, speed, 0, 1);
+    }
+    public boolean isTouchSensorPressed()
+    {
+        return touchSensor.isPressed();
     }
     //set lift level
     public void setLiftLevel(int level)
@@ -527,16 +533,16 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
         if (isStoneAtIntake())
         {
             //If a stone is under the bot, go slower so it reaches the end
-            RobotLog.v("Stone at intake of robot");
+            RobotLog.d("Stone at intake of robot");
             stopIntake();
             return;
         }
         if (isStoneAtEnd())
         {
             //stone at end.
-            RobotLog.v("Stone at end of robot");
-            RobotLog.v("Left Color Sensor R: " + endColorSensor.red() + ", G: " + endColorSensor.green() +", B: " + endColorSensor.blue() + ", a: " + endColorSensor.alpha());
-            RobotLog.v("Right Color Sensor R: " + rightEndColorSensor.red() + ", G: " + rightEndColorSensor.green() +", B: " + rightEndColorSensor.blue() + ", a: " + rightEndColorSensor.alpha());
+            RobotLog.d("Stone at end of robot");
+            RobotLog.d("Left Color Sensor R: " + endColorSensor.red() + ", G: " + endColorSensor.green() +", B: " + endColorSensor.blue() + ", a: " + endColorSensor.alpha());
+            RobotLog.d("Right Color Sensor R: " + rightEndColorSensor.red() + ", G: " + rightEndColorSensor.green() +", B: " + rightEndColorSensor.blue() + ", a: " + rightEndColorSensor.alpha());
             stopIntake();
             return;
             //closeGrabber();
@@ -560,7 +566,8 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
     }
 
     public void setLiftToTargetPos(int targetPos, int leaway) //sets lift to target pos.
-    {                                                        // No while loops in this so it can be used in tele-op or a state machine
+    {
+        // No while loops in this so it can be used in tele-op or a state machine
         int liftPos = lift.getCurrentPosition();
         if (liftPos > targetPos + leaway)
         {
@@ -581,7 +588,7 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
     }
     public void moveLift(int modifer, int leaway)
     {
-        RobotLog.v("Moving Lift to " + modifer);
+        RobotLog.d("Moving Lift to " + modifer + " from " + lift.getCurrentPosition());
         runtime.reset();
         setLiftTargetPos(getLiftStartingPos() + modifer);
         while (!isLiftAtTargetPos() && opMode.opModeIsActive()) {

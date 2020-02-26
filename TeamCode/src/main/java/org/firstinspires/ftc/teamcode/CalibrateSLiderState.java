@@ -49,7 +49,7 @@ public class CalibrateSLiderState extends LinearOpMode {
         }
 
         double grabberMax = bot.grabberSlide.getPosition();
-        double grabberMin = grabberMax-.220;
+        double grabberMin = grabberMax-.185;
 
         bot.writeFile(bot.GRABBER_MIN_FILE_NAME,grabberMin);
         bot.writeFile(bot.GRABBER_MAX_FILE_NAME,grabberMax);

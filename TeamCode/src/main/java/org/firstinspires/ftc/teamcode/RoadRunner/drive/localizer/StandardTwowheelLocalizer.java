@@ -48,8 +48,6 @@ public class StandardTwowheelLocalizer extends TwoTrackingWheelLocalizer {
         frontEncoder = hardwareMap.dcMotor.get("vertRight");
 
         sideEncoder.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        setBulkReadManual();
     }
 
     public static double encoderTicksToInches(int ticks) {
@@ -63,7 +61,6 @@ public class StandardTwowheelLocalizer extends TwoTrackingWheelLocalizer {
     @NonNull
     @Override
     public List<Double> getWheelPositions() {
-        clearBulkReadCache();
         return Arrays.asList(
                 encoderTicksToInches(sideEncoder.getCurrentPosition()),
                 encoderTicksToInches(frontEncoder.getCurrentPosition())
@@ -75,16 +72,4 @@ public class StandardTwowheelLocalizer extends TwoTrackingWheelLocalizer {
         return bot.getRawExternalHeading();
     }
 
-    private void setBulkReadManual()
-    {
-        for (LynxModule module : allHubs) {
-            module.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-        }
-    }
-    private void clearBulkReadCache()
-    {
-        for (LynxModule module : allHubs) {
-            module.clearBulkCache();
-        }
-    }
 }
