@@ -49,10 +49,10 @@ public class SmaatPaak extends LinearOpMode {
             }
 
             bot.followTrajectory(bot.trajectoryBuilder()
-                    .reverse()
+                    //.reverse()
             .splineTo(new Pose2d(-20,-20,Math.toRadians(135)))
             .splineTo(new Pose2d(0,-40,Math.toRadians(180)))
-                    .addMarker(new Intake(bot,1))
+                    //.addMarker(new Intake(bot,1))
                     .splineTo(new Pose2d(0,10))
             .build());
 

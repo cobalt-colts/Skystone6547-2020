@@ -51,7 +51,7 @@ public class SkyStoneTeleOpState extends LinearOpMode {
 
         double startingAngle = bot.readFile(bot.GYRO_ANGLE_FILE_NAME);
 
-        bot.setPoseEstimate(new Pose2d(-36,-63,Math.toRadians(startingAngle)));
+        bot.setPoseEstimate(new Pose2d(-36,-63,Math.toRadians(90)));
 
         //get the angle the robot was at when auton ended
         bot.setAngleZzeroValue(-bot.readFile(bot.GYRO_ANGLE_FILE_NAME));

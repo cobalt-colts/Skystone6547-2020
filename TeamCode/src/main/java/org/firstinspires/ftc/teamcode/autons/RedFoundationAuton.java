@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.DriveConstants;
@@ -14,6 +15,7 @@ import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547Sta
     This auton pulls the foundation to the build site and parks under the skybridge for the RED side
  */
 @Autonomous(name = "RED Foundation Auton State", group = "auton")
+@Disabled
 public class RedFoundationAuton extends LinearOpMode
 {
 
@@ -46,7 +48,7 @@ public class RedFoundationAuton extends LinearOpMode
 
 
         bot.followTrajectorySync(bot.trajectoryBuilder()
-                .reverse()
+                // .reverse
         .splineTo(new Pose2d(45,-27,Math.toRadians(270)))
                 .build());
 

@@ -22,7 +22,7 @@ public class roadRunnerAddMarkerTest extends LinearOpMode {
 
         bot.followTrajectorySync(bot.trajectoryBuilder()
         .forward(24)
-        .addMarker(new Intake(bot,1))
+        //.addMarker(new Intake(bot,1))
         .forward(24)
         .build());
     }

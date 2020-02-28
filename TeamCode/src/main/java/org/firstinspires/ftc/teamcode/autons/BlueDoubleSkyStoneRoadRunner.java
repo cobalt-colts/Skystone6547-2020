@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.autons;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547State;
@@ -12,6 +13,7 @@ import org.firstinspires.ftc.teamcode.util.SkyStoneLoc;
  * Created by Drew from 6547 on 9/27/2019.
  */
 @Autonomous(name = "Blue Double Skystone Road Runner", group = "auton")
+@Disabled
 public class BlueDoubleSkyStoneRoadRunner extends LinearOpMode {
 
     public void runOpMode()
@@ -83,7 +85,7 @@ public class BlueDoubleSkyStoneRoadRunner extends LinearOpMode {
                 .build());
         //spline to under the skybridge
         bot.followTrajectorySync(bot.trajectoryBuilder()
-                .reverse()
+                // .reverse
                 .splineTo(new Pose2d(0,44,Math.toRadians(180)))
                 .build());
         bot.turnRealtiveSync(Math.toRadians(0));
@@ -153,7 +155,7 @@ public class BlueDoubleSkyStoneRoadRunner extends LinearOpMode {
 
         //get in path of skybridge
         bot.followTrajectorySync(bot.trajectoryBuilder()
-                .reverse()
+                // .reverse
                 .splineTo(new Pose2d(-15,44, Math.toRadians(180)))
                 .build());
         bot.turnRealtiveSync(Math.toRadians(0));

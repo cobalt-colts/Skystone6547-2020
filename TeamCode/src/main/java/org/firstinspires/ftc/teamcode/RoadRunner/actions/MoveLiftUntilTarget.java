@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.RoadRunner.actions;
 
+import com.acmerobotics.roadrunner.trajectory.MarkerCallback;
+
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547State;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
 
-public class MoveLiftUntilTarget implements Function0<Unit> {
+public class MoveLiftUntilTarget implements MarkerCallback {
 
 
     DriveTrain6547State bot;
@@ -25,10 +27,9 @@ public class MoveLiftUntilTarget implements Function0<Unit> {
         leeway = 50;
     }
     @Override
-    public Unit invoke() {
+    public void onMarkerReached() {
         bot.setLiftTargetPos(target);
         bot.setLiftLeeway(leeway);
         bot.setRunLift(true);
-        return Unit.INSTANCE;
     }
 }

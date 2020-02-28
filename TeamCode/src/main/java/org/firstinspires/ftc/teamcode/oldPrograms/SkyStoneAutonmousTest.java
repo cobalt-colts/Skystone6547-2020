@@ -1,11 +1,11 @@
 
 
-package org.firstinspires.ftc.teamcode.OldPrograms;
+package org.firstinspires.ftc.teamcode.oldPrograms;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-import org.firstinspires.ftc.teamcode.OldPrograms.usedInMeet1.SkyStone6547;
+import org.firstinspires.ftc.teamcode.oldPrograms.usedInMeet1.SkyStone6547;
 
 /*
 First auton for this year.

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.testing.circles;
 
-import org.firstinspires.ftc.teamcode.OldPrograms.usedInMeet1.SkyStone6547;
+
+import org.firstinspires.ftc.teamcode.oldPrograms.usedInMeet1.SkyStone6547;
 
 /*
 Another class to drive in circle.  Unlike the other classes, this class does not use the Circle class

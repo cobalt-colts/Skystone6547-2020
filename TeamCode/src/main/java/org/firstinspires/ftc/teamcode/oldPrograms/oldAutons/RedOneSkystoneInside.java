@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.OldPrograms.oldAutons;
+package org.firstinspires.ftc.teamcode.oldPrograms.oldAutons;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;

@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.OldPrograms.usedInMeet1.SkyStone6547;
+import org.firstinspires.ftc.teamcode.oldPrograms.usedInMeet1.SkyStone6547;
 
 /*
 Prototype using multithreading in order to move the linear side and arm when the robot is moving and such.

@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.RoadRunner.actions;
 
+import com.acmerobotics.roadrunner.trajectory.MarkerCallback;
+
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547State;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
 
-public class Outtake implements Function0<Unit> {
+public class Outtake implements MarkerCallback {
 
     DriveTrain6547State bot;
     private double power;
@@ -16,8 +18,7 @@ public class Outtake implements Function0<Unit> {
     }
 
     @Override
-    public Unit invoke() {
+    public void onMarkerReached() {
         bot.outtake(power);
-        return Unit.INSTANCE;
     }
 }

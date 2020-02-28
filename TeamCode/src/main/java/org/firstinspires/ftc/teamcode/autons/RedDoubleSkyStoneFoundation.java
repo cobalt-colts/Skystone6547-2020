@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.RoadRunner.actions.Intake;
@@ -16,6 +17,7 @@ import org.firstinspires.ftc.teamcode.util.SkyStoneLoc;
  * Created by Drew from 6547 on 9/27/2019.
  */
 @Autonomous(name = "RED double skystone Foundation State", group = "auton")
+@Disabled
 public class RedDoubleSkyStoneFoundation extends LinearOpMode {
 
     public void runOpMode()
@@ -76,7 +78,7 @@ public class RedDoubleSkyStoneFoundation extends LinearOpMode {
 
             bot.followTrajectorySync(bot.trajectoryBuilder()
                     .back(4)
-                    .addMarker(new IntakeUntilStone(bot))
+                    .addTemporalMarker(0,new IntakeUntilStone(bot))
             .strafeTo(new Vector2d(-52,-30))
             .build());
             telemetry.log().add("LEFT");
@@ -90,7 +92,7 @@ public class RedDoubleSkyStoneFoundation extends LinearOpMode {
             //drive back a bit and strafe right
             bot.followTrajectorySync(bot.trajectoryBuilder()
                     .back(4)
-                    .addMarker(new IntakeUntilStone(bot))
+                    .addTemporalMarker(0,new IntakeUntilStone(bot))
                     .strafeTo(new Vector2d(-18,-30))
                     .build());
         }
@@ -124,7 +126,7 @@ public class RedDoubleSkyStoneFoundation extends LinearOpMode {
 
         //spline to under the skybridge
         bot.followTrajectorySync(bot.trajectoryBuilder()
-                .reverse()
+                // .reverse
                 .splineTo(new Pose2d(0,-40,Math.toRadians(180)))
                 .splineTo(new Pose2d(35,-40,Math.toRadians(180)))
                 .splineTo(new Pose2d(45,-21,Math.toRadians(270)))
@@ -147,7 +149,7 @@ public class RedDoubleSkyStoneFoundation extends LinearOpMode {
 
         bot.followTrajectorySync(bot.trajectoryBuilder()
                 .back(24)
-                .addMarker(1,new Intake(bot,1))
+                .addTemporalMarker(1,new Intake(bot,1))
         .splineTo(new Pose2d(0,-40,Math.toRadians(180)))
         .build());
 
@@ -214,9 +216,9 @@ public class RedDoubleSkyStoneFoundation extends LinearOpMode {
 
         //go under skybridge and release stone
        bot.followTrajectorySync(bot.trajectoryBuilder()
-               .reverse()
+               // .reverse
        .splineTo(new Pose2d(0,-36,Math.toRadians(180)))
-               .addMarker(1.5,new Intake(bot,1))
+               .addTemporalMarker(1.5,new Intake(bot,1))
                .splineTo(new Pose2d(-8,-36,Math.toRadians(180)))
        .build());
 

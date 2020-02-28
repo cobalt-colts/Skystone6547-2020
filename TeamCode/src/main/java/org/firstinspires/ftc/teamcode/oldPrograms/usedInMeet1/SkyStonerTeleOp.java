@@ -1,9 +1,7 @@
-package org.firstinspires.ftc.teamcode.OldPrograms.usedInMeet1;
+package org.firstinspires.ftc.teamcode.oldPrograms.usedInMeet1;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
-import org.firstinspires.ftc.teamcode.OldPrograms.usedInMeet1.SkyStone6547;
 
 /*
 This is the tele-op we use to drive the robot

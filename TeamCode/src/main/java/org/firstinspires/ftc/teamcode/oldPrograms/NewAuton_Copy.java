@@ -1,10 +1,10 @@
-package org.firstinspires.ftc.teamcode.OldPrograms;
+package org.firstinspires.ftc.teamcode.oldPrograms;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 
-import org.firstinspires.ftc.teamcode.OldPrograms.usedInMeet1.SkyStone6547;
+import org.firstinspires.ftc.teamcode.oldPrograms.usedInMeet1.SkyStone6547;
 
 /**
  *This auton is obsolete.  This auton is for an older verison of the robot and will not work with the current one

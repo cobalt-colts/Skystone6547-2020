@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.util;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.OldPrograms.usedInMeet1.SkyStone6547;
+import org.firstinspires.ftc.teamcode.oldPrograms.usedInMeet1.SkyStone6547;
 
 /*
 This moves the linear slide down to level 0 (slightly above zero; the lowest position the linear slide can go)

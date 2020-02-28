@@ -18,6 +18,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryConstraints;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -27,7 +28,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.firstinspires.ftc.teamcode.RoadRunner.drive.DriveConstants.BASE_CONSTRAINTS;
+import static org.firstinspires.ftc.teamcode.RoadRunner.drive.DriveConstants.LATERAL_MULTIPLIER;
 import static org.firstinspires.ftc.teamcode.RoadRunner.drive.DriveConstants.TRACK_WIDTH;
+import static org.firstinspires.ftc.teamcode.RoadRunner.drive.DriveConstants.WHEEL_BASE;
 import static org.firstinspires.ftc.teamcode.RoadRunner.drive.DriveConstants.kA;
 import static org.firstinspires.ftc.teamcode.RoadRunner.drive.DriveConstants.kStatic;
 import static org.firstinspires.ftc.teamcode.RoadRunner.drive.DriveConstants.kV;
@@ -67,7 +70,7 @@ public abstract class MecanumDriveBase6547State extends MecanumDrive {
     private double lastTimestamp;
 
     public MecanumDriveBase6547State() {
-        super(kV, kA, kStatic, TRACK_WIDTH);
+        super(kV, kA, kStatic, TRACK_WIDTH,WHEEL_BASE,LATERAL_MULTIPLIER);
 
         dashboard = FtcDashboard.getInstance();
         dashboard.setTelemetryTransmissionInterval(25);
@@ -85,6 +88,11 @@ public abstract class MecanumDriveBase6547State extends MecanumDrive {
 
     public TrajectoryBuilder trajectoryBuilder() {
         return new TrajectoryBuilder(getPoseEstimate(), constraints);
+    }
+    public TrajectoryBuilder trajectoryBuilder(boolean reversed)
+    {
+        return new TrajectoryBuilder(getPoseEstimate(),reversed,constraints);
+
     }
 
     public void turn(double angle) {
@@ -182,13 +190,12 @@ public abstract class MecanumDriveBase6547State extends MecanumDrive {
                 fieldOverlay.setStrokeWidth(1);
                 fieldOverlay.setStroke("4CAF50");
                 DashboardUtil.drawSampledPath(fieldOverlay, trajectory.getPath());
-
-                fieldOverlay.setStroke("#F44336");
                 double t = follower.elapsedTime();
                 DashboardUtil.drawRobot(fieldOverlay, trajectory.get(t));
 
                 fieldOverlay.setStroke("#3F51B5");
-                fieldOverlay.fillCircle(currentPose.getX(), currentPose.getY(), 3);
+                //DashboardUtil.drawPoseHistory(fieldOverlay, poseHistory);
+                DashboardUtil.drawRobot(fieldOverlay, currentPose);
 
                 if (!follower.isFollowing()) {
                     mode = Mode.IDLE;
@@ -239,6 +246,14 @@ public abstract class MecanumDriveBase6547State extends MecanumDrive {
     public void setLiftTargetPos(int autonLiftTargetPos) {
         AutonLiftTargetPos = autonLiftTargetPos;
         //setRunLift(true);
+    }
+
+    public void setConstraints(DriveConstraints constraints) {
+        this.constraints = constraints;
+    }
+
+    public DriveConstraints getConstraints() {
+        return constraints;
     }
 
     public int getLiftTargetPos() {

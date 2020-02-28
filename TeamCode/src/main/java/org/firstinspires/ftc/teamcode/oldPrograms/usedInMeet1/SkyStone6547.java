@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.OldPrograms.usedInMeet1;
+package org.firstinspires.ftc.teamcode.oldPrograms.usedInMeet1;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;

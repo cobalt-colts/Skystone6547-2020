@@ -17,7 +17,6 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -589,6 +588,7 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
     public void moveLift(int modifer, int leaway)
     {
         RobotLog.d("Moving Lift to " + modifer + " from " + lift.getCurrentPosition());
+        isLiftAtStartingPos = false;
         runtime.reset();
         setLiftTargetPos(getLiftStartingPos() + modifer);
         while (!isLiftAtTargetPos() && opMode.opModeIsActive()) {

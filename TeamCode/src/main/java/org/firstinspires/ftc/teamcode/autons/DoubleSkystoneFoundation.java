@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.autons;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.MarkerCallback;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -41,7 +43,7 @@ public class DoubleSkystoneFoundation extends LinearOpMode {
         target value
          */
 
-        bot.setRunLift(true);
+        //bot.setRunLift(true);
 
         bot.setLiftTargetPos(0);
 
@@ -112,16 +114,16 @@ public class DoubleSkystoneFoundation extends LinearOpMode {
             if (isRed) { //if red
                 bot.followTrajectorySync(bot.trajectoryBuilder()
                         .back(4)
-                        .addMarker(new IntakeUntilStone(bot))
-                        .strafeTo(new Vector2d(-52, -32))
+                        .addTemporalMarker(0,new IntakeUntilStone(bot))
+                        .lineTo(new Vector2d(-52, -32))
                         .build());
             }
             else //if blue (this is the same path as going right for RED)
             {
                 bot.followTrajectorySync(bot.trajectoryBuilder()
                         .back(4)
-                        .addMarker(new IntakeUntilStone(bot))
-                        .strafeTo(new Vector2d(-18,32))
+                        .addTemporalMarker(0,new IntakeUntilStone(bot))
+                        .lineTo(new Vector2d(-18,32))
                         .build());
             }
 
@@ -135,23 +137,23 @@ public class DoubleSkystoneFoundation extends LinearOpMode {
                 //drive back a bit and strafe right
                 bot.followTrajectorySync(bot.trajectoryBuilder()
                         .back(4)
-                        .addMarker(new IntakeUntilStone(bot))
-                        .strafeTo(new Vector2d(-18, -32))
+                        .addTemporalMarker(0,new IntakeUntilStone(bot))
+                        .lineTo(new Vector2d(-18, -32))
                         .build());
             }
             else //if blue (path is same as left for RED)
             {
                 bot.followTrajectorySync(bot.trajectoryBuilder()
                         .back(4)
-                        .addMarker(new IntakeUntilStone(bot))
-                        .strafeTo(new Vector2d(-52, 32))
+                        .addTemporalMarker(0,new IntakeUntilStone(bot))
+                        .lineTo(new Vector2d(-52, 32))
                         .build());
             }
         }
         else //center (same for both colors)
         {
             bot.followTrajectorySync(bot.trajectoryBuilder()
-                    .strafeTo(new Vector2d(-34,-20))
+                    .lineTo(new Vector2d(-34,-20))
             .build());
             //---SKYSTONE CENTER---
             //go back a bit
@@ -174,14 +176,19 @@ public class DoubleSkystoneFoundation extends LinearOpMode {
         }
         //open intake
         //spline to under the skybridge to foundation
-        bot.followTrajectorySync(bot.trajectoryBuilder()
-                .reverse()
-                .splineTo(new Pose2d(-5,-40*yModifer,Math.toRadians(180)))
-                .splineTo(new Pose2d(35,-40*yModifer,Math.toRadians(180)))
-                .splineTo(new Pose2d(50,-24*yModifer,Math.toRadians(faceBackwardDeg)))
+        //bot.setPoseEstimate(new Pose2d(bot.getPoseEstimate().getX(),bot.getPoseEstimate().getY(),norm(bot.getPoseEstimate().getHeading()-Math.toRadians(180))));
+        if (isRed) bot.turnRealtiveSync(Math.toRadians(300));
+        bot.followTrajectorySync(bot.trajectoryBuilder(false)
+              //  .reverse()
+                .splineTo(new Pose2d(-5,-44*yModifer,Math.toRadians(0)))
+                .splineTo(new Pose2d(23,-45*yModifer,Math.toRadians(0)))
+                //.splineTo(new Pose2d(50,-24*yModifer,Math.toRadians(faceForwardDeg)))
                 .build());
+        for (int i=0; i < 2; i++) {
+            bot.turnRealtiveSync(Math.toRadians(faceBackwardDeg));
+        }
 
-        if (bot.getPoseEstimate().getY() < -24) bot.followTrajectorySync(bot.trajectoryBuilder()
+        bot.followTrajectorySync(bot.trajectoryBuilder()
         .back(6).build());
         bot.setFondationGrabber(1);
 
@@ -195,7 +202,7 @@ public class DoubleSkystoneFoundation extends LinearOpMode {
 
         bot.stopIntake();
 
-        bot.moveLift(1500,50);
+        bot.moveLift(3000,50);
 
         RobotLog.d("pulling foundation");
 
@@ -225,14 +232,15 @@ public class DoubleSkystoneFoundation extends LinearOpMode {
         //go to other stone
         bot.followTrajectorySync(bot.trajectoryBuilder()
                 .back(24)
-                .addMarker(1,new Intake(bot,1))
-                .strafeRight(8)
+                .addTemporalMarker(1,new Intake(bot,1))
+                //.strafeRight(8)
                 .build());
 
         RobotLog.d("Driving to under Skybridge");
+        bot.intake(1);
         bot.followTrajectory(bot.trajectoryBuilder()
-                .addMarker(1,new StopIntake(bot))
-        .splineTo(new Pose2d(0,-36*yModifer,Math.toRadians(180)))
+                .addTemporalMarker(2,new StopIntake(bot))
+        .splineTo(new Pose2d(0,-39*yModifer,Math.toRadians(180)))
         .build());
 
         bot.setRunIntakeUntilStone(true);
@@ -289,9 +297,8 @@ public class DoubleSkystoneFoundation extends LinearOpMode {
 
         //deliver second stone
        bot.followTrajectorySync(bot.trajectoryBuilder()
-               .reverse()
        .splineTo(new Pose2d(0,-35*yModifer,Math.toRadians(180)))
-               .addMarker(1.5,new Intake(bot,1))
+               .addTemporalMarker(1.5, new Intake(bot,1))
                .splineTo(new Pose2d(-8,-35*yModifer,Math.toRadians(180)))
        .build());
 
@@ -318,5 +325,11 @@ public class DoubleSkystoneFoundation extends LinearOpMode {
             bot.outputTelemetry();
         }
 
+    }
+    double norm(double x)
+    {
+        while (x>=360) x-=360;
+        while (x<=0) x+=360;
+        return x;
     }
 }

@@ -1,9 +1,9 @@
-package org.firstinspires.ftc.teamcode.OldPrograms.oldAutons;
+package org.firstinspires.ftc.teamcode.oldPrograms.oldAutons;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-import org.firstinspires.ftc.teamcode.OldPrograms.usedInMeet1.SkyStone6547;
+import org.firstinspires.ftc.teamcode.oldPrograms.usedInMeet1.SkyStone6547;
 
 /*
   This auton pulls the foundation to the build site and parks under the skybridge for the BLUE side

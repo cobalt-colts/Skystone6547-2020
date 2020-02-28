@@ -229,6 +229,18 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
 
         return velocities;
     }
+    public void turnAsync(double angle) {
+        double heading = getPoseEstimate().getHeading();
+        turnProfile = MotionProfileGenerator.generateSimpleMotionProfile(
+                new MotionState(heading, 0, 0, 0),
+                new MotionState(heading + angle, 0, 0, 0),
+                constraints.maxAngVel,
+                constraints.maxAngAccel,
+                constraints.maxAngJerk
+        );
+        turnStart = clock.seconds();
+        mode = Mode.TURN;
+    }
 
     public abstract PIDCoefficients getPIDCoefficients(DcMotor.RunMode runMode);
 
