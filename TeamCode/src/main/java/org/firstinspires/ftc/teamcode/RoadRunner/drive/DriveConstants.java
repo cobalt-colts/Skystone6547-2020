@@ -45,7 +45,7 @@ public class DriveConstants {
      */
     public static double WHEEL_RADIUS = 2;
     public static double GEAR_RATIO = .345; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 29; //14;
+    public static double TRACK_WIDTH = 28; //14;
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -57,7 +57,7 @@ public class DriveConstants {
     public static double kA = 0; //0
     public static double kStatic = 0; //0
     public static double WHEEL_BASE = 0;
-    public static double LATERAL_MULTIPLIER=2.4;
+    public static double LATERAL_MULTIPLIER=2.0;  // Drew had 2.4
 
     /*
      * These values are used to generate the trajectories for you robot. To ensure proper operation,

@@ -37,8 +37,8 @@ public class StandardTwowheelLocalizer extends TwoTrackingWheelLocalizer {
     private List<LynxModule> allHubs;
     public StandardTwowheelLocalizer(HardwareMap hardwareMap, DriveTrain6547State bot) {
         super(Arrays.asList(
-                new Pose2d(1.625, 5, Math.toRadians(0)), //sideEncoder parrel to drive train
-                new Pose2d(-2, -5.125, Math.toRadians(90)) // frontEncoder purpendiculat to drive train
+                new Pose2d(1.625, 5, Math.toRadians(0)), //sideEncoder parallel to drive train
+                new Pose2d(-2, -5.125, Math.toRadians(90)) // frontEncoder perpendicular to drive train
         ));
 
         allHubs = hardwareMap.getAll(LynxModule.class);

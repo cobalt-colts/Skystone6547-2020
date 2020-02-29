@@ -19,7 +19,7 @@ This is the tele-op we use to drive the robot
 @TeleOp(name = "SkyStone Tele-op State", group = "_teleOp")
 public class SkyStoneTeleOpState extends LinearOpMode {
 
-    public static double slideSpeed = .004; //speed of horizontal slide in servo position units
+    public static double slideSpeed = .0045; //speed of horizontal slide in servo position units
 
     public static double speedModifer=.7; //lowers the speed so it's easier to drive
 
@@ -51,10 +51,11 @@ public class SkyStoneTeleOpState extends LinearOpMode {
 
         double startingAngle = bot.readFile(bot.GYRO_ANGLE_FILE_NAME);
 
-        bot.setPoseEstimate(new Pose2d(-36,-63,Math.toRadians(90)));
+        bot.setAngleZzeroValue(-startingAngle);
+        bot.setPoseEstimate(new Pose2d(-36,-63,startingAngle));
 
         //get the angle the robot was at when auton ended
-        bot.setAngleZzeroValue(-bot.readFile(bot.GYRO_ANGLE_FILE_NAME));
+        //bot.setAngleZzeroValue(-bot.readFile(bot.GYRO_ANGLE_FILE_NAME));
         bot.writeFile(bot.GYRO_ANGLE_FILE_NAME, 0); //reset the old angle to zero
 
         telemetry.log().add("Ready to start");
@@ -80,9 +81,9 @@ public class SkyStoneTeleOpState extends LinearOpMode {
             /*
             Speed Modifers
              */
-            if (bot.x1.onPress()) speedModifer=.30;
-            if (bot.b1.onPress() && !bot.start1.isPressed()) speedModifer=.70;
-            if (bot.a1.onPress() && !bot.start1.isPressed()) speedModifer=1.0;
+            if (bot.x1.onPress()) speedModifer=.60;
+            if (bot.b1.onPress() && !bot.start1.isPressed()) speedModifer=.80;
+            if (bot.a1.onPress() && !bot.start1.isPressed()) speedModifer=1.3; //trig math caps speed at .7, 1.3 balences it out
 
             if (bot.y1.onPress()) feildRealtive.toggle(); //toggle field realtive
 
@@ -90,7 +91,7 @@ public class SkyStoneTeleOpState extends LinearOpMode {
             {
                 double speed = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y); //get speed
                 double LeftStickAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4; //get angle
-                double robotAngle = bot.getPoseEstimate().getHeading(); //angle of robot
+                double robotAngle = Math.toRadians(bot.getIMUAngle()); //angle of robot
                 double rightX=gamepad1.right_stick_x; //rotation
                 rightX*=.5; //half rotation value for better turning
                 //offset the angle by the angle of the robot to make it field realtive
@@ -98,6 +99,9 @@ public class SkyStoneTeleOpState extends LinearOpMode {
                 rightFrontPower =  speed * Math.sin(LeftStickAngle-robotAngle) - rightX;
                 leftBackPower =  speed * Math.sin(LeftStickAngle-robotAngle) + rightX;
                 rightBackPower =  speed * Math.cos(LeftStickAngle-robotAngle) - rightX;
+
+                telemetry.addData("LS angle",Math.toDegrees(LeftStickAngle));
+                telemetry.addData("ROBOT ANGLE",Math.toDegrees(robotAngle));
             }
             else //regular drive (different math because this is faster than sins and cosines0
             {
@@ -177,7 +181,7 @@ public class SkyStoneTeleOpState extends LinearOpMode {
 
             if (gamepad1.right_bumper && gamepad1.left_bumper) //calibrate gyro
             {
-                bot.setAngleZzeroValue(-Math.toDegrees(bot.getRawExternalHeading()));
+                bot.setAngleZzeroValue(-bot.getIMUAngle());
             }
 
             /*
@@ -185,7 +189,8 @@ public class SkyStoneTeleOpState extends LinearOpMode {
              */
             //Pose2d pos = bot.getPoseEstimate();
             //bot.setPoseEstimate(new Pose2d(pos.getX(), pos.getY(), bot.getRawExternalHeading()+Math.toRadians(90)));
-            bot.updateRobotPosRoadRunner(); //display robot's position
+            //bot.updateRobotPosRoadRunner(); //display robot's position
+            telemetry.update();
         }
         bot.stopRobot();
     }

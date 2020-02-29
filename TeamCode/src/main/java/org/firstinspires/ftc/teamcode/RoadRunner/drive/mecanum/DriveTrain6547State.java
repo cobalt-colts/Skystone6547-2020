@@ -27,6 +27,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.localizer.StandardTwowheelLocalizer;
+import org.firstinspires.ftc.teamcode.RoadRunner.drive.localizer.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.RoadRunner.util.AxesSigns;
 import org.firstinspires.ftc.teamcode.RoadRunner.util.BNO055IMUUtil;
 import org.firstinspires.ftc.teamcode.RoadRunner.util.DashboardUtil;
@@ -413,7 +414,7 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
     public void setGrabber(double pos)
     {
         double min=0;
-        double max=.5;
+        double max=.41;
         double range = max-min;
         pos*=range;
         pos+=min;
@@ -536,7 +537,7 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
             stopIntake();
             return;
         }
-        if (isStoneAtEnd())
+        if (false && isStoneAtEnd())
         {
             //stone at end.
             RobotLog.d("Stone at end of robot");
@@ -570,12 +571,12 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
         int liftPos = lift.getCurrentPosition();
         if (liftPos > targetPos + leaway)
         {
-            lift.setPower(-1);
+            lift.setPower(-0.5);
             isLiftAtStartingPos = false;
         }
         else if (liftPos < targetPos-leaway)
         {
-            lift.setPower(1);
+            lift.setPower(0.5);
             isLiftAtStartingPos = false;
         }
         else
@@ -647,7 +648,7 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
     }
     public boolean isStone(ColorSensor colorSensor)
     {
-        return colorSensor.red()>110;
+        return colorSensor.red()>110 && colorSensor.red()<255;
     }
     public boolean isStoneAtIntake()
     {
