@@ -17,11 +17,18 @@ public class DriveForwardOneFoot extends LinearOpMode {
         by going up or down if the scissor lift pushes the motor off its original
         target value
          */
-        bot.setLiftTargetPos(bot.liftStartingPos);
-        bot.setRunLift(true);
+        //bot.setLiftTargetPos(bot.liftStartingPos);
+        //bot.setRunLift(true);
+
+        while (!isStopRequested() && !isStarted() && !bot.isTouchSensorPressed())
+        {
+            bot.setLiftPower(-1);
+        }
+        bot.setLiftPower(0);
+        bot.zeroEncoder(bot.lift);
 
         telemetry.log().add("Ready to start");
-        waitForStart();
+        //waitForStart();
 
         //park under SkyBridge
         bot.followTrajectorySync(bot.trajectoryBuilder()

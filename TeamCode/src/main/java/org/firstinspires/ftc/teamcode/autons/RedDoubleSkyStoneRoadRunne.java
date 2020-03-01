@@ -128,7 +128,7 @@ public class RedDoubleSkyStoneRoadRunne extends LinearOpMode {
         bot.followTrajectorySync(bot.trajectoryBuilder()
                 // .reverse
                 .addTemporalMarker(1.5,new Intake(bot,1))
-        .splineTo(new Pose2d(0,-38,Math.toRadians(180)))
+                .splineTo(new Pose2d(0,-38,Math.toRadians(180)))
                 .splineTo(new Pose2d(10,-38,Math.toRadians(180)))
                 .build());
 

@@ -5,6 +5,7 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.path.PathBuilderException;
 import com.acmerobotics.roadrunner.trajectory.MarkerCallback;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -12,6 +13,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.RoadRunner.actions.Intake;
 import org.firstinspires.ftc.teamcode.RoadRunner.actions.IntakeUntilStone;
+import org.firstinspires.ftc.teamcode.RoadRunner.actions.MoveGrabberSlideTime;
 import org.firstinspires.ftc.teamcode.RoadRunner.actions.Outtake;
 import org.firstinspires.ftc.teamcode.RoadRunner.actions.StopIntake;
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.DriveConstants;
@@ -48,6 +50,8 @@ public class DoubleSkystoneFoundationGC extends LinearOpMode {
         bot.setRunLift(true);
 
         bot.setLiftTargetPos(0);
+
+        //bot.RetractGrabberSlide();
 
         bot.openGrabber();
         //get side of field by driver input
@@ -126,21 +130,28 @@ public class DoubleSkystoneFoundationGC extends LinearOpMode {
             telemetry.log().add("LEFT");
             bot.skyStoneLoc = SkyStoneLoc.LEFT;
 
-            if (isRed) { //if red
-                bot.followTrajectorySync(bot.trajectoryBuilder()
-                        .back(4)
-                        .addTemporalMarker(0,new IntakeUntilStone(bot))
-                        .lineTo(new Vector2d(-52, -32))
-                        .build());
-            }
-            else //if blue (this is the same path as going right for RED)
-            {
-                bot.followTrajectorySync(bot.trajectoryBuilder()
-                        .back(4)
-                        .addTemporalMarker(0,new IntakeUntilStone(bot))
-                        .lineTo(new Vector2d(-18,32))
-                        .build());
-            }
+            bot.driveBackward(4);
+            bot.strafeLeft(8);
+            if (!bot.isStoneAtIntake()) bot.driveForward(15);
+            //bot.followTrajectorySync(bot.trajectoryBuilder()
+              //      .lineToLinearHeading(new Vector2d(-40,-36),Math.toRadians(0))
+                //    .build());
+
+//            if (isRed) { //if red
+//                bot.followTrajectorySync(bot.trajectoryBuilder()
+//                        //.back(4)
+//                        .addTemporalMarker(0,new IntakeUntilStone(bot))
+//                        .lineTo(new Vector2d(-52, -32))
+//                        .build());
+//            }
+//            else //if blue (this is the same path as going right for RED)
+//            {
+//                bot.followTrajectorySync(bot.trajectoryBuilder()
+//                        .back(4)
+//                        .addTemporalMarker(0,new IntakeUntilStone(bot))
+//                        .lineTo(new Vector2d(-18,32))
+//                        .build());
+//            }
 
         }
         else if (bot.isSkystone(bot.colorSensorSideRight))
@@ -148,27 +159,35 @@ public class DoubleSkystoneFoundationGC extends LinearOpMode {
             //---SKYSTONE RIGHT---
             telemetry.log().add("RIGHT");
             bot.skyStoneLoc = SkyStoneLoc.RIGHT;
-            if (isRed) {
+
+            bot.driveBackward(4);
+            bot.strafeRight(12);
+            if (!bot.isStoneAtIntake()) bot.driveForward(12);
+//            if (isRed) {
                 //drive back a bit and strafe right
-                bot.followTrajectorySync(bot.trajectoryBuilder()
-                        .back(4)
-                        .addTemporalMarker(0,new IntakeUntilStone(bot))
-                        .lineTo(new Vector2d(-18, -32))
-                        .build());
-            }
-            else //if blue (path is same as left for RED)
-            {
-                bot.followTrajectorySync(bot.trajectoryBuilder()
-                        .back(4)
-                        .addTemporalMarker(0,new IntakeUntilStone(bot))
-                        .lineTo(new Vector2d(-52, 32))
-                        .build());
-            }
+//                bot.followTrajectorySync(bot.trajectoryBuilder()
+//                        //.back(4)
+//                        //.addTemporalMarker(0,new IntakeUntilStone(bot))
+//                        .lineToLinearHeading(new Vector2d(-28, -21),Math.toRadians(45))
+//                        .build());
+//
+//                bot.followTrajectorySync(bot.trajectoryBuilder()
+//                .lineToLinearHeading(new Vector2d(-10,-36),Math.toRadians(0))
+//                    .build());
+//            }
+//            else //if blue (path is same as left for RED)
+//            {
+//                bot.followTrajectorySync(bot.trajectoryBuilder()
+//                        .back(4)
+//                        .addTemporalMarker(0,new IntakeUntilStone(bot))
+//                        .lineTo(new Vector2d(-52, 32))
+//                        .build());
+//            }
         }
         else //center (same for both colors)
         {
             bot.followTrajectorySync(bot.trajectoryBuilder()
-                    .lineTo(new Vector2d(-34,-22))
+                    .lineTo(new Vector2d(-34,-22*yModifer))
                     .build());
             //---SKYSTONE CENTER---
             //go back a bit
@@ -194,23 +213,55 @@ public class DoubleSkystoneFoundationGC extends LinearOpMode {
 
         //spline to under the skybridge to foundation
         //bot.setPoseEstimate(new Pose2d(bot.getPoseEstimate().getX(),bot.getPoseEstimate().getY(),norm(bot.getPoseEstimate().getHeading()-Math.toRadians(180))));
-        bot.followTrajectorySync(bot.trajectoryBuilder(false)
-                .back(12)
-                .build());
+//        bot.followTrajectorySync(bot.trajectoryBuilder(false)
+//                .back(12)
+//                .build());
 
-        // Let's let trajectories handle this instead
+        if (isRed) {
+
+            //bot.turnRealtiveSync(Math.toRadians(30));
+            bot.followTrajectorySync(bot.trajectoryBuilder()
+                    .back(24)
+                    .build());
+            TrajectoryBuilder builder = new TrajectoryBuilder(bot.getPoseEstimate(), bot.getPoseEstimate().getHeading(),
+                    new DriveConstraints(
+                            40.0, 10.0, 0.0,
+                            Math.toRadians(180.0), Math.toRadians(180.0), 0.0
+                    ));
+            // Let's let trajectories handle this instead
 //        if (isRed) bot.turnRealtiveSync(Math.toRadians(300));
-        bot.followTrajectorySync(bot.trajectoryBuilder(false)
-                .splineTo(new Pose2d(-5,-34*yModifer,Math.toRadians(0)))
-                .build());
+            bot.followTrajectorySync(builder
+                    .splineTo(new Pose2d(-5, -38, Math.toRadians(0)))
+                    .build());
 
-        // Added:
-        bot.followTrajectorySync(bot.trajectoryBuilder(false)
-                .splineTo(new Pose2d(35,-43*yModifer,Math.toRadians(0)))
-                .build());
+            // Added:
+            bot.followTrajectorySync(bot.trajectoryBuilder(false)
+                    .splineTo(new Pose2d(35, -47, Math.toRadians(0)))
+                    .build());
+        } else {
+           // bot.turnRealtiveSync(Math.toRadians(30));
+
+            bot.followTrajectorySync(bot.trajectoryBuilder()
+                    .back(24)
+                    .build());
+           // bot.turnRealtiveSync(Math.toRadians(30));
+
+            // Let's let trajectories handle this instead
+//        if (isRed) bot.turnRealtiveSync(Math.toRadians(300));
+            bot.followTrajectorySync(bot.trajectoryBuilder(false)
+                    .splineTo(new Pose2d(-5, 35, Math.toRadians(0)))
+                    .build());
+
+            // Added:
+            bot.followTrajectorySync(bot.trajectoryBuilder(false)
+                    .splineTo(new Pose2d(54, 31, Math.toRadians(0)))
+                    .build());
+        }
 
         // Turn to face foundation
-        bot.turnRealtiveSync(Math.toRadians(faceBackwardDeg));
+        for (int i=0; i < 3; i++) {
+            bot.turnRealtiveSync(Math.toRadians(faceBackwardDeg));
+        }
 
         bot.openGrabber();
 
@@ -218,16 +269,17 @@ public class DoubleSkystoneFoundationGC extends LinearOpMode {
 
         // Back up into the foundation
         bot.followTrajectorySync(bot.trajectoryBuilder()
-                .back(5).build());
+                .back(12)
+                .build());
         bot.setFondationGrabber(1);     // Grab foundation
 
         bot.RetractGrabberSlide();  // In case it's come out some
 
-        bot.setLiftPower(-1);   // Make sure it's down
+        bot.setLiftPower(-.25);   // Make sure it's down
         sleep(250);
 
         bot.grabStoneInIntake();
-        sleep(750);
+        sleep(250);
 
         //bot.setLiftPower(0);
 
@@ -235,33 +287,49 @@ public class DoubleSkystoneFoundationGC extends LinearOpMode {
         //wait for foundation grabber to grab and grab the block
 
 
-        bot.moveLift(1000,50);
+        //bot.moveLift(800,50);
         //sleep(500);
+        bot.setLiftTargetPos(800);
 
         bot.stopIntake();
 
         RobotLog.d("pulling foundation");
 
-
-        bot.ExtendGrabberSlide();
+        //bot.ExtendGrabberSlide();
+       // bot.moveGrabberSlideForTime(1,1000);
         //sleep(400);
 
         //pull foundation
-        bot.followTrajectorySync(bot.trajectoryBuilder()
-                .forward(36)
-                //.splineTo(new Pose2d(33, -60*yModifer, Math.toRadians(180)))
-                .build());
+        if (isRed) {
+            bot.followTrajectorySync(bot.trajectoryBuilder()
+                    .addTemporalMarker(1, new MoveGrabberSlideTime(bot, 1, 1000))
+                    .forward(44)
+                    //.splineTo(new Pose2d(33, -60*yModifer, Math.toRadians(180)))
+                    .build());
+        }
+        else { //if blue
+            bot.followTrajectorySync(bot.trajectoryBuilder()
+                    .addTemporalMarker(1, new MoveGrabberSlideTime(bot, 1, 1000))
+                    .forward(36)
+                    //.splineTo(new Pose2d(33, -60*yModifer, Math.toRadians(180)))
+                    .build());
+        }
+
+        bot.stopGrabberSlide();
 
 
         bot.openGrabber();
         //sleep(500);
 
-        bot.RetractGrabberSlide();
+        //bot.RetractGrabberSlide();
+        bot.moveGrabberSlideForTime(-1,1000);
 
         //turn foundation toward wall
 
         if (isRed) bot.turnSync(Math.toRadians(-300));
-        else bot.turnSync(Math.toRadians(300));
+        else bot.turnSync(Math.toRadians(220));
+
+        bot.stopGrabberSlide();
 
         //go to other stone
         bot.setFondationGrabber(0);
@@ -275,6 +343,7 @@ public class DoubleSkystoneFoundationGC extends LinearOpMode {
         bot.openGrabber();
 
         RobotLog.d("Placing Foundation");
+        bot.driveBackward(6);
         // No need to push it against the wall this cycle
 //        bot.followTrajectorySync(bot.trajectoryBuilder()
 //                .back(24)
@@ -283,13 +352,32 @@ public class DoubleSkystoneFoundationGC extends LinearOpMode {
 //                .build());
 
 
-
         RobotLog.d("Driving to under Skybridge");
         bot.intake(1);
-        bot.followTrajectory(bot.trajectoryBuilder()
-                .addTemporalMarker(2,new StopIntake(bot))
-                .splineTo(new Pose2d(0,-39*yModifer,Math.toRadians(180)))
-                .build());
+        if (isRed) {
+            bot.followTrajectorySync(bot.trajectoryBuilder()
+                    //.addTemporalMarker(2,new StopIntake(bot))
+                    .splineTo(new Pose2d(-5, -30, Math.toRadians(180)))
+                    .build());
+        }
+        else {
+            bot.followTrajectorySync(bot.trajectoryBuilder()
+                    //.addTemporalMarker(2,new StopIntake(bot))
+                    .splineTo(new Pose2d(-5, 39, Math.toRadians(180)))
+                    .build());
+        }
+        bot.stopIntake();
+        RobotLog.d("Driving to under Skybridge DONE");
+        if (isRed) bot.strafeRight(12);
+        else bot.strafeLeft(12);
+
+        while(opModeIsActive()); // stop here
+
+
+
+        //------------------
+        //-------------------
+        //------------------
 
         bot.setRunIntakeUntilStone(true);
 
@@ -298,9 +386,9 @@ public class DoubleSkystoneFoundationGC extends LinearOpMode {
 
         double degToTurn;
 
+
         RobotLog.d("grabbing second SkyStone");
 
-        ///////////////////////////////////////////////////
 
         //prepare to grab the other Skystone
         if ((bot.skyStoneLoc == SkyStoneLoc.RIGHT && isRed) || (bot.skyStoneLoc == SkyStoneLoc.LEFT && !isRed))
@@ -320,9 +408,12 @@ public class DoubleSkystoneFoundationGC extends LinearOpMode {
 
             bot.followTrajectorySync(bot.trajectoryBuilder()
                     .splineTo(new Pose2d(constX-5,constY*yModifer,Math.toRadians(180)))
-                    .splineTo(new Pose2d(-58,-22*yModifer, Math.toRadians(degToTurn)))
                     .build());
 
+
+            bot.followTrajectorySync(bot.trajectoryBuilder()
+                    .splineTo(new Pose2d(-58,-22*yModifer, Math.toRadians(degToTurn)))
+                    .build());
 
         }
         else if ((bot.skyStoneLoc == SkyStoneLoc.LEFT && isRed) || (bot.skyStoneLoc == SkyStoneLoc.RIGHT && !isRed))
@@ -336,6 +427,7 @@ public class DoubleSkystoneFoundationGC extends LinearOpMode {
                     .build());
         }
 
+
         //if the bot has not grabbed a stone yet, go forward a bit
         if (!bot.isStone(bot.intakeColorSensor)) {
             bot.followTrajectorySync(bot.trajectoryBuilder()
@@ -347,19 +439,19 @@ public class DoubleSkystoneFoundationGC extends LinearOpMode {
 
         //deliver second stone
 
-        bot.turnRealtiveSync(Math.toRadians(30));
+        bot.turnRealtiveSync(Math.toRadians(210));
 
-            bot.followTrajectorySync(bot.trajectoryBuilder()
-                    .addTemporalMarker(1.5, new Outtake(bot, 1))
-                    .splineTo(new Pose2d(-10, -38 * yModifer, Math.toRadians(0)))
-                    .splineTo(new Pose2d(10,-37,Math.toRadians(0)))
-                    .build());
+        bot.followTrajectorySync(bot.trajectoryBuilder()
+                .addTemporalMarker(1.5, new Outtake(bot, 1))
+                .splineTo(new Pose2d(-10, -40 * yModifer, Math.toRadians(0)))
+                .splineTo(new Pose2d(10,-38 * yModifer,Math.toRadians(0)))
+                .build());
 
-            //bot.turnRealtiveSync(180);
-            //bot.intake(1);
-            bot.followTrajectorySync(bot.trajectoryBuilder()
-            .back(12)
-            .build());
+        //bot.turnRealtiveSync(180);
+        //bot.intake(1);
+        bot.followTrajectorySync(bot.trajectoryBuilder()
+                .back(12)
+                .build());
 
 
         //park under skybridge
@@ -373,6 +465,10 @@ public class DoubleSkystoneFoundationGC extends LinearOpMode {
         bot.followTrajectorySync(bot.trajectoryBuilder()
                 .strafeRight(15)
                 .build());
+
+
+        ///////////////////////////////////////////////////
+
         ///////////////////////////////////////////////////
 
         bot.setFondationGrabber(0);     // Un-grab foundation
