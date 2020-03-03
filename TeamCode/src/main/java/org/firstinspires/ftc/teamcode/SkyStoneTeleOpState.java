@@ -87,7 +87,7 @@ public class SkyStoneTeleOpState extends LinearOpMode {
 
             if (bot.y1.onPress()) feildRealtive.toggle(); //toggle field realtive
 
-            if (feildRealtive.output()) //field realtive code
+            if (feildRealtive.output()) //if field relative is enabled
             {
                 double speed = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y); //get speed
                 double LeftStickAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4; //get angle
@@ -103,7 +103,7 @@ public class SkyStoneTeleOpState extends LinearOpMode {
                 telemetry.addData("LS angle",Math.toDegrees(LeftStickAngle));
                 telemetry.addData("ROBOT ANGLE",Math.toDegrees(robotAngle));
             }
-            else //regular drive (different math because this is faster than sins and cosines0
+            else //regular drive (different math because this is faster than sins and cosines
             {
                 leftFrontPower=-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x;
                 rightFrontPower=-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x;
@@ -176,8 +176,13 @@ public class SkyStoneTeleOpState extends LinearOpMode {
                 bot.setLiftPower(0);
             }
 
-            if (bot.rightBumper2.isPressed()) bot.updateServo(bot.grabberSlide, 1, slideSpeed, bot.grabberMax, bot.grabberMin); //move horizontal slide back
-            if (bot.leftBumper2.isPressed()) bot.updateServo(bot.grabberSlide, -1, slideSpeed, bot.grabberMax, bot.grabberMin); //move horizontal slide forward
+            //old way to move servo
+            //if (bot.rightBumper2.isPressed()) bot.updateServo(bot.grabberSlide, 1, slideSpeed, bot.grabberMax, bot.grabberMin); //move horizontal slide back
+            //if (bot.leftBumper2.isPressed()) bot.updateServo(bot.grabberSlide, -1, slideSpeed, bot.grabberMax, bot.grabberMin); //move horizontal slide forward
+
+            if (bot.rightBumper2.isPressed()) bot.ExtendGrabberSlide();
+            else if (bot.leftBumper2.isPressed()) bot.RetractGrabberSlide();
+            else bot.stopGrabberSlide();
 
             if (gamepad1.right_bumper && gamepad1.left_bumper) //calibrate gyro
             {

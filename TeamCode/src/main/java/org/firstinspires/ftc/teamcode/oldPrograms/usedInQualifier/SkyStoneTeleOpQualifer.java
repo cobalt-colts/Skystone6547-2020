@@ -38,12 +38,12 @@ public class SkyStoneTeleOpQualifer extends LinearOpMode {
     private ToggleDouble fondationGrabberPos = new ToggleDouble(new double[] {0,1},0);
     private ToggleDouble grabberToggle = new ToggleDouble(new double[] {0, .4}, 0);
 
-    private DriveTrain6547State bot; //the robot class
+    private DriveTrain6547Qual bot; //the robot class
 
     @Override
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry()); //makes telemetry output to the FTC Dashboard
-        bot = new DriveTrain6547State(this);
+        bot = new DriveTrain6547Qual(this);
         telemetry.update();
 
         bot.zeroEncoders();
@@ -200,7 +200,7 @@ public class SkyStoneTeleOpQualifer extends LinearOpMode {
             telemetry.addData("angles.firstAngle",Math.toDegrees(bot.getRawExternalHeading()));
             telemetry.addData("lift pos", bot.lift.getCurrentPosition());
             telemetry.addData("Grabber POS", bot.grabber.getPortNumber());
-            telemetry.addData("Grabber Slider POS",bot.grabberSlide.getPosition());
+            //telemetry.addData("Grabber Slider POS",bot.grabberSlide.getPosition());
             telemetry.addData("A is full speed, B is half speed, Y is quarter speed","");
             telemetry.addData("Field Realitive Driving ", feildRealtive.output());
             telemetry.addData("Speed modifer", speedModifer);

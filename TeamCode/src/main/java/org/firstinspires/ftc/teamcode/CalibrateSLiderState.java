@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -8,6 +9,7 @@ import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547Sta
 
 @TeleOp(name = "Calibrate Horizontal Servo Slide State", group = "cali")
 @Config
+@Disabled
 public class CalibrateSLiderState extends LinearOpMode {
 
     public static double slideSpeed = .0004;
@@ -29,7 +31,7 @@ public class CalibrateSLiderState extends LinearOpMode {
             //wait for a to be pressed
         }
 
-        bot.grabberSlide.setPosition(.5);
+        //bot.grabberSlide.setPosition(.5);
         telemetry.clear();
         telemetry.addData("Moving Servo","");
         telemetry.addData("Just wait a bit","");
@@ -48,30 +50,29 @@ public class CalibrateSLiderState extends LinearOpMode {
             //wait for a to be pressed
         }
 
-        double grabberMax = bot.grabberSlide.getPosition();
-        double grabberMin = grabberMax-.185;
+        //double grabberMax = bot.grabberSlide.getPosition();
+        //double grabberMin = grabberMax-.185;
 
-        bot.writeFile(bot.GRABBER_MIN_FILE_NAME,grabberMin);
-        bot.writeFile(bot.GRABBER_MAX_FILE_NAME,grabberMax);
-
+        //bot.writeFile(bot.GRABBER_MIN_FILE_NAME,grabberMin);
+       // bot.writeFile(bot.GRABBER_MAX_FILE_NAME,grabberMax);
         telemetry.clear();
         telemetry.addData("Servo Calibrated Successfully.  Now testing","");
 
-        bot.grabberSlide.setPosition(grabberMin);
+       // bot.grabberSlide.setPosition(grabberMin);
         telemetry.clear();
         telemetry.addData("Moving to MIN","");
         telemetry.update();
 
         sleep(3500);
 
-        bot.grabberSlide.setPosition(grabberMax);
+        //bot.grabberSlide.setPosition(grabberMax);
         telemetry.clear();
         telemetry.addData("Moving to MAX","");
         telemetry.update();
 
         sleep(3500);
 
-        bot.grabberSlide.setPosition(grabberMin);
+        //bot.grabberSlide.setPosition(grabberMin);
         telemetry.clear();
         telemetry.addData("Moving to MIN","");
         telemetry.update();

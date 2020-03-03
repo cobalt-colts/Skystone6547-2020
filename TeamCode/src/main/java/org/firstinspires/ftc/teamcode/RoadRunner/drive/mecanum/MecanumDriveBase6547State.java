@@ -91,7 +91,17 @@ public abstract class MecanumDriveBase6547State extends MecanumDrive {
     }
     public TrajectoryBuilder trajectoryBuilder(boolean reversed)
     {
-        return new TrajectoryBuilder(getPoseEstimate(),reversed,constraints);
+        Pose2d pos;
+        //turn robot heading
+        if (reversed)
+        {
+            pos = new Pose2d(getPoseEstimate().getX(), getPoseEstimate().getY(),norm(getPoseEstimate().getHeading() + Math.toRadians(180)));
+        }
+        else
+        {
+            pos = getPoseEstimate();
+        }
+        return new TrajectoryBuilder(pos,reversed,constraints);
 
     }
 
@@ -246,6 +256,12 @@ public abstract class MecanumDriveBase6547State extends MecanumDrive {
     public void setLiftTargetPos(int autonLiftTargetPos) {
         AutonLiftTargetPos = autonLiftTargetPos;
         //setRunLift(true);
+    }
+    private double norm(double angle)
+    {
+        while (angle>Math.toRadians(360)) angle-=Math.toRadians(360);
+        while (angle<=0) angle+=Math.toRadians(360);
+        return angle;
     }
 
     public void setConstraints(DriveConstraints constraints) {
