@@ -10,9 +10,12 @@ import com.qualcomm.ftccommon.SoundPlayer;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -20,6 +23,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.robot.Robot;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.ReadWriteFile;
 import com.qualcomm.robotcore.util.RobotLog;
@@ -53,6 +57,7 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
     private static double angleZzeroValue=0;
 
     ElapsedTime runtime = new ElapsedTime();
+    ElapsedTime grabberSlideTime = new ElapsedTime();
 
     public final String GYRO_ANGLE_FILE_NAME="gyroAngle.txt";
     public final String LIFT_MAX_FILE_NAME="liftMax.txt";
@@ -66,14 +71,16 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
 
     public Servo fondationGrabber;
     public Servo fondationGrabber2;
-    public Servo grabberSlide;
+    public CRServo grabberSlide;
     public Servo grabber;
 
     public ColorSensor colorSensorSideLeft;
     public ColorSensor colorSensorSideRight;
-    public ColorSensor intakeColorSensor;
+    public RevColorSensorV3 intakeColorSensor;
     public ColorSensor endColorSensor;
     public ColorSensor rightEndColorSensor;
+
+    RevBlinkinLedDriver lights;
 
     public SkyStoneLoc skyStoneLoc=SkyStoneLoc.CENTER; //defualt to center
 
@@ -87,6 +94,7 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
     private int liftLeeway = 50;
     public double grabberMin = 0;
     public double grabberMax = 1;
+    private double grabberSlideTargetTime=0;
 
     Rev2mDistanceSensor distanceSensorX;
     Rev2mDistanceSensor distanceSensorY;
@@ -162,18 +170,21 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
     {
         limitSwitch = hardwareMap.get(AnalogInput.class, "limitSwitch");
         touchSensor = hardwareMap.get(RevTouchSensor.class, "ts2");
+
         lift =  hardwareMap.get(DcMotorEx.class, "lift");
         intake = hardwareMap.get(DcMotorEx.class, "intake");
         fondationGrabber = hardwareMap.get(Servo.class, "f grabber");
         fondationGrabber2 = hardwareMap.get(Servo.class, "f grabber1");
-        grabberSlide = hardwareMap.get(Servo.class, "grabberSlide");
+        grabberSlide = hardwareMap.get(CRServo.class, "grabberSlide");
         grabber = hardwareMap.get(Servo.class, "grabber");
 
         colorSensorSideRight = hardwareMap.get(ColorSensor.class, "color sensor"); //set color sensors
         colorSensorSideLeft = hardwareMap.get(ColorSensor.class, "color sensor2");
-        intakeColorSensor = hardwareMap.get(ColorSensor.class, "intake color sensor");
+        intakeColorSensor = hardwareMap.get(RevColorSensorV3.class, "intake color sensor");
         endColorSensor = hardwareMap.get(ColorSensor.class,"end color sensor");
         rightEndColorSensor = hardwareMap.get(ColorSensor.class, "rightEndColorSensor");
+
+        lights = hardwareMap.get(RevBlinkinLedDriver.class,"lights");
 
         allHubs = hardwareMap.getAll(LynxModule.class);
 
@@ -413,8 +424,8 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
     }
     public void setGrabber(double pos)
     {
-        double min=0;
-        double max=.41;
+        double min=.25;
+        double max=.45;
         double range = max-min;
         pos*=range;
         pos+=min;
@@ -428,37 +439,43 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
     {
         setGrabber(0);
     }
-    public void setGrabberSlider(double pos)
-    {
-        double min=grabberMin;
-        double max=grabberMax;
-        double range = max-min;
-        pos*=range;
-        pos+=min;
-        grabberSlide.setPosition(pos);
-    }
-    public void ExtendGrabberSlide()
-    {
-        setGrabberSlider(1);
-    }
+//    public void setGrabberSlider(double pos)
+//    {
+//        double min=grabberMin;
+//        double max=grabberMax;
+//        double range = max-min;
+//        pos*=range;
+//        pos+=min;
+//        grabberSlide.setPosition(pos);
+//    }
+    public void ExtendGrabberSlide() { grabberSlide.setPower(1); }
     public void RetractGrabberSlide()
     {
-        setGrabberSlider(0);
+        grabberSlide.setPower(-1);
     }
+    public void stopGrabberSlide() { grabberSlide.setPower(0);}
+    public void moveGrabberSlideForTime(long milliseconds) {moveGrabberSlideForTime(1,milliseconds);}
+    public void moveGrabberSlideForTime(double power, long milliseconds)
+    {
+        grabberSlide.setPower(power);
+        grabberSlideTime.reset();
+        grabberSlideTargetTime = milliseconds;
+    }
+
     //updates servo for use with a gamepad stick
     public void updateServo(Servo servo, double gamepadStick, double speed, double max, double min)
     {
         if (Math.abs(gamepadStick) < .2) return;
         double posToAdd = gamepadStick*speed;
         opMode.telemetry.addData("changing pos by ",posToAdd);
-        double servoCurrentPos = grabberSlide.getPosition();
+        double servoCurrentPos = servo.getPosition();
         double targetPos = posToAdd + servoCurrentPos;
         //if ((servoCurrentPos > min && gamepadStick > 0) || (servoCurrentPos < max && gamepadStick < 0))
         //{
-            if (targetPos > max) grabberSlide.setPosition(max);
-            else if (targetPos < min) grabberSlide.setPosition(min);
+            if (targetPos > max) servo.setPosition(max);
+            else if (targetPos < min) servo.setPosition(min);
             else {
-                grabberSlide.setPosition(targetPos);
+                servo.setPosition(targetPos);
             }
         //}
     }
@@ -519,6 +536,7 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
     {
         if (runLift) setLiftToTargetPos(getLiftTargetPos(), getLiftLeeway());
         if (runIntakeUntilStone) runIntakeUntilStone();
+        if (grabberSlideTime.milliseconds() > grabberSlideTargetTime) grabberSlide.setPower(0);
         opMode.telemetry.addData("Left END RED: ",endColorSensor.red());
         opMode.telemetry.addData("Right END RED", rightEndColorSensor.red());
         opMode.telemetry.update();
@@ -534,6 +552,7 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
         {
             //If a stone is under the bot, go slower so it reaches the end
             RobotLog.d("Stone at intake of robot");
+            RobotLog.d("Intake Color Sensor R:" + intakeColorSensor.red() + ", G:" + intakeColorSensor.green() + ", B:" + intakeColorSensor.blue() +", A:" + intakeColorSensor.alpha());
             stopIntake();
             return;
         }
@@ -648,11 +667,11 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
     }
     public boolean isStone(ColorSensor colorSensor)
     {
-        return colorSensor.red()>110 && colorSensor.red()<255;
+        return colorSensor.red()>200; //&& colorSensor.red()<255;
     }
     public boolean isStoneAtIntake()
     {
-        return intakeColorSensor.alpha() > 170;
+        return intakeColorSensor.alpha() > 1000;
     }
     public boolean isLimitSwitchPressed()
     {
@@ -846,13 +865,14 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
      */
     public void turnRealtiveSync(double angle)
     {
-        double target=angle-Math.toRadians(getIMUAngle());
-        target-=Math.toRadians(90);
+        double target=angle-getPoseEstimate().getHeading();
+        //target-=Math.toRadians(90);
         if (Math.abs(target)>Math.toRadians(180)) //make the angle difference less then 180 to remove unnecessary turning
         {
             target+=(target>=0) ? Math.toRadians(-360) : Math.toRadians(360);
         }
         opMode.telemetry.log().add("inputted Angle: " + angle + " , turning to: " + target);
+        RobotLog.d("Turning Realtive to heading " + angle + ", amount turning: " + target);
         turnSync(target);
     }
     public void turnRealtive(double angle)
