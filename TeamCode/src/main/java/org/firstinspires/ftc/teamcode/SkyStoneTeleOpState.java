@@ -52,7 +52,7 @@ public class SkyStoneTeleOpState extends LinearOpMode {
         double startingAngle = bot.readFile(bot.GYRO_ANGLE_FILE_NAME);
 
         bot.setAngleZzeroValue(-startingAngle);
-        bot.setPoseEstimate(new Pose2d(-36,-63,startingAngle));
+        //bot.setPoseEstimate(new Pose2d(-36,-63,startingAngle));
 
         //get the angle the robot was at when auton ended
         //bot.setAngleZzeroValue(-bot.readFile(bot.GYRO_ANGLE_FILE_NAME));
@@ -101,7 +101,9 @@ public class SkyStoneTeleOpState extends LinearOpMode {
                 rightBackPower =  speed * Math.cos(LeftStickAngle-robotAngle) - rightX;
 
                 telemetry.addData("LS angle",Math.toDegrees(LeftStickAngle));
+                telemetry.addData("driving toward",LeftStickAngle-robotAngle);
                 telemetry.addData("ROBOT ANGLE",Math.toDegrees(robotAngle));
+                telemetry.addData("RAW ANGLE", Math.toDegrees(bot.getRawExternalHeading()));
             }
             else //regular drive (different math because this is faster than sins and cosines
             {
@@ -160,6 +162,22 @@ public class SkyStoneTeleOpState extends LinearOpMode {
                 grabberToggle.toggle();
                 bot.setGrabber(grabberToggle.output());
             }
+            if (bot.x2.onPress())
+            {
+                bot.setGrabber(2);
+            }
+            if (bot.y2.isPressed())
+            {
+                bot.extendMeasuingTape();
+            }
+            else if (bot.dpadUp2.isPressed())
+            {
+                bot.retractMeasuringTape();
+            }
+            else
+            {
+                bot.stopMeasuringTape();
+            }
 
             double liftSpeed = -gamepad2.left_stick_y;
             /*
@@ -186,7 +204,9 @@ public class SkyStoneTeleOpState extends LinearOpMode {
 
             if (gamepad1.right_bumper && gamepad1.left_bumper) //calibrate gyro
             {
-                bot.setAngleZzeroValue(-bot.getIMUAngle());
+                double zeroVal = -Math.toDegrees(bot.getRawExternalHeading());
+                bot.setAngleZzeroValue(zeroVal);
+                telemetry.log().add("Calibrated, set zero value to" + zeroVal);
             }
 
             /*
