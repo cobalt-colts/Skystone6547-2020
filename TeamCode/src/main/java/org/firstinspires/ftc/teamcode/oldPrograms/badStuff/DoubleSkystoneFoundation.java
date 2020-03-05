@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.autons;
+package org.firstinspires.ftc.teamcode.oldPrograms.badStuff;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.trajectory.MarkerCallback;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
@@ -20,6 +21,7 @@ import org.firstinspires.ftc.teamcode.util.SkyStoneLoc;
  * Created by Drew from 6547 on 9/27/2019.
  */
 @Autonomous(name = "RED/Blue double skystone Foundation State", group = "auton")
+@Disabled
 public class DoubleSkystoneFoundation extends LinearOpMode {
 
     private boolean isRed;

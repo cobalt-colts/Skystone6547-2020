@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.testing;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547State;
 
 @Autonomous(name = "Drive Forward Test",group = "test")
+@Disabled
 public class DriveForwardTest extends LinearOpMode {
 
     @Override

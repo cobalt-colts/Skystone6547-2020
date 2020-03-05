@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.autons;
+package org.firstinspires.ftc.teamcode.oldPrograms.badStuff;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -12,9 +12,9 @@ import org.firstinspires.ftc.teamcode.util.SkyStoneLoc;
 /**
  * Created by Drew from 6547 on 9/27/2019.
  */
-@Autonomous(name = "Blue single skystone Road Runner", group = "auton")
+@Autonomous(name = "Blue Double Skystone Road Runner", group = "auton")
 @Disabled
-public class BlueSingleSkyStoneRoadRunne extends LinearOpMode {
+public class BlueDoubleSkyStoneRoadRunner extends LinearOpMode {
 
     public void runOpMode()
     {
@@ -90,7 +90,7 @@ public class BlueSingleSkyStoneRoadRunne extends LinearOpMode {
                 .build());
         bot.turnRealtiveSync(Math.toRadians(0));
 
-        bot.setLiftTargetPos(bot.getLiftStartingPos()+250);
+       bot.setLiftTargetPos(bot.getLiftStartingPos()+250);
 
         //drive forward a bit to relay the skystone in the build zone
         bot.followTrajectorySync(bot.trajectoryBuilder()
@@ -103,14 +103,90 @@ public class BlueSingleSkyStoneRoadRunne extends LinearOpMode {
 
         bot.setLiftTargetPos(bot.getLiftStartingPos()+ 250);
         bot.followTrajectorySync(bot.trajectoryBuilder()
-                .forward(12)
+        .forward(12)
+        .build());
+
+        bot.moveLift(0,50);
+
+        //spline to next to the other stones
+        bot.followTrajectorySync(bot.trajectoryBuilder()
+                .splineTo(new Pose2d(-30,40, Math.toRadians(180)))
+                .build());
+
+        bot.turnRealtiveSync(Math.toRadians(0));
+
+        //prepare to grab other skystone
+        if (bot.skyStoneLoc == SkyStoneLoc.RIGHT)
+        {
+            //if right, for forward a tiny bit and strafe
+            bot.followTrajectorySync(bot.trajectoryBuilder()
+                    .forward(24)
+                    .build());
+            bot.followTrajectorySync(bot.trajectoryBuilder()
+                    .strafeLeft(24.5)
+                    .build());
+        }
+        else if (bot.skyStoneLoc == SkyStoneLoc.CENTER)
+        {
+            //if center, go forward a bit and strafe
+            bot.followTrajectorySync(bot.trajectoryBuilder()
+                    .forward(15)
+                    .build());
+
+            bot.followTrajectorySync(bot.trajectoryBuilder()
+                    .strafeLeft(24.5)
+                    .build());
+        }
+        else if (bot.skyStoneLoc == SkyStoneLoc.LEFT)
+        {
+            //if left, go forward a lot and strafe
+            bot.followTrajectorySync(bot.trajectoryBuilder()
+                    .forward(5)
+                    .build());
+
+            bot.followTrajectorySync(bot.trajectoryBuilder()
+                    .strafeLeft(24.5)
+                    .build());
+        }
+        //grab SkyStone
+        bot.followTrajectorySync(bot.trajectoryBuilder()
+                .forward(8)
+                .build());
+
+        //get in path of skybridge
+        bot.followTrajectorySync(bot.trajectoryBuilder()
+                // .reverse
+                .splineTo(new Pose2d(-15,44, Math.toRadians(180)))
+                .build());
+        bot.turnRealtiveSync(Math.toRadians(0));
+
+        //go under skybridge and release stone
+        bot.followTrajectorySync(bot.trajectoryBuilder()
+                .back(30)
+                .build());
+        //park under skybridge
+
+        bot.moveLift(500,50);
+
+        bot.setLiftTargetPos(bot.getLiftStartingPos() + 250);
+
+        bot.followTrajectorySync(bot.trajectoryBuilder()
+                .forward(9)
                 .build());
 
         bot.moveLift(0,50);
+
+        bot.followTrajectorySync(bot.trajectoryBuilder()
+        .forward(10)
+        .build());
+
+        bot.stopIntake();
+        //save gyro angle
         bot.writeFile(bot.GYRO_ANGLE_FILE_NAME, bot.getIMUAngle());
 
         while (opModeIsActive())
         {
+            bot.moveLift(0,50);
             bot.outputTelemetry();
         }
 

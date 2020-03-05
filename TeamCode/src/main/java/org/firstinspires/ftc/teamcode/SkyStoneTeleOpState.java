@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.content.ContentUris;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -7,6 +9,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547State;
 
 import org.firstinspires.ftc.teamcode.util.state.ToggleDouble;
@@ -82,8 +85,8 @@ public class SkyStoneTeleOpState extends LinearOpMode {
             Speed Modifers
              */
             if (bot.x1.onPress()) speedModifer=.60;
-            if (bot.b1.onPress() && !bot.start1.isPressed()) speedModifer=.80;
-            if (bot.a1.onPress() && !bot.start1.isPressed()) speedModifer=1.3; //trig math caps speed at .7, 1.3 balences it out
+            if (bot.b1.onPress() && !bot.start1.isPressed()) speedModifer=.9;
+            if (bot.a1.onPress() && !bot.start1.isPressed()) speedModifer=1.7; //trig math caps speed at .7, 1.3 balences it out
 
             if (bot.y1.onPress()) feildRealtive.toggle(); //toggle field realtive
 
@@ -92,7 +95,7 @@ public class SkyStoneTeleOpState extends LinearOpMode {
                 double speed = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y); //get speed
                 double LeftStickAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4; //get angle
                 double robotAngle = Math.toRadians(bot.getIMUAngle()); //angle of robot
-                double rightX=gamepad1.right_stick_x; //rotation
+                double rightX=gamepad1.right_stick_x*2; //rotation
                 rightX*=.5; //half rotation value for better turning
                 //offset the angle by the angle of the robot to make it field realtive
                 leftFrontPower =  speed * Math.cos(LeftStickAngle-robotAngle) + rightX;
@@ -215,6 +218,12 @@ public class SkyStoneTeleOpState extends LinearOpMode {
             //Pose2d pos = bot.getPoseEstimate();
             //bot.setPoseEstimate(new Pose2d(pos.getX(), pos.getY(), bot.getRawExternalHeading()+Math.toRadians(90)));
             //bot.updateRobotPosRoadRunner(); //display robot's position
+            telemetry.addData("LEFT FRONT AMPS:", bot.leftFront.getCurrent(CurrentUnit.AMPS));
+            telemetry.addData("RIGHT FRONT AMPS",bot.rightFront.getCurrent(CurrentUnit.AMPS));
+            telemetry.addData("LEFT BACK AMPS:", bot.leftRear.getCurrent(CurrentUnit.AMPS));
+            telemetry.addData("RIGHT BACK AMPS",bot.rightRear.getCurrent(CurrentUnit.AMPS));
+            telemetry.addData("LIFT AMPS",bot.lift.getCurrent(CurrentUnit.AMPS));
+            telemetry.addData("INTAKE AMPS",bot.intake.getCurrent(CurrentUnit.AMPS));
             telemetry.update();
         }
         bot.stopRobot();

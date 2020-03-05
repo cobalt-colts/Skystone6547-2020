@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.testing;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -8,6 +9,7 @@ import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547Sta
 
 @TeleOp
 @Config
+@Disabled
 public class foundationGrabberTest extends LinearOpMode {
 
     public static double fgraber1Pos=0;

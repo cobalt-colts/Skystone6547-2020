@@ -90,7 +90,7 @@ public class ColorSensorTest extends LinearOpMode {
             bot.runIntakeUntilStone(INTAKE_SPEED);
 
             // send the info back to driver station using telemetry function.
-            telemetry.addData("Is Intake Stone: " , isStone(bot.intakeColorSensor));
+            telemetry.addData("Is Intake Stone: " , bot.isStoneAtIntake());
             telemetry.addData("Intake Alpha", bot.intakeColorSensor.alpha());
             telemetry.addData("Intake Red  ", bot.intakeColorSensor.red());
             telemetry.addData("Intake Green", bot.intakeColorSensor.green());
