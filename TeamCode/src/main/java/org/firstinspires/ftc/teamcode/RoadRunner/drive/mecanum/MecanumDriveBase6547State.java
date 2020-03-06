@@ -89,7 +89,7 @@ public abstract class MecanumDriveBase6547State extends MecanumDrive {
     public TrajectoryBuilder trajectoryBuilder() {
         return new TrajectoryBuilder(getPoseEstimate(), constraints);
     }
-    public TrajectoryBuilder trajectoryBuilder(boolean reversed)
+    public TrajectoryBuilder trajectoryBuilder(boolean reversed, DriveConstraints constraints)
     {
         Pose2d pos;
         //turn robot heading
@@ -103,6 +103,10 @@ public abstract class MecanumDriveBase6547State extends MecanumDrive {
         }
         return new TrajectoryBuilder(pos,reversed,constraints);
 
+    }
+    public TrajectoryBuilder trajectoryBuilder(boolean reversed)
+    {
+        return trajectoryBuilder(reversed,constraints);
     }
 
     public void turn(double angle) {

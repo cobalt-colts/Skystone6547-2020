@@ -73,6 +73,7 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
     public Servo fondationGrabber2;
     public CRServo grabberSlide;
     public Servo grabber;
+    public CRServo measuringTape;
 
     public ColorSensor colorSensorSideLeft;
     public ColorSensor colorSensorSideRight;
@@ -176,6 +177,7 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
         fondationGrabber = hardwareMap.get(Servo.class, "f grabber");
         fondationGrabber2 = hardwareMap.get(Servo.class, "f grabber1");
         grabberSlide = hardwareMap.get(CRServo.class, "grabberSlide");
+        measuringTape = hardwareMap.get(CRServo.class, "mtape");
         grabber = hardwareMap.get(Servo.class, "grabber");
 
         colorSensorSideRight = hardwareMap.get(ColorSensor.class, "color sensor"); //set color sensors
@@ -187,6 +189,8 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
         lights = hardwareMap.get(RevBlinkinLedDriver.class,"lights");
 
         allHubs = hardwareMap.getAll(LynxModule.class);
+
+        measuringTape.setDirection(DcMotorSimple.Direction.REVERSE);
 
         RobotLog.d("Initialized hardware");
 
@@ -454,6 +458,9 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
         grabberSlide.setPower(-1);
     }
     public void stopGrabberSlide() { grabberSlide.setPower(0);}
+    public void extendMeasuingTape() { measuringTape.setPower(1);}
+    public void retractMeasuringTape() {measuringTape.setPower(-1);}
+    public void stopMeasuringTape() {measuringTape.setPower(0);}
     public void moveGrabberSlideForTime(long milliseconds) {moveGrabberSlideForTime(1,milliseconds);}
     public void moveGrabberSlideForTime(double power, long milliseconds)
     {
@@ -548,6 +555,7 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
     }
     public void runIntakeUntilStone(double power)
     {
+        intake(power);
         if (isStoneAtIntake())
         {
             //If a stone is under the bot, go slower so it reaches the end
