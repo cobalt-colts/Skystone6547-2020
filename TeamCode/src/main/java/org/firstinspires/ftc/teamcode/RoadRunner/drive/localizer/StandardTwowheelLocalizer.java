@@ -9,6 +9,7 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547State;
 
@@ -34,6 +35,8 @@ public class StandardTwowheelLocalizer extends TwoTrackingWheelLocalizer {
 
     private DriveTrain6547State bot;
 
+    double LastAngle;
+
     private List<LynxModule> allHubs;
     public StandardTwowheelLocalizer(HardwareMap hardwareMap, DriveTrain6547State bot) {
         super(Arrays.asList(
@@ -48,6 +51,7 @@ public class StandardTwowheelLocalizer extends TwoTrackingWheelLocalizer {
         frontEncoder = hardwareMap.dcMotor.get("vertRight");
 
         sideEncoder.setDirection(DcMotorSimple.Direction.REVERSE);
+
     }
 
     public static double encoderTicksToInches(int ticks) {
@@ -69,7 +73,11 @@ public class StandardTwowheelLocalizer extends TwoTrackingWheelLocalizer {
 
     @Override
     public double getHeading() {
-        return bot.getRawExternalHeading();
+        double currentHead = bot.getRawExternalHeading();
+
+        RobotLog.w("GYRO ANGLE: " + currentHead + ", LAST ANGLE: " + LastAngle);
+        if (LastAngle == currentHead) RobotLog.w("SAME ANGLE AS BEFORE: " + currentHead);
+        return currentHead;
     }
 
 }

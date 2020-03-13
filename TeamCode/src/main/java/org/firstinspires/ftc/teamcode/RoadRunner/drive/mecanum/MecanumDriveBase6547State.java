@@ -21,7 +21,11 @@ import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryConstraints;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.RoadRunner.util.DashboardUtil;
 
 import java.util.ArrayList;
@@ -69,7 +73,17 @@ public abstract class MecanumDriveBase6547State extends MecanumDrive {
     private List<Double> lastWheelPositions;
     private double lastTimestamp;
 
-    public MecanumDriveBase6547State() {
+    private DcMotorEx leftEncoder,rightEncoder,frontEncoder;
+
+    private int loops=0;
+
+    public static int LOOP_REM = 10;
+
+    TelemetryPacket packet;
+
+    Canvas fieldOverlay;
+
+    public MecanumDriveBase6547State(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH,WHEEL_BASE,LATERAL_MULTIPLIER);
 
         dashboard = FtcDashboard.getInstance();
@@ -84,6 +98,12 @@ public abstract class MecanumDriveBase6547State extends MecanumDrive {
 
         constraints = new MecanumConstraints(BASE_CONSTRAINTS, TRACK_WIDTH);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID);
+
+        leftEncoder = (DcMotorEx) hardwareMap.dcMotor.get("intake");
+        rightEncoder = (DcMotorEx) hardwareMap.dcMotor.get("sideEncoder");
+        frontEncoder = (DcMotorEx) hardwareMap.dcMotor.get("vertRight");
+
+        frontEncoder.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     public TrajectoryBuilder trajectoryBuilder() {
@@ -155,18 +175,27 @@ public abstract class MecanumDriveBase6547State extends MecanumDrive {
         Pose2d currentPose = getPoseEstimate();
         Pose2d lastError = getLastError();
 
-        TelemetryPacket packet = new TelemetryPacket();
-        Canvas fieldOverlay = packet.fieldOverlay();
+        if (loops%LOOP_REM == 0) {
 
-        packet.put("mode", mode);
 
-        packet.put("x", currentPose.getX());
-        packet.put("y", currentPose.getY());
-        packet.put("heading", currentPose.getHeading());
 
-        packet.put("xError", lastError.getX());
-        packet.put("yError", lastError.getY());
-        packet.put("headingError", lastError.getHeading());
+            packet = new TelemetryPacket();
+            fieldOverlay = packet.fieldOverlay();
+
+            packet.put("mode", mode);
+
+            packet.put("x", currentPose.getX());
+            packet.put("y", currentPose.getY());
+            packet.put("heading", currentPose.getHeading());
+
+            packet.put("xError", lastError.getX());
+            packet.put("yError", lastError.getY());
+            packet.put("headingError", lastError.getHeading());
+
+            packet.put("Left Encoder Pos:", leftEncoder.getCurrentPosition());
+            packet.put("Right Encoder Pos:", rightEncoder.getCurrentPosition());
+            packet.put("Perpendicular Encoder Pos:", frontEncoder.getCurrentPosition());
+        }
 
         switch (mode) {
             case IDLE:
@@ -220,8 +249,9 @@ public abstract class MecanumDriveBase6547State extends MecanumDrive {
             }
         }
         runAtAllTimes();
-
-        dashboard.sendTelemetryPacket(packet);
+        if (loops % LOOP_REM == 0) {
+            dashboard.sendTelemetryPacket(packet);
+        }
     }
     abstract void runAtAllTimes();
 

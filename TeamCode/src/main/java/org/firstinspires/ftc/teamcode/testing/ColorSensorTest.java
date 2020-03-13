@@ -95,7 +95,7 @@ public class ColorSensorTest extends LinearOpMode {
             telemetry.addData("Intake Red  ", bot.intakeColorSensor.red());
             telemetry.addData("Intake Green", bot.intakeColorSensor.green());
             telemetry.addData("Intake Blue ", bot.intakeColorSensor.blue());
-            telemetry.addData("Is End Stone", isStone(bot.endColorSensor));
+            telemetry.addData("Is End Stone", bot.isStone(bot.endColorSensor));
             telemetry.addData("End Alpha", bot.endColorSensor.alpha());
             telemetry.addData("End Red  ", bot.endColorSensor.red());
             telemetry.addData("End Green", bot.endColorSensor.green());
@@ -115,7 +115,7 @@ public class ColorSensorTest extends LinearOpMode {
     }
     public boolean isStoneAtEnd(DriveTrain6547State bot)
     {
-        if (isStone(bot.rightEndColorSensor) || isStone(bot.endColorSensor))
+        if (bot.isStone(bot.rightEndColorSensor) || bot.isStone(bot.endColorSensor))
         {
             return true;
         }

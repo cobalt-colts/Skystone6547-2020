@@ -130,7 +130,10 @@ public class SkyStoneTeleOpState extends LinearOpMode {
                 {
                     intake = true;
                     outtake = false;
-                    bot.intake(1);
+                    if (!bot.isStoneAtEnd()) {
+                        bot.intake(1);
+                    }
+                    else bot.intake(.5);
                 }
                 else //intake button pressed again
                 {

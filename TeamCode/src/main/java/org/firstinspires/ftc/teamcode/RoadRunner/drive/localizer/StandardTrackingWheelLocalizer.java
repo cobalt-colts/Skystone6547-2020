@@ -51,6 +51,13 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
         frontEncoder = hardwareMap.dcMotor.get("vertRight");
 
         rightEncoder.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        leftEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public static double encoderTicksToInches(int ticks) {

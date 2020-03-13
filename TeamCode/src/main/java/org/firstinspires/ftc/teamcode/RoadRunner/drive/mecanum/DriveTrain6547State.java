@@ -120,7 +120,11 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
 
     private boolean runIntakeUntilStone = false;
 
+    private DcMotor sideEncoder;
+    private DcMotor frontEncoder;
+
     public DriveTrain6547State(LinearOpMode _opMode) {
+        super(_opMode.hardwareMap);
 
         opMode = _opMode;
         hardwareMap = opMode.hardwareMap;
@@ -551,7 +555,7 @@ public class DriveTrain6547State extends MecanumDriveBase6547State {
     }
     public void runIntakeUntilStone()
     {
-        runIntakeUntilStone(.75);
+        runIntakeUntilStone(1);
     }
     public void runIntakeUntilStone(double power)
     {
