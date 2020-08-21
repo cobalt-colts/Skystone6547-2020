@@ -33,9 +33,8 @@ import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
 
-import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547State;
+import org.firstinspires.ftc.teamcode.oldPrograms.usedAtState.DriveTrain6547State;
 
 /*
  * This is an example LinearOpMode that shows how to use
@@ -47,6 +46,7 @@ import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547Sta
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list.
  */
 @TeleOp(name = "Sensor: Digital touch", group = "Sensor")
+@Disabled
 public class TouchSensorTest extends LinearOpMode {
     /**
      * The REV Robotics Touch Sensor

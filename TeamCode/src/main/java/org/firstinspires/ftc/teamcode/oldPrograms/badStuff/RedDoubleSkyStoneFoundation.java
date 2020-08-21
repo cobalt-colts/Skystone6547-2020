@@ -7,10 +7,10 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.RoadRunner.actions.Intake;
-import org.firstinspires.ftc.teamcode.RoadRunner.actions.IntakeUntilStone;
-import org.firstinspires.ftc.teamcode.RoadRunner.drive.DriveConstants;
-import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547State;
+import org.firstinspires.ftc.teamcode.oldPrograms.usedAtState.stateActions.Intake;
+import org.firstinspires.ftc.teamcode.oldPrograms.usedAtState.stateActions.IntakeUntilStone;
+import org.firstinspires.ftc.teamcode.roadRunner.drive.DriveConstants;
+import org.firstinspires.ftc.teamcode.oldPrograms.usedAtState.DriveTrain6547State;
 import org.firstinspires.ftc.teamcode.util.SkyStoneLoc;
 
 /**

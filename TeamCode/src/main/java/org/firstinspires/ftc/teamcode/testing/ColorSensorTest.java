@@ -30,12 +30,11 @@
 package org.firstinspires.ftc.teamcode.testing;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 
-import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547State;
+import org.firstinspires.ftc.teamcode.oldPrograms.usedAtState.DriveTrain6547State;
 
 /*
  * This is an example LinearOpMode that shows how to use

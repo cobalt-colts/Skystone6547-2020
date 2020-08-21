@@ -1,14 +1,10 @@
 package org.firstinspires.ftc.teamcode.testing;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.path.heading.ConstantInterpolator;
-import com.acmerobotics.roadrunner.path.heading.LinearInterpolator;
-import com.acmerobotics.roadrunner.path.heading.TangentInterpolator;
-import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547State;
+import org.firstinspires.ftc.teamcode.oldPrograms.usedAtState.DriveTrain6547State;
 
 @Autonomous(group = "test")
 public class interpatatorTest extends LinearOpMode {

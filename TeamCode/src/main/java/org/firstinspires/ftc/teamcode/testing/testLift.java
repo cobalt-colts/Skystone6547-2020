@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547State;
+import org.firstinspires.ftc.teamcode.oldPrograms.usedAtState.DriveTrain6547State;
 
 @TeleOp(name = "test scissor lift calibrate")
 @Config

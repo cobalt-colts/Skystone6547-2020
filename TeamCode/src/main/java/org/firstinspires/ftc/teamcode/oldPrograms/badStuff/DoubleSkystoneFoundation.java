@@ -2,19 +2,17 @@ package org.firstinspires.ftc.teamcode.oldPrograms.badStuff;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.trajectory.MarkerCallback;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
-import org.firstinspires.ftc.teamcode.RoadRunner.actions.Intake;
-import org.firstinspires.ftc.teamcode.RoadRunner.actions.IntakeUntilStone;
-import org.firstinspires.ftc.teamcode.RoadRunner.actions.StopIntake;
-import org.firstinspires.ftc.teamcode.RoadRunner.drive.DriveConstants;
-import org.firstinspires.ftc.teamcode.RoadRunner.drive.mecanum.DriveTrain6547State;
+import org.firstinspires.ftc.teamcode.oldPrograms.usedAtState.stateActions.Intake;
+import org.firstinspires.ftc.teamcode.oldPrograms.usedAtState.stateActions.IntakeUntilStone;
+import org.firstinspires.ftc.teamcode.oldPrograms.usedAtState.stateActions.StopIntake;
+import org.firstinspires.ftc.teamcode.roadRunner.drive.DriveConstants;
+import org.firstinspires.ftc.teamcode.oldPrograms.usedAtState.DriveTrain6547State;
 import org.firstinspires.ftc.teamcode.util.SkyStoneLoc;
 
 /**

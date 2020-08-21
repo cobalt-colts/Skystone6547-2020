@@ -18,4 +18,11 @@ dependencies {
     implementation 'com.github.dogecv:dogecv:2020.4-alpha'
     implementation project(':openCVLibrary3')
     implementation project(':bluejay')
+
+    implementation 'com.arcrobotics:ftclib:2.0.11' // Replace 1.0.0 with the latest release
+
+    implementation 'com.spartronics4915.lib:ftc265:2.0.1'
+
+    //implementation 'com.github.sh0nk:matplotlib4j:0.4.0'
+    //implementation group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
 }
