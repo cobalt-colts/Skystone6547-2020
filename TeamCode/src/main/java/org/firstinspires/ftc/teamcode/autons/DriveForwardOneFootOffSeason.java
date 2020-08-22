@@ -2,12 +2,14 @@ package org.firstinspires.ftc.teamcode.autons;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.oldPrograms.usedAtState.DriveTrain6547State;
 
 @Autonomous(name = "Drive Forward One Foot",group = "auton")
+@Disabled
 public class DriveForwardOneFootOffSeason extends LinearOpMode {
 
     boolean isRed;

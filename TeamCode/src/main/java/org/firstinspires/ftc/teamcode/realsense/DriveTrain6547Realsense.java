@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.arcrobotics.ftclib.Robot;
 import com.qualcomm.ftccommon.SoundPlayer;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
@@ -163,7 +164,7 @@ public class DriveTrain6547Realsense extends DriveBase6547Realsense {
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
 
-        setLocalizer(new T265Localizer(this)); //two wheel odometry
+        setLocalizer(new T265LocalizerSelfContained(hardwareMap)); //realsense
         //setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap)); //three wheel odometry
 
         initOtherHardware();
@@ -303,11 +304,13 @@ public class DriveTrain6547Realsense extends DriveBase6547Realsense {
     }
     public void startRealsense()
     {
-        slamra.start();
+//        RobotLog.v("staring realsense");
+//        slamra.start();
     }
     public void stopRealsense()
     {
-        slamra.stop();
+//        RobotLog.v("Stopping Realsense");
+//        slamra.stop();
     }
     public void setBulkReadAuto()
     {
@@ -924,6 +927,8 @@ public class DriveTrain6547Realsense extends DriveBase6547Realsense {
 
         fieldOverlay.setStroke("#F44336");
         DashboardUtil.drawRobot(fieldOverlay, currentPose);
+
+        RobotLog.v("SENTING IT TO TELEmetry, x:" + currentPose.getX() + "y:" + currentPose.getY() + "R:" + currentPose.getHeading());
 
         dashboard.sendTelemetryPacket(packet);
 

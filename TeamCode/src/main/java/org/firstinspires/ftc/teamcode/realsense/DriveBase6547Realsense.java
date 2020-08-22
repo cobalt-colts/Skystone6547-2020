@@ -86,8 +86,6 @@ public abstract class DriveBase6547Realsense extends MecanumDrive {
 
     Canvas fieldOverlay;
 
-    public static T265Camera slamra;
-
     public DriveBase6547Realsense(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH,WHEEL_BASE,LATERAL_MULTIPLIER);
 
@@ -109,11 +107,6 @@ public abstract class DriveBase6547Realsense extends MecanumDrive {
         frontEncoder = (DcMotorEx) hardwareMap.dcMotor.get("vertRight");
 
         frontEncoder.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        if (slamra == null) {
-            slamra = new T265Camera(new Transform2d(new Translation2d(0,0), new Rotation2d(0)), 0, hardwareMap.appContext);
-            RobotLog.d("Created Camera");
-        }
     }
 
     public TrajectoryBuilder trajectoryBuilder() {

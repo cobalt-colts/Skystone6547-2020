@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
@@ -15,6 +16,7 @@ import org.firstinspires.ftc.teamcode.oldPrograms.usedAtState.DriveTrain6547Stat
  * Created by Drew from 6547 on 9/27/2019.
  */
 @Autonomous(name = "RED/Blue Foundation State", group = "auton")
+@Disabled
 public class FoundationAutoOffSeason extends LinearOpMode {
 
     private boolean isRed;

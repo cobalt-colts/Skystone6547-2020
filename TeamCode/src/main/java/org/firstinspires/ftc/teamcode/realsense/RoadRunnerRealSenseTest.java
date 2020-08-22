@@ -6,9 +6,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.arcrobotics.ftclib.geometry.Rotation2d;
-import com.arcrobotics.ftclib.geometry.Transform2d;
-import com.arcrobotics.ftclib.geometry.Translation2d;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.RobotLog;
@@ -54,7 +52,7 @@ public class RoadRunnerRealSenseTest extends LinearOpMode {
         bot = new DriveTrain6547Realsense(this);
         telemetry.update();
 
-        bot.setPoseEstimate(new Pose2d(0,0,0));
+        bot.setPoseEstimate(new Pose2d());
 
         bot.disableEncoders();
 
@@ -78,6 +76,8 @@ public class RoadRunnerRealSenseTest extends LinearOpMode {
         waitForStart();
 
         bot.startRealsense();
+
+       // bot.setPoseEstimate(new Pose2d(0,0,0));
 
         while (opModeIsActive()) {
 
