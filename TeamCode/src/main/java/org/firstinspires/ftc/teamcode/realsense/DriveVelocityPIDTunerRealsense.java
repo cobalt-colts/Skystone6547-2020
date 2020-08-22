@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.roadRunner.drive.opmode;
+package org.firstinspires.ftc.teamcode.realsense;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -13,14 +13,11 @@ import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
 import com.acmerobotics.roadrunner.profile.MotionState;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.roadRunner.drive.DriveConstants;
-import org.firstinspires.ftc.teamcode.roadRunner.drive.DriveTrain6547Offseason;
-import org.firstinspires.ftc.teamcode.roadRunner.drive.MecanumDriveBase6547Offseason;
 
 import java.util.List;
 
@@ -40,8 +37,7 @@ import static org.firstinspires.ftc.teamcode.roadRunner.drive.DriveConstants.kV;
  */
 @Config
 @Autonomous(group = "drive")
-@Disabled
-public class DriveVelocityPIDTuner extends LinearOpMode {
+public class DriveVelocityPIDTunerRealsense extends LinearOpMode {
     public static double DISTANCE = 12;
 
     private static final String PID_VAR_NAME = "VELO_PID";
@@ -50,7 +46,7 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
     private String catName;
     private CustomVariable catVar;
 
-    private MecanumDriveBase6547Offseason drive;
+    private DriveTrain6547Realsense drive;
 
     private static MotionProfile generateProfile(boolean movingForward) {
         MotionState start = new MotionState(movingForward ? 0 : DISTANCE, 0, 0, 0);
@@ -135,7 +131,7 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
 
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
 
-        drive = new DriveTrain6547Offseason(this);
+        drive = new DriveTrain6547Realsense(this);
 
         addPidVariable();
 
@@ -146,6 +142,8 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
         telemetry.clearAll();
 
         waitForStart();
+
+        drive.startRealsense();
 
         if (isStopRequested()) return;
 
@@ -180,6 +178,7 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
             telemetry.update();
         }
 
+        drive.stopRealsense();
         removePidVariable();
     }
 }

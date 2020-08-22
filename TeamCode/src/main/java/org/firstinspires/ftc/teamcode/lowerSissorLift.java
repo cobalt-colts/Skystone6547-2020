@@ -5,14 +5,14 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.RobotLog;
 
-import org.firstinspires.ftc.teamcode.oldPrograms.usedAtState.DriveTrain6547State;
+import org.firstinspires.ftc.teamcode.roadRunner.drive.DriveTrain6547Offseason;
 
 @TeleOp
 public class lowerSissorLift extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        DriveTrain6547State bot = new DriveTrain6547State(this); //the robot
+        DriveTrain6547Offseason bot = new DriveTrain6547Offseason(this); //the robot
 
         /*
         Make the lift stay where it's at.  The scissor lift's force is stronger

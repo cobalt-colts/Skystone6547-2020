@@ -4,10 +4,11 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.oldPrograms.usedAtState.DriveTrain6547State;
+import org.firstinspires.ftc.teamcode.roadRunner.drive.DriveTrain6547Offseason;
 
 /**
  * This is a simple teleop routine for testing localization. Drive the robot around like a normal
@@ -18,6 +19,7 @@ import org.firstinspires.ftc.teamcode.oldPrograms.usedAtState.DriveTrain6547Stat
  */
 @Config
 @TeleOp(group = "test")
+@Disabled
 public class LocalizationTest extends LinearOpMode {
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
@@ -27,7 +29,7 @@ public class LocalizationTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        DriveTrain6547State drive = new DriveTrain6547State(this);
+        DriveTrain6547Offseason drive = new DriveTrain6547Offseason(this);
 
         waitForStart();
 

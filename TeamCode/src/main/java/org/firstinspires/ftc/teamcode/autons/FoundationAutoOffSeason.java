@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.autons;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -112,13 +113,13 @@ public class FoundationAutoOffSeason extends LinearOpMode {
             // Let's let trajectories handle this instead
             //
             bot.followTrajectorySync(bot.trajectoryBuilder(true,driveSpeeds.slow)
-                    .splineTo(new Pose2d(45, -31, Math.toRadians(faceForwardDeg)))
+                    .splineTo(new Vector2d(45, -31), Math.toRadians(faceForwardDeg))
                     .build());
         } else {
             // Addedd
             bot.followTrajectorySync(bot.trajectoryBuilder(true, driveSpeeds.slow)
                    // .splineTo()
-                    .splineTo(new Pose2d(45, 31, Math.toRadians(faceForwardDeg)))
+                    .splineTo(new Vector2d(45, 31), Math.toRadians(faceForwardDeg))
                     .build());
         }
 
@@ -179,14 +180,14 @@ public class FoundationAutoOffSeason extends LinearOpMode {
         if (isRed) {
             bot.followTrajectorySync(bot.trajectoryBuilder()
                     //.addTemporalMarker(2,new StopIntake(bot))
-                    .splineTo(new Pose2d(5, -51, Math.toRadians(180)))
+                    .splineTo(new Vector2d(5, -51), Math.toRadians(180))
                     .build());
         }
         else {
 
             bot.followTrajectorySync(bot.trajectoryBuilder()
                     //.addTemporalMarker(2,new StopIntake(bot))
-                    .splineTo(new Pose2d(-2, 68, Math.toRadians(180)))
+                    .splineTo(new Vector2d(-2, 68), Math.toRadians(180))
                     .build());
         }
         bot.intake(1);

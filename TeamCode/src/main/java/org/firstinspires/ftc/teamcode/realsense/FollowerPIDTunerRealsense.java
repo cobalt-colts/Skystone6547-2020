@@ -1,9 +1,8 @@
-package org.firstinspires.ftc.teamcode.roadRunner.drive.opmode;
+package org.firstinspires.ftc.teamcode.realsense;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.roadRunner.drive.DriveTrain6547Offseason;
@@ -14,15 +13,16 @@ import org.firstinspires.ftc.teamcode.roadRunner.drive.DriveTrain6547Offseason;
  */
 @Config
 @Autonomous(group = "drive")
-@Disabled
-public class FollowerPIDTuner extends LinearOpMode {
+public class FollowerPIDTunerRealsense extends LinearOpMode {
     public static double DISTANCE = 48;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        DriveTrain6547Offseason drive = new DriveTrain6547Offseason(this);
+        DriveTrain6547Realsense drive = new DriveTrain6547Realsense(this);
 
         drive.setPoseEstimate(new Pose2d(-DISTANCE / 2, -DISTANCE / 2, 0));
+
+        drive.startRealsense();
 
         waitForStart();
 
@@ -36,5 +36,6 @@ public class FollowerPIDTuner extends LinearOpMode {
             );
             drive.turnSync(Math.toRadians(90));
         }
+        drive.stopRealsense();
     }
 }

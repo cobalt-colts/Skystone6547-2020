@@ -1,6 +1,5 @@
-package org.firstinspires.ftc.teamcode.roadRunner.drive.opmode;
+package org.firstinspires.ftc.teamcode.realsense;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -12,11 +11,12 @@ import org.firstinspires.ftc.teamcode.roadRunner.drive.DriveTrain6547Offseason;
  * This is an example of a more complex path to really test the tuning.
  */
 @Autonomous(group = "drive")
-@Disabled
-public class SplineTest extends LinearOpMode {
+public class SplineTestRealsense extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        DriveTrain6547Offseason drive = new DriveTrain6547Offseason(this);
+        DriveTrain6547Realsense drive = new DriveTrain6547Realsense(this);
+
+        drive.startRealsense();
 
         waitForStart();
 
@@ -36,5 +36,7 @@ public class SplineTest extends LinearOpMode {
                         .splineTo(new Vector2d(0, 0), Math.toRadians(180))
                         .build()
         );
+
+        drive.stopRealsense();
     }
 }

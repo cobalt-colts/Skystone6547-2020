@@ -112,7 +112,7 @@ public class DoubleSkystoneFoundationOffSeason extends LinearOpMode {
 
         //Go to Skystones
         bot.followTrajectorySync(bot.trajectoryBuilder()
-                .splineTo(new Pose2d(-35,-34*yModifer,Math.toRadians(faceForwardDeg)))
+                .splineTo(new Vector2d(-35,-34*yModifer), Math.toRadians(faceForwardDeg))
                 .build());
 
         RobotLog.v("Drove to Stones");
@@ -240,12 +240,12 @@ public class DoubleSkystoneFoundationOffSeason extends LinearOpMode {
             // Let's let trajectories handle this instead
 //        if (isRed) bot.turnRealtiveSync(Math.toRadians(300));
                 bot.followTrajectorySync(bot.trajectoryBuilder(true)
-                        .splineTo(new Pose2d(-5, -40, Math.toRadians(0)))
+                        .splineTo(new Vector2d(-5, -40), Math.toRadians(0))
                         .build());
 
                 // Added:
                 bot.followTrajectorySync(bot.trajectoryBuilder(true)
-                        .splineTo(new Pose2d(40, -21, Math.toRadians(faceForwardDeg)))
+                        .splineTo(new Vector2d(40, -21), Math.toRadians(faceForwardDeg))
                         .build());
         } else {
            // bot.turnRealtiveSync(Math.toRadians(30));
@@ -258,7 +258,7 @@ public class DoubleSkystoneFoundationOffSeason extends LinearOpMode {
             // Let's let trajectories handle this instead
 //        if (isRed) bot.turnRealtiveSync(Math.toRadians(300));
             bot.followTrajectorySync(bot.trajectoryBuilder(true,driveSpeeds.medium)
-                    .splineTo(new Pose2d(-5, 42, Math.toRadians(0)))
+                    .splineTo(new Vector2d(-5, 42), Math.toRadians(0))
                     .build());
 
             bot.turnRealtiveSync(Math.toRadians(180));
@@ -266,7 +266,7 @@ public class DoubleSkystoneFoundationOffSeason extends LinearOpMode {
             // Added:
             bot.followTrajectorySync(bot.trajectoryBuilder(true,driveSpeeds.medium)
                    // .splineTo()
-                    .splineTo(new Pose2d(59, 40, Math.toRadians(faceForwardDeg)))
+                    .splineTo(new Vector2d(59, 40), Math.toRadians(faceForwardDeg))
                     .build());
         }
 
@@ -375,14 +375,14 @@ public class DoubleSkystoneFoundationOffSeason extends LinearOpMode {
         if (isRed) {
             bot.followTrajectorySync(bot.trajectoryBuilder()
                     //.addTemporalMarker(2,new StopIntake(bot))
-                    .splineTo(new Pose2d(-5, -30, Math.toRadians(180)))
+                    .splineTo(new Vector2d(-5, -30), Math.toRadians(180))
                     .build());
         }
         else {
 
             bot.followTrajectorySync(bot.trajectoryBuilder()
                     //.addTemporalMarker(2,new StopIntake(bot))
-                    .splineTo(new Pose2d(8, 45, Math.toRadians(180)))
+                    .splineTo(new Vector2d(8, 45), Math.toRadians(180))
                     .build());
         }
         bot.stopIntake();
@@ -426,8 +426,8 @@ public class DoubleSkystoneFoundationOffSeason extends LinearOpMode {
             else degToTurn = 225;
             telemetry.log().add("GOING RIGHT");
             bot.followTrajectorySync(bot.trajectoryBuilder()
-                    .splineTo(new Pose2d(constX+10,constY*yModifer,Math.toRadians(180)))
-                    .splineTo(new Pose2d(-40,-22*yModifer,Math.toRadians(degToTurn)))
+                    .splineTo(new Vector2d(constX+10,constY*yModifer),Math.toRadians(180))
+                    .splineTo(new Vector2d(-40,-22*yModifer),Math.toRadians(degToTurn))
                     .build());
         }
         else if (bot.skyStoneLoc == SkyStoneLoc.CENTER)
@@ -436,12 +436,12 @@ public class DoubleSkystoneFoundationOffSeason extends LinearOpMode {
             else  degToTurn = 230;
 
             bot.followTrajectorySync(bot.trajectoryBuilder()
-                    .splineTo(new Pose2d(constX-5,constY*yModifer,Math.toRadians(180)))
+                    .splineTo(new Vector2d(constX-5,constY*yModifer),Math.toRadians(180))
                     .build());
 
 
             bot.followTrajectorySync(bot.trajectoryBuilder()
-                    .splineTo(new Pose2d(-58,-22*yModifer, Math.toRadians(degToTurn)))
+                    .splineTo(new Vector2d(-58,-22*yModifer), Math.toRadians(degToTurn))
                     .build());
 
         }
@@ -451,8 +451,8 @@ public class DoubleSkystoneFoundationOffSeason extends LinearOpMode {
             else degToTurn = 210;
 
             bot.followTrajectorySync(bot.trajectoryBuilder()
-                    .splineTo(new Pose2d(constX,(constY*yModifer)-2,Math.toRadians(180)))
-                    .splineTo(new Pose2d(-57,-20*yModifer,Math.toRadians(degToTurn)))
+                    .splineTo(new Vector2d(constX,(constY*yModifer)-2),Math.toRadians(180))
+                    .splineTo(new Vector2d(-57,-20*yModifer),Math.toRadians(degToTurn))
                     .build());
         }
 
@@ -472,8 +472,8 @@ public class DoubleSkystoneFoundationOffSeason extends LinearOpMode {
 
         bot.followTrajectorySync(bot.trajectoryBuilder()
                 .addTemporalMarker(1.5, new Outtake(bot, 1))
-                .splineTo(new Pose2d(-10, -40 * yModifer, Math.toRadians(0)))
-                .splineTo(new Pose2d(10,-38 * yModifer,Math.toRadians(0)))
+                .splineTo(new Vector2d(-10, -40 * yModifer), Math.toRadians(0))
+                .splineTo(new Vector2d(10,-38 * yModifer),Math.toRadians(0))
                 .build());
 
         //bot.turnRealtiveSync(180);

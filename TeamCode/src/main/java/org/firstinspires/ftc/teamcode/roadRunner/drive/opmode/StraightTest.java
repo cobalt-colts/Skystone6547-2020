@@ -3,9 +3,9 @@ package org.firstinspires.ftc.teamcode.roadRunner.drive.opmode;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.oldPrograms.usedAtState.DriveTrain6547State;
 import org.firstinspires.ftc.teamcode.roadRunner.drive.DriveTrain6547Offseason;
 
 /*
@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.roadRunner.drive.DriveTrain6547Offseason;
  */
 @Config
 @Autonomous(group = "drive")
+@Disabled
 public class StraightTest extends LinearOpMode {
     public static double DISTANCE = 24;
 

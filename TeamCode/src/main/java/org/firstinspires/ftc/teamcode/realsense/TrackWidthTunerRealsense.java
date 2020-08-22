@@ -1,9 +1,8 @@
-package org.firstinspires.ftc.teamcode.roadRunner.drive.opmode;
+package org.firstinspires.ftc.teamcode.realsense;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.roadrunner.drive.Drive;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.util.Angle;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -27,7 +26,7 @@ import org.firstinspires.ftc.teamcode.roadRunner.drive.DriveTrain6547Offseason;
 @Config
 @Autonomous(group = "drive")
 @Disabled
-public class TrackWidthTuner extends LinearOpMode {
+public class TrackWidthTunerRealsense extends LinearOpMode {
     public static double ANGLE = 180; // deg
     public static int NUM_TRIALS = 5;
     public static int DELAY = 1000; // ms
@@ -36,7 +35,7 @@ public class TrackWidthTuner extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        DriveTrain6547Offseason drive = new DriveTrain6547Offseason(this);
+        DriveTrain6547Realsense drive = new DriveTrain6547Realsense(this);
 
         // TODO: if you haven't already, set the localizer to something that doesn't depend on
         // drive encoders for computing the heading
@@ -46,6 +45,8 @@ public class TrackWidthTuner extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
+
+        drive.startRealsense();
 
         if (isStopRequested()) return;
 
@@ -87,5 +88,7 @@ public class TrackWidthTuner extends LinearOpMode {
         while (!isStopRequested()) {
             idle();
         }
+
+        drive.stopRealsense();
     }
 }

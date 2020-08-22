@@ -1,22 +1,30 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.realsense;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.arcrobotics.ftclib.geometry.Rotation2d;
+import com.arcrobotics.ftclib.geometry.Transform2d;
+import com.arcrobotics.ftclib.geometry.Translation2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.RobotLog;
 import com.spartronics4915.lib.T265Camera;
 
 import org.firstinspires.ftc.teamcode.roadRunner.drive.DriveTrain6547Offseason;
-import org.firstinspires.ftc.teamcode.util.state.ToggleDouble;
+import org.firstinspires.ftc.teamcode.roadRunner.util.DashboardUtil;
 import org.firstinspires.ftc.teamcode.util.state.ToggleBoolean;
+import org.firstinspires.ftc.teamcode.util.state.ToggleDouble;
 
 /*
 This is the tele-op we use to drive the robot
  */
 @Config
-@TeleOp(name = "SkyStone Tele-op Off season", group = "_teleOp")
-public class SkyStoneTeleOpStateOffSeason extends LinearOpMode {
+@TeleOp(name = "SkyStone Tele-op Road Runner RealSense", group = "_teleOp")
+public class RoadRunnerRealSenseTest extends LinearOpMode {
 
     public static double slideSpeed = .0045; //speed of horizontal slide in servo position units
 
@@ -36,26 +44,30 @@ public class SkyStoneTeleOpStateOffSeason extends LinearOpMode {
     private ToggleDouble fondationGrabberPos = new ToggleDouble(new double[] {0,1},0);
     private ToggleDouble grabberToggle = new ToggleDouble(new double[] {0, 1}, 0);
 
-    private DriveTrain6547Offseason bot; //the robot class
+    private DriveTrain6547Realsense bot; //the robot class
+
+    private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
     @Override
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry()); //makes telemetry output to the FTC Dashboard
-        bot = new DriveTrain6547Offseason(this);
+        bot = new DriveTrain6547Realsense(this);
         telemetry.update();
+
+        bot.setPoseEstimate(new Pose2d(0,0,0));
 
         bot.disableEncoders();
 
         telemetry.log().add("DONE INITIALING");
 
-        double startingAngle = bot.readFile(bot.GYRO_ANGLE_FILE_NAME);
-
-        bot.setAngleZzeroValue(-startingAngle);
+//        double startingAngle = bot.readFile(bot.GYRO_ANGLE_FILE_NAME);
+//
+//        bot.setAngleZzeroValue(-startingAngle);
         //bot.setPoseEstimate(new Pose2d(-36,-63,startingAngle));
 
         //get the angle the robot was at when auton ended
         //bot.setAngleZzeroValue(-bot.readFile(bot.GYRO_ANGLE_FILE_NAME));
-        bot.writeFile(bot.GYRO_ANGLE_FILE_NAME, 0); //reset the old angle to zero
+      //  bot.writeFile(bot.GYRO_ANGLE_FILE_NAME, 0); //reset the old angle to zero
 
         telemetry.log().add("Ready to start");
         telemetry.log().add("gyro angle: " + bot.getIMUAngle());
@@ -64,6 +76,8 @@ public class SkyStoneTeleOpStateOffSeason extends LinearOpMode {
         bot.setBulkReadAuto();
 
         waitForStart();
+
+        bot.startRealsense();
 
         while (opModeIsActive()) {
 
@@ -211,20 +225,15 @@ public class SkyStoneTeleOpStateOffSeason extends LinearOpMode {
                 telemetry.log().add("Calibrated, set zero value to" + zeroVal);
             }
 
+            final int robotRadius = 9; // inches
             /*
             Telemetry
              */
             //Pose2d pos = bot.getPoseEstimate();
             //bot.setPoseEstimate(new Pose2d(pos.getX(), pos.getY(), bot.getRawExternalHeading()+Math.toRadians(90)));
-            //bot.updateRobotPosRoadRunner(); //display robot's position
-//            telemetry.addData("LEFT FRONT AMPS:", bot.leftFront.getCurrent(CurrentUnit.AMPS));
-//            telemetry.addData("RIGHT FRONT AMPS",bot.rightFront.getCurrent(CurrentUnit.AMPS));
-//            telemetry.addData("LEFT BACK AMPS:", bot.leftRear.getCurrent(CurrentUnit.AMPS));
-//            telemetry.addData("RIGHT BACK AMPS",bot.rightRear.getCurrent(CurrentUnit.AMPS));
-//            telemetry.addData("LIFT AMPS",bot.lift.getCurrent(CurrentUnit.AMPS));
-//            telemetry.addData("INTAKE AMPS",bot.intake.getCurrent(CurrentUnit.AMPS));
-            //telemetry.update();
+            bot.updateRobotPosRoadRunner(); //display robot's position
         }
+        bot.stopRealsense();
         bot.stopRobot();
     }
 }
