@@ -19,15 +19,10 @@ import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
 import com.acmerobotics.roadrunner.util.NanoClock;
-import com.arcrobotics.ftclib.geometry.Rotation2d;
-import com.arcrobotics.ftclib.geometry.Transform2d;
-import com.arcrobotics.ftclib.geometry.Translation2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.RobotLog;
-import com.spartronics4915.lib.T265Camera;
 
 import org.firstinspires.ftc.teamcode.roadRunner.util.DashboardUtil;
 
@@ -51,9 +46,6 @@ public abstract class DriveBase6547Realsense extends MecanumDrive {
     public static PIDCoefficients X_PID = new PIDCoefficients(0, 0, 0);
     public static PIDCoefficients Y_PID = new PIDCoefficients(0,0,0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
-
-    public int AutonLiftTargetPos = 0;
-    public boolean runLift = false;
 
     public enum Mode {
         IDLE,
@@ -296,11 +288,6 @@ public abstract class DriveBase6547Realsense extends MecanumDrive {
 
         return velocities;
     }
-
-    public void setLiftTargetPos(int autonLiftTargetPos) {
-        AutonLiftTargetPos = autonLiftTargetPos;
-        //setRunLift(true);
-    }
     private double norm(double angle)
     {
         while (angle>Math.toRadians(360)) angle-=Math.toRadians(360);
@@ -314,14 +301,6 @@ public abstract class DriveBase6547Realsense extends MecanumDrive {
 
     public DriveConstraints getConstraints() {
         return constraints;
-    }
-
-    public int getLiftTargetPos() {
-        return AutonLiftTargetPos;
-    }
-
-    public void setRunLift(boolean runLift) {
-        this.runLift = runLift;
     }
 
     public abstract PIDCoefficients getPIDCoefficients(DcMotor.RunMode runMode);

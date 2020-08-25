@@ -5,6 +5,7 @@ import com.acmerobotics.roadrunner.localization.Localizer;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.arcrobotics.ftclib.geometry.Transform2d;
 import com.arcrobotics.ftclib.geometry.Translation2d;
+import com.arcrobotics.ftclib.kinematics.wpilibkinematics.ChassisSpeeds;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.RobotLog;
 import com.spartronics4915.lib.T265Camera;
@@ -41,7 +42,8 @@ public class T265LocalizerSelfContained implements Localizer {
     @NotNull
     @Override
     public Pose2d getPoseEstimate() {
-        up = slamra.getLastReceivedCameraUpdate();
+        //up is updated in update()
+
         //convert FTClib Pose2d to AMCE robotices Pose2D
         //TODO: convert all FTClib geometry to ACME robotics geometry in T265Camera.java
        if (up != null) {
@@ -68,12 +70,16 @@ public class T265LocalizerSelfContained implements Localizer {
 
     @Override
     public void update() {
-
+        up = slamra.getLastReceivedCameraUpdate();
     }
 
     @Nullable
     @Override
     public Pose2d getPoseVelocity() {
+        //variable up is updated in update()
+
+        //ChassisSpeeds velocity = up.velocity;
+        //return new Pose2d(velocity.vxMetersPerSecond /.0254,velocity.vyMetersPerSecond /.0254,velocity.omegaRadiansPerSecond);
         return null;
     }
 
