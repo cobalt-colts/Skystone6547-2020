@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.realsense;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.config.ValueProvider;
 import com.acmerobotics.dashboard.config.variable.BasicVariable;
 import com.acmerobotics.dashboard.config.variable.CustomVariable;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.profile.MotionProfile;
@@ -19,6 +21,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.roadRunner.drive.DriveConstants;
+import org.firstinspires.ftc.teamcode.roadRunner.util.DashboardUtil;
 
 import java.util.List;
 
@@ -144,8 +147,7 @@ public class DriveVelocityPIDTunerRealsense extends LinearOpMode {
 
         waitForStart();
 
-        drive.startRealsense();
-
+        drive.setPoseEstimate(new Pose2d(0,0,0));
         if (isStopRequested()) return;
 
         boolean movingForwards = true;
@@ -170,16 +172,25 @@ public class DriveVelocityPIDTunerRealsense extends LinearOpMode {
 
             List<Double> velocities = drive.getWheelVelocities();
 
+            TelemetryPacket packet = new TelemetryPacket();
+
             // update telemetry
-            telemetry.addData("targetVelocity", motionState.getV());
+            packet.addLine("targetVelocity: " + motionState.getV());
             for (int i = 0; i < velocities.size(); i++) {
-                telemetry.addData("velocity" + i, velocities.get(i));
-                telemetry.addData("error" + i, motionState.getV() - velocities.get(i));
+                packet.addLine("velocity " + i +  ": " + velocities.get(i));
+                packet.addLine("error " + i + ": "+( motionState.getV() - velocities.get(i)));
             }
+            drive.updatePoseEstimate();
+            Canvas field = packet.fieldOverlay();
+            field.fillCircle(DISTANCE,0,2); //target
+            field.fillCircle(0,0,2); //start pos
+            Pose2d pose = drive.getPoseEstimate();
+            field.fillCircle(pose.getX(),pose.getY(),1);
+            DashboardUtil.drawRobot(field, pose);
+            dashboard.sendTelemetryPacket(packet);
             telemetry.update();
         }
 
-        drive.stopRealsense();
         removePidVariable();
     }
 }

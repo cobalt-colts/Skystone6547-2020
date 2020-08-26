@@ -34,8 +34,12 @@ public class T265LocalizerSelfContained implements Localizer {
         try {
             slamra.start();
         } catch (Exception ignored) {
+            slamra.stop();
             //if slamra started, then set position to 0,0
+            update();
+            getPoseEstimate();
             setPoseEstimate(new Pose2d());
+            slamra.start();
         }
     }
 
@@ -60,6 +64,7 @@ public class T265LocalizerSelfContained implements Localizer {
     //doesn't accully set the pose, it creates an offset Pose that the program adds to the camera pos to get to the pose estimate
     @Override
     public void setPoseEstimate(@NotNull Pose2d pose2d) {
+        pose2d = new Pose2d(pose2d.getX(),pose2d.getY(),0);
         poseOffset = pose2d.minus(rawPose);
 //        try {
 //            poseOffset = new Pose2d(pose2d.getX() - rawPose.getX(), pose2d.getY() - rawPose.getY(), pose2d.getHeading() - rawPose.getHeading());

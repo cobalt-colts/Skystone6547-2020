@@ -69,7 +69,6 @@ public class RoadRunnerRealSenseTest extends LinearOpMode {
 
         telemetry.log().add("Ready to start");
         telemetry.log().add("gyro angle: " + bot.getIMUAngle());
-        telemetry.log().add("lift max: " + bot.liftMax);
 
         bot.setBulkReadAuto();
 
@@ -134,90 +133,10 @@ public class RoadRunnerRealSenseTest extends LinearOpMode {
             Triggers control intake/outtake
             Push the same trigger twice to turn the intake motors off
              */
-            if (bot.rightTrigger2.onPress()) //intake
-            {
-                if (!intake)
-                {
-                    intake = true;
-                    outtake = false;
-                    if (!bot.isStoneAtEnd()) {
-                        bot.intake(1);
-                    }
-                    else bot.intake(.5);
-                }
-                else //intake button pressed again
-                {
-                    intake = false;
-                    outtake = false;
-                    bot.stopIntake();
-                }
-            }
-            else if (bot.leftTrigger2.onPress()) //outtake
-            {
-                if (!outtake) {
-                    intake = false;
-                    outtake = true;
-                    bot.outtake(1);
-                }
-                else //outtake button pressed again
-                {
-                    intake = false;
-                    outtake = false;
-                    bot.stopIntake();
-                }
-            }
-
-            if (bot.a2.onPress()) //toggle fondation grabber
-            {
-                fondationGrabberPos.toggle();
-                bot.setFondationGrabber(fondationGrabberPos.output());
-            }
-
-            if (bot.b2.onPress()) //toggle stone grabber
-            {
-                grabberToggle.toggle();
-                bot.setGrabber(grabberToggle.output());
-            }
-            if (bot.x2.onPress())
-            {
-                bot.setGrabber(2);
-            }
-            if (bot.y2.isPressed())
-            {
-                bot.extendMeasuingTape();
-            }
-            else if (bot.dpadUp2.isPressed())
-            {
-                bot.retractMeasuringTape();
-            }
-            else
-            {
-                bot.stopMeasuringTape();
-            }
-
-            double liftSpeed = -gamepad2.left_stick_y;
-            /*
-            Lift controls
-            Deadzone of .05
-            has a maximum, but no minimum
-             */
-            if (liftSpeed > .05 || liftSpeed < -.05) //if lift is below max and speed is outside of deadzone
-            {
-                bot.setLiftPower(liftSpeed);
-            }
-            else
-            {
-                bot.setLiftPower(0);
-            }
 
             //old way to move servo
             //if (bot.rightBumper2.isPressed()) bot.updateServo(bot.grabberSlide, 1, slideSpeed, bot.grabberMax, bot.grabberMin); //move horizontal slide back
             //if (bot.leftBumper2.isPressed()) bot.updateServo(bot.grabberSlide, -1, slideSpeed, bot.grabberMax, bot.grabberMin); //move horizontal slide forward
-
-            if (bot.rightBumper2.isPressed()) bot.ExtendGrabberSlide();
-            else if (bot.leftBumper2.isPressed()) bot.RetractGrabberSlide();
-            else bot.stopGrabberSlide();
-
             if (gamepad1.right_bumper && gamepad1.left_bumper) //calibrate gyro
             {
                 double zeroVal = -Math.toDegrees(bot.getRawExternalHeading());

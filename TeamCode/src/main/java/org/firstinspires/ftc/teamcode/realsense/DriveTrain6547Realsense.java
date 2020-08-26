@@ -96,7 +96,7 @@ public class DriveTrain6547Realsense extends DriveBase6547Realsense {
         }
 
         if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
-            //setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
+            setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
 
         // TODO: reverse any motors using DcMotor.setDirection()
@@ -123,6 +123,11 @@ public class DriveTrain6547Realsense extends DriveBase6547Realsense {
         RobotLog.d("Initialized gamepads");
 
         setBulkReadAuto();
+
+        if (Math.abs(getPoseEstimate().getHeading())>Math.toRadians(15))
+        {
+            RobotLog.setGlobalWarningMessage("REALSENSE ANGLE OFF, CLOSE AND REOPEN ROBOT APP TO RESET AMGLE");
+        }
 
         //opMode.telemetry = dashboard.getopMode.telemetry();
     }

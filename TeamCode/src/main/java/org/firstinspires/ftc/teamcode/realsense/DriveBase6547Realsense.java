@@ -172,8 +172,6 @@ public abstract class DriveBase6547Realsense extends MecanumDrive {
 
         if (loops%LOOP_REM == 0) {
 
-
-
             packet = new TelemetryPacket();
             fieldOverlay = packet.fieldOverlay();
 
